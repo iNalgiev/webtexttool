@@ -1,0 +1,52 @@
+<div ng-hide="auth">
+    <img class="webtexttool-logo" src="{{ resourceUrl('webtexttool/images/wtt_logo.png') }}"
+         alt="Webtexttool"/>
+
+    <p class="wtt-description">Use your webtexttool account credentials to log in the form below. <br/>
+        Please note
+        that these are not your CraftCMS username and password. <br/><br/>
+        If you don't have an account yet, you can easily create one for free <a
+                href="https://app.webtexttool.com/#/register-free" target="_blank"><strong>here</strong></a>.</p>
+
+    <div ng-if="error != null" class="alert alert-danger" role="alert">
+        <strong>{[error]}</strong>
+    </div>
+
+    <form class="form" role="form" name="loginForm">
+        <table class="form-table">
+            <tr>
+                <td>
+                    <label>E-mail:</label>
+                </td>
+                <td><input type="email" name="e-mail" class="regular-text"
+                           placeholder="E-mail"
+                           required="required" ng-model="loginModel.UserName"/>
+                </td>
+            </tr>
+            <tr class="alternate">
+                <td>
+                    <label>Password:</label>
+                </td>
+                <td><input type="password" name="password" class="regular-text"
+                           placeholder="Password" required="required"
+                           ng-model="loginModel.Password"/></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="buttons">
+
+                        <button type="submit" class="btn submit btn-signin" ng-click="login()"
+                                data-style="expand-left" ladda="loading">
+                            <span class="ladda-label">Login</span>
+                            <span class="ladda-spinner"></span>
+                        </button>
+                    </div>
+                </td>
+                <td>
+                    <a id="forgot-password-link" ng-href="{[WttAppUrl]}forgot" target="_blank">I forgot my
+                        password</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,84 @@
+<div class="wtt-box" ng-show="auth" style="clear: both">
+    <div id="wtt-blockseo" ng-class="{}">
+        <div class="wtt-header">SEO Realtime Suggestions
+            <button popover-placement="auto top" uib-popover-html="htmlPopoverS" popover-trigger="outsideClick"
+                    type="button" class="btn-info-s">
+                <i class="fa fa-question-circle"></i>
+            </button>
+        </div>
+        <aside class="wtt-sidebar display-block"
+               ng-class="{'display-none': !isCollapsed, 'display-block': isCollapsed, 'wtt-overlay': !keywordSet}">
+
+            <div class="page-info" ng-cloak>
+                <label class="sub-label">Keyword:</label>
+                <div class="keyBox" ng-click="isCollapsed = !isCollapsed">
+                    <!--                    <span ng-if="Keyword == null || Keyword == ''" class="no-keyword">Add</span>-->
+                    <span class="keyword">{[Keyword]}</span>
+                </div>
+
+                <div class="btn-group btn-group-custom" ng-show="isCollapsed">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"><i class="flag flag-{[activeLanguageCode]}"></i><span
+                            class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-custom">
+                        <li ng-repeat="language in languages"
+                            ng-class="{active: language.LanguageCode == activeLanguageCode}"><a href="javascript:;"
+                                                                                                ng-click="setActiveLanguage(language)"><i
+                                class="flag flag-{[language.LanguageCode]}"></i> {[language.LanguageName]}</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="wtt-tbl wtt-page-score-area" ng-cloak>
+
+                <div class="wtt-tbl-cell" id="wtt-page-score-container">
+                    <div id="wtt-page-score">
+                                    <span class="wtt-page-score-text"
+                                    >{[Score | number: 0]}%</span>
+                        <canvas tc-chartjs-doughnut chart-data="pageScoreData"
+                                chart-options="pageScoreChartOptions" width="110" height="110"></canvas>
+                    </div>
+                </div>
+                <div class="wtt-tbl-cell">
+                    <span>Page score</span>
+                    <p><strong>{[ScoreTag]}</strong></p>
+                </div>
+            </div>
+
+            <div class="suggestions-mask">
+                <div class="suggestions">
+                    <wtt-suggestion ng-repeat="suggestion in suggestions"
+                                    suggestion="suggestion"
+                                    index="{[$index]}"></wtt-suggestion>
+                </div>
+            </div>
+            <script id="wtt-suggestion.html" type="text/ng-template">
+                <div class="suggestions-box" ng-class="{'active': suggestion.selected}" id="{[domId]}">
+
+                    <div class="suggestions-header">
+                        <button class="btn-collapse" type="button"
+                                ng-click="suggestion.isCollapsed = !suggestion.isCollapsed">
+                            <i class="fa"
+                               ng-class="{'fa-angle-down': !suggestion.isCollapsed, 'fa-angle-right': suggestion.isCollapsed}"></i>
+                        </button>
+                        <h3>{[displayName]}</h3>
+                        <uib-progressbar animate="true" max="suggestion.Importance" value="suggestion.Score"
+                                         type="{[suggestion.progressType]}"></uib-progressbar>
+                    </div>
+                    <div class="suggestions-content" uib-collapse="suggestion.isCollapsed">
+                        <ul class="suggestions-list">
+                            <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': rule.Checked}">
+                                <i class="fa"
+                                   ng-class="{'fa-circle-o': !rule.Checked, 'fa-check-circle': rule.Checked}"></i>
+                                <span ng-bind-html="rule.Text"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </script>
+        </aside>
+    </div>
+</div>

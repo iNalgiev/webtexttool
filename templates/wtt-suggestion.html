@@ -1,0 +1,23 @@
+<div class="suggestions-box" ng-class="{'active': suggestion.selected}" id="{[domId]}">
+    <!--<script type="text/ng-template" id="suggestion-popover-template.html">
+        <div ng-bind-html="tip"></div>
+    </script>-->
+    <div class="suggestions-header">
+        <button class="btn-collapse" type="button" ng-click="suggestion.isCollapsed = !suggestion.isCollapsed">
+            <i class="fa"
+               ng-class="{'fa-angle-down': !suggestion.isCollapsed, 'fa-angle-right': suggestion.isCollapsed}"></i>
+        </button>
+        <!--<button class="btn btn-link btn-xs btn-help" popover-template="'suggestion-popover-template.html'" popover-append-to-body="true" popover-trigger="mouseenter"><i class="fa fa-question-circle"></i> {{helpLabel}}</button>-->
+        <h3>{[displayName]}</h3>
+        <uib-progressbar animate="true" max="suggestion.Importance" value="suggestion.Score"
+                         type="{[suggestion.progressType]}"></uib-progressbar>
+    </div>
+    <div class="suggestions-content" uib-collapse="suggestion.isCollapsed">
+        <ul class="suggestions-list">
+            <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': rule.Checked}">
+                <i class="fa" ng-class="{'fa-circle-o': !rule.Checked, 'fa-check-circle': rule.Checked}"></i>
+                <span ng-bind-html="rule.Text"></span>
+            </li>
+        </ul>
+    </div>
+</div>

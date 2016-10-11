@@ -1,0 +1,191 @@
+{% extends "_layouts/cp" %}
+
+{% set title = "Webtexttool CraftCMS Plugin"|t %}
+
+{% set content %}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+{% includeCssResource "webtexttool/css/angular-busy.min.css" %}
+{% includeCssResource "webtexttool/css/ladda-themeless.min.css" %}
+{% includeCssResource "webtexttool/css/wtt-admin.css" %}
+<script type="text/javascript" src="resources/webtexttool/js/wtt-admin.min.js"></script>
+
+<!--
+{% includeJsResource "webtexttool/js/wtt-admin.min.js" %}
+-->
+
+<script type="text/javascript">
+    var app = angular.module("wtt", ['angular-ladda', 'cgBusy']);
+
+    app.config(['$httpProvider', '$interpolateProvider',
+        function ($httpProvider, $interpolateProvider) {
+            $httpProvider.interceptors.push('authInterceptor');
+            $interpolateProvider.startSymbol('{[').endSymbol(']}');
+        }]);
+
+    app.controller("appController", ['$scope', '$http', '$q', '$location',
+        function ($scope, $http, $q, $location) {
+
+            $scope.error = null;
+            $scope.message = "Invalid Email or Password";
+            $scope.loading = false;
+//            $scope.promiseTemplate = "<?php echo plugins_url('partials/directives/loadingTemplate.html', dirname(__FILE__)); ?>";
+            $scope.promiseMessage = "Please wait...";
+            $scope.WttAppUrl = "https://app.webtexttool.com/#/";
+            var WttApiBaseUrl = "https://app.webtexttool.com/api/user/";
+//            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api/user/";
+//            var WttApiBaseUrl = "http://wtttest.webtexttool.com/WTT.Service/api/user/";
+
+            $scope.loginModel = {
+                RememberMe: false
+            };
+
+            var getData = function (url) {
+                var deffered = $q.defer();
+
+                $http.get(url, {
+                            withCredentials: true
+                        })
+                        .success(function (data, status, headers, config) {
+                            deffered.resolve(data);
+                        }).error(function (error, status) { // called asynchronously if an error occurs
+                    deffered.reject(error.Message);
+                });
+                return deffered.promise;
+            };
+
+            var postData = function (url, dataIn) {
+                var deffered = $q.defer();
+
+                $http.post(url, dataIn, {
+                            withCredentials: true
+                        })
+                        .success(function (data, status, headers, config) {
+                            deffered.resolve(data);
+                        }).error(function (error, status) { // called asynchronously if an error occurs
+                    deffered.reject(error.Message);
+                    $scope.error = error.Message;
+                    $scope.loading = false;
+                });
+                return deffered.promise;
+            };
+
+            /*var sendMessageToServer = function (code) {
+             var deffered = $q.defer();
+
+             jQuery.ajax({
+             url: webtexttoolnonce.ajaxurl + '?action=' + webtexttoolnonce.action,
+             type: 'POST',
+             dataType: 'json',
+             data: {nonce: webtexttoolnonce.nonce, data: code},
+             success: function (result) {
+             deffered.resolve(result);
+             }, error: function (jqXHR, textStatus, errorThrown) {
+             console.log(JSON.stringify(jqXHR));
+             console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+             }
+             });
+
+             return deffered.promise;
+             };*/
+
+            $scope.login = function () {
+
+                $scope.loading = true;
+
+                postData(WttApiBaseUrl + "login", $scope.loginModel).then(function (response) {
+
+                    if (response) {
+                        window.location.reload();
+                        localStorage.setItem('wtt_token', response.access_token);
+                        /*localStorage.setItem('wtt_token', response.access_token);
+                         sendMessageToServer(response.access_token).then(function () {
+                         window.location.reload();
+                         });*/
+                    } else {
+                        $scope.loading = false;
+                        $scope.error = $scope.message;
+                    }
+
+                });
+            };
+
+            $scope.logout = function () {
+
+                $scope.loading = true;
+
+                getData(WttApiBaseUrl + "logout").then(function () {
+                    localStorage.removeItem('wtt_token');
+                    window.location.reload();
+                    /*
+                     sendMessageToServer('').then(function () {
+                     window.location.reload();
+                     });
+                     */
+                });
+            };
+
+            function init() {
+                /*if (localStorage.getItem('wtt_token') === null) {
+                 var authCode = '<?php echo (get_user_meta(get_current_user_id(), "webtexttool_auth", true)); ?>';
+                 if (authCode != '') {
+                 localStorage.setItem('wtt_token', authCode);
+                 }
+                 }*/
+
+                getData(WttApiBaseUrl + "authenticated").then(function (result) {
+                    $scope.auth = result;
+
+                    /*
+                     if ($location.path().indexOf('account') > 0 && !$scope.auth) {
+                     $location.path('/login');
+                     } else if ($location.path().indexOf('login') > 0 && $scope.auth) {
+                     $location.path('/account');
+                     }
+                     */
+
+                    if (result) {
+                        $scope.accountPromise = getData(WttApiBaseUrl + "info").then(function (userInfo) {
+                            $scope.userInfo = userInfo;
+
+                            $scope.displayTrialDays = function (days) {
+                                if (days <= 0) return "0";
+                                return days;
+                            };
+                        });
+                    }
+                })
+            }
+
+            init();
+
+        }
+    ]);
+
+    app.factory('authInterceptor', ["$q",
+        function ($q) {
+            var sessionInjector = {
+                request: function (config) {
+                    config.headers = config.headers || {};
+                    config.headers.Authorization = 'Bearer ' + localStorage.getItem('wtt_token');
+                    config.headers.WttSource = 'WordPress';
+                    return config;
+                },
+                response: function (response) {
+                    return response || $q.when(response);
+                }
+            };
+            return sessionInjector;
+        }
+    ]);
+</script>
+
+<div ng-app="wtt" ng-controller="appController">
+
+    <!--<div ng-view></div>-->
+    {% include ("webtexttool/login.html") %}
+    {% include ("webtexttool/account.html") %}
+
+</div>
+
+{% endset %}

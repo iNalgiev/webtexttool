@@ -1,0 +1,77 @@
+<div id="wtt-account" ng-show="auth" class="wrap">
+
+    <div id="wtt_helpaccountside" class="wtt_helpside">
+        <div>
+            <span class="wtt_title">FAQs</span>
+            <ul>
+                <li>
+                    <a ng-href="{[WttAppUrl]}app/help/details/question/da283826-073b-422b-b2e7-1a5d2ec6b089"
+                       target="_blank">What is webtexttool?</a></li>
+                <li>
+                    <a ng-href="{[WttAppUrl]}app/help/details/question/ca3ffac3-134c-4238-88d7-092aff41e2d2"
+                       target="_blank">What is the advantage of using webtexttool?</a></li>
+                <li>
+                    <a ng-href="{[WttAppUrl]}app/help/details/question/47c46555-1da3-420f-a51f-4532ae613365"
+                       target="_blank">Is my text 100% optimized if I use webtexttool?</a></li>
+                <li>
+                    <a ng-href="{[WttAppUrl]}app/help/details/question/10db224c-ccfc-4a13-a7bf-c45af6f595a6"
+                       target="_blank">Video: How does webtexttool work?</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="wtt-plans">
+        <div class="inside account-summary">
+            <h2 class="view_title">Thank you for using webtexttool to analyze, optimize and monitor your
+                content.</h2>
+
+            <div class="wtt-plan">
+                <h2 class="wtt-plan-title">Account details for <strong>{[userInfo.UserName]}</strong>:</h2>
+                <ul class="plan-details">
+                    <li class="plan-item">
+                        <span class="value-no">{[userInfo.SubscriptionName]}</span>
+                        <span class="value-label">Plan subscription</span>
+                    </li>
+                    <li class="plan-item">
+                        <span class="value-no">{[userInfo.Credits]}</span>
+                        <span class="value-label">Keyword credits this month</span>
+                    </li>
+                    <li class="plan-item">
+                        <span class="value-no">{[userInfo.AvailablePageTrackers]}</span>
+                        <span class="value-label">Pagetrackers available</span>
+                    </li>
+                    <li class="plan-item" ng-show="userInfo.UserState == 3">
+                        <span class="value-no">{[displayTrialDays(userInfo.TrialDays)]}</span>
+                        <span class="value-label">Remaining trial days</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="subscription-button" ng-show="userInfo.CanUpgrade">
+                <a class="subscription-label subscription-label-orange"
+                   ng-href="{[WttAppUrl]}app/account/upgrade?tab=subscriptions"
+                   target="_blank">Upgrade your account</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="account-options">
+        <ul class="fa-ul">
+            <li><i class="fa-li fa fa-user"></i><a ng-href="{[WttAppUrl]}app/account?tab=account"
+                                                   target="_blank">My Account</a></li>
+            <li><i class="fa-li fa fa-check-square-o"></i><a
+                    ng-href="{[WttAppUrl]}app/account?tab=subscriptions"
+                    target="_blank">Subscriptions</a></li>
+            <li><i class="fa-li fa fa-key"></i><a ng-href="{[WttAppUrl]}app/account?tab=changePassword"
+                                                  target="_blank">Change your password</a></li>
+            <li><i class="fa-li fa fa-exchange"></i><a
+                    ng-href="{[WttAppUrl]}app/account?tab=transactions"
+                    target="_blank">Transactions overview</a></li>
+        </ul>
+    </div>
+
+    <button type="submit" class="btn submit" ng-click="logout()"
+            data-style="expand-left" ladda="loading">
+        <span class="ladda-label">Sign out</span>
+        <span class="ladda-spinner"></span>
+    </button>
+</div>
