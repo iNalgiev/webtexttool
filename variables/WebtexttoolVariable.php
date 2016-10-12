@@ -12,9 +12,9 @@ class WebtexttoolVariable
      *
      * @return array
      */
-    public function getRecords()
+    public function getAllRecords()
     {
-        return craft()->webtexttool->getRecords();
+        return craft()->webtexttool->getAllRecords();
     }
 
     /**
@@ -27,4 +27,18 @@ class WebtexttoolVariable
     {
         return craft()->webtexttool->getRecordById($id);
     }
+
+
+    /**
+     * Get a specific record by entryId. If no record is found, returns null
+     *
+     * @param  int $entryId
+     * @return mixed
+     */
+    public function getRecordByEntryId($entryId)
+    {
+        return craft()->webtexttool->getRecordByEntryId($entryId);
+    }
+
+
 }

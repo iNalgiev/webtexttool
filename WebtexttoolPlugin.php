@@ -56,7 +56,7 @@ class WebtexttoolPlugin extends BasePlugin
     }
 
     /**
-     * Applies the rules in case EntriesService::saveEntry() was used.
+     * Fires WebtexttoolController in case EntriesService::saveEntry() was used.
      *
      * @param Event $event
      */
@@ -64,13 +64,16 @@ class WebtexttoolPlugin extends BasePlugin
     {
         $entry = $event->params['entry'];
 
-        $entryId = craft()->request->getPost('entryId');
-
-        craft()->webtexttool->saveRecord($entryId);
+        craft()->runController('webtexttool/actionSaveRecord');
     }
 
     public function getSettingsUrl()
     {
         return "webtexttool";
+    }
+
+    public function onAfterInstall()
+    {
+        craft()->db->createCommand()->insert('webtexttool_core', array());
     }
 }

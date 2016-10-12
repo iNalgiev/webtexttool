@@ -53,11 +53,11 @@ class Webtexttool_CoreRecord extends BaseRecord
      *
      * @return BaseRecord
      */
-    /*public function create()
+    public function create()
     {
         $class = get_class($this);
         $record = new $class();
 
         return $record;
-    }*/
+    }
 }

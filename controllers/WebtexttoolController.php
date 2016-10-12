@@ -22,13 +22,19 @@ class WebtexttoolController extends BaseController
     {
 
         $this->requirePostRequest();
-        $model = new Webtexttool_CoreModel();
+
+        if ($id = craft()->request->getPost('recordId')) {
+            $model = craft()->webtexttool->getRecordById($id);
+        } else {
+            $model = craft()->webtexttool->newRecord($id);
+        }
 
         $model->entryId = craft()->request->getPost('entryId');
-        $model->wttKeywords = craft()->request->getPost('wttKeywords');
+        $model->wttKeywords = craft()->request->getPost('wtt_keyword');
+        $model->wttLanguage = craft()->request->getPost('wttLanguage');
 
         if ($model->validate()) {
-            craft()->service->saveRecord($model);
+            craft()->webtexttool->saveRecord($model);
         }
     }
 }

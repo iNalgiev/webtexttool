@@ -44,6 +44,10 @@
 //                        $scope.permalink = permaLink.replace(/-/g, ' ');
                         $scope.permalink = "http://localhost:1337/craftcms/index.php/admin/entries/homepage/2-homepage";
 
+                        $j(".padded").find("input[type='hidden']").each(function () {
+                            console.log($j(this).val());
+                        });
+
                         $cookies.put('wtt_lang', userInfo.DefaultLanguageCode);
                         $scope.localLanguageCode = userInfo.DefaultLanguageCode;
 
@@ -226,22 +230,22 @@
                         var inputKeywordDBValue = getContent('wtt-keyword-field');
 
                         /*if (inputKeywordDBValue.length == 0) {
-                            $j(inputKeyword).keyup(function () {
-                                inputKeyword.setAttribute('value', $j(this).val());
-                                inputKeywordDB.setAttribute('value', $j(this).val());
-                            }).keyup();
-                        }
+                         $j(inputKeyword).keyup(function () {
+                         inputKeyword.setAttribute('value', $j(this).val());
+                         inputKeywordDB.setAttribute('value', $j(this).val());
+                         }).keyup();
+                         }
 
-                        if (inputKeywordDBValue.length != 0) {
-                            inputKeyword.setAttribute('value', inputKeywordDBValue);
-                            $scope.useMyKeyword();
-                        }
+                         if (inputKeywordDBValue.length != 0) {
+                         inputKeyword.setAttribute('value', inputKeywordDBValue);
+                         $scope.useMyKeyword();
+                         }
 
-                        if (inputKeywordDBValue.length != 0 && !$scope.isCollapsed) {
-                            $j(inputKeyword).keyup(function () {
-                                inputKeywordDB.setAttribute('value', $j(this).val());
-                            })
-                        }*/
+                         if (inputKeywordDBValue.length != 0 && !$scope.isCollapsed) {
+                         $j(inputKeyword).keyup(function () {
+                         inputKeywordDB.setAttribute('value', $j(this).val());
+                         })
+                         }*/
 
                         if ($j("#fields-body").length > 0) {
                             $j('#fields-body').redactor({
@@ -733,15 +737,16 @@
 
 </div>
 
-{% import "_includes/forms" as forms %}
+{% if recordId is not defined %}{% set recordId = null %}{% endif %}
 
-    {{ forms.textField({
-        label: 'Enter your keyword'|t,
-        required: false,
-        id: "wttMetaKeyword",
-        name: "wttKeywords",
-    }) }}
+{% set postId = craft.request.getParam('entryId') %}
+{% set record = craft.webtexttool.getRecordByEntryId(postId) %}
 
+<p>Entry Keyword: <input type="text" value="{{ record ? record.wttKeywords : null }}"/></p>
+<p>RecordId: <input type="text" value="{{ record ? record.id : null }}"/></p>
+<p>EntryId: <input type="text" value="{{ postId }}"/></p>
 
-<input type="text" id="wtt-keyword-field" name="wtt_keyword_field" value=""/>
-<input type="text" id="wtt-language-code-field" name="wtt_language_code_field" value=""/>
+<input type="hidden" name="recordId" value="{{ recordId }}"/>
+<input type="hidden" id="wtt-keyword-field" name="wtt_keyword_field" value=""/>
+<input type="hidden" id="wtt-language-code-field" name="wttLanguage" value=""/>
+

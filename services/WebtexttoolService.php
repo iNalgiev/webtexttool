@@ -1,0 +1,124 @@
+<?php
+
+namespace Craft;
+
+/**
+ * Webtexttool Core Service
+ *
+ * Provides a consistent API for our plugin to access the database
+ */
+class WebtexttoolService extends BaseApplicationComponent
+{
+//    protected $webtexttoolRecord;
+
+    /**
+     * Create a new instance of the Webtexttool Service.
+     *
+     * @param @webtexttoolRecord WebtexttoolRecord The record to access the database
+     */
+    /*    public function __construct($webtexttoolRecord = null)
+        {
+            $this->webtexttoolRecord = $webtexttoolRecord;
+            if (is_null($this->webtexttoolRecord)) {
+                $this->webtexttoolRecord = Webtexttool_CoreRecord::model();
+            }
+        }*/
+
+    /**
+     * Get a new blank record
+     *
+     * @param  array $attributes
+     * @return Webtexttool_CoreModel
+     */
+    public function newRecord($attributes = array())
+    {
+        $model = new Webtexttool_CoreModel();
+        $model->setAttributes($attributes);
+
+        return $model;
+    }
+
+    /**
+     * Returns all records.
+     *
+     * @return array
+     */
+    public function getAllRecords()
+    {
+        $records = Webtexttool_CoreRecord::model()->findAll(array());
+
+        return Webtexttool_CoreModel::populateModels($records);
+    }
+
+    /**
+     * Returns a record by its ID.
+     *
+     * @param int $recordId
+     *
+     * @return Webtexttool_CoreRecord
+     */
+    public function getRecordById($recordId)
+    {
+        $coreRecord = Webtexttool_CoreRecord::model()->findById($recordId);
+
+        if ($coreRecord) {
+            return Webtexttool_CoreModel::populateModel($coreRecord);
+        }
+    }
+
+    /**
+     * Returns a record by its entry ID.
+     *
+     * @param int $entryId
+     *
+     * @return Webtexttool_CoreRecord
+     */
+    public function getRecordByEntryId($entryId)
+    {
+        $coreRecord = Webtexttool_CoreRecord::model()->findByAttributes(array('entryId'=>$entryId));
+
+        if ($coreRecord) {
+            return Webtexttool_CoreModel::populateModel($coreRecord);
+        }
+    }
+
+    /**
+     * Save a new or existing record back to the database.
+     *
+     * @param Webtexttool_CoreModel $model
+     * @return bool
+     * @throws Exception
+     */
+    public function saveRecord(Webtexttool_CoreModel &$model)
+    {
+        if ($id = $model->getAttribute('id')) {
+            $webtexttoolRecord = Webtexttool_CoreRecord::model()->findById($id);
+            if (!$webtexttoolRecord) {
+                throw new Exception(Craft::t('Can\'t find record with ID "{id}"', array('id' => $id)));
+            }
+        } else {
+            $webtexttoolRecord = new Webtexttool_CoreRecord();
+        }
+
+        if ($model->validate()) {
+            $attributes = array(
+                'entryId' => $model->entryId,
+                'wttKeywords' => $model->wttKeywords,
+                'wttLanguage' => $model->wttLanguage,
+            );
+
+            foreach ($attributes as $k => $v) {
+                $webtexttoolRecord->setAttribute($k, $v);
+            }
+
+            if ($webtexttoolRecord->save()) {
+                // update id on model (for new records)
+                $model->setAttribute('id', $webtexttoolRecord->getAttribute('id'));
+                return true;
+            } else {
+                $model->addErrors($webtexttoolRecord->getErrors());
+                return false;
+            }
+        }
+    }
+}
