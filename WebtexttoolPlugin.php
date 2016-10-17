@@ -47,25 +47,42 @@ class WebtexttoolPlugin extends BasePlugin
     public function init()
     {
         craft()->templates->hook('cp.entries.edit.right-pane', [$this, 'renderCoreTemplate']);
-        craft()->on('entries.onSaveEntry', [$this, 'handleEntrySave']);
+        craft()->on('entries.onBeforeSaveEntry', [$this, 'handleEntrySave']);
     }
 
-    public function renderCoreTemplate()
+    public function renderCoreTemplate(&$context)
     {
-        return craft()->templates->render('webtexttool/core');
+        $entry = $context['entry'];
+        $entryId = $entry->id;
+
+        $record = craft()->webtexttool->getRecordByEntryId($entryId);
+
+        return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record]);
     }
 
     /**
-     * Fires WebtexttoolController in case EntriesService::saveEntry() was used.
+     * Fires WebtexttoolController in case EntriesService::onBeforeSaveEntry() was used.
      *
-     * @param Event $event
      */
-    public function handleEntrySave(Event $event)
+    public function handleEntrySave()
     {
-        $entry = $event->params['entry'];
-
-        craft()->runController('webtexttool/actionSaveRecord');
+        craft()->runController('webtexttool/saveRecord');
     }
+
+    /**
+     * @inheritDoc IElementType::defineAvailableTableAttributes()
+     *
+     * @return array
+     */
+    public function defineAvailableTableAttributes()
+    {
+        $attributes = array(
+            'wttKeywords' => Craft::t('WTT Entry Keyword'),
+            'wttDescription' => Craft::t('WTT Meta Description'),
+        );
+        return $attributes;
+    }
+
 
     public function getSettingsUrl()
     {
@@ -74,6 +91,6 @@ class WebtexttoolPlugin extends BasePlugin
 
     public function onAfterInstall()
     {
-        craft()->db->createCommand()->insert('webtexttool_core', array());
+        craft()->db->createCommand()->insert('webtexttool_core', "");
     }
 }

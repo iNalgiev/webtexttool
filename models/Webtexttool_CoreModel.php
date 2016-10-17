@@ -33,6 +33,7 @@ class Webtexttool_CoreModel extends BaseModel
     public function defineAttributes()
     {
         return array(
+            'id'                => AttributeType::Number,
             'entryId'           => AttributeType::Number,
             'wttKeywords'       => AttributeType::String,
             'wttDescription'    => AttributeType::String,

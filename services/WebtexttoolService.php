@@ -9,21 +9,6 @@ namespace Craft;
  */
 class WebtexttoolService extends BaseApplicationComponent
 {
-//    protected $webtexttoolRecord;
-
-    /**
-     * Create a new instance of the Webtexttool Service.
-     *
-     * @param @webtexttoolRecord WebtexttoolRecord The record to access the database
-     */
-    /*    public function __construct($webtexttoolRecord = null)
-        {
-            $this->webtexttoolRecord = $webtexttoolRecord;
-            if (is_null($this->webtexttoolRecord)) {
-                $this->webtexttoolRecord = Webtexttool_CoreRecord::model();
-            }
-        }*/
-
     /**
      * Get a new blank record
      *
@@ -71,7 +56,7 @@ class WebtexttoolService extends BaseApplicationComponent
      *
      * @param int $entryId
      *
-     * @return Webtexttool_CoreRecord
+     * @return Webtexttool_CoreModel
      */
     public function getRecordByEntryId($entryId)
     {
@@ -104,6 +89,7 @@ class WebtexttoolService extends BaseApplicationComponent
             $attributes = array(
                 'entryId' => $model->entryId,
                 'wttKeywords' => $model->wttKeywords,
+                'wttDescription' => $model->wttDescription,
                 'wttLanguage' => $model->wttLanguage,
             );
 
@@ -120,5 +106,16 @@ class WebtexttoolService extends BaseApplicationComponent
                 return false;
             }
         }
+    }
+
+    /**
+     * Delete a record from the database.
+     *
+     * @param  int $entryId
+     * @return int The number of rows affected
+     */
+    public function deleteRecordByEntryId($entryId)
+    {
+        return Webtexttool_CoreRecord::model()->deleteAllByAttributes(array('entryId'=>$entryId));
     }
 }

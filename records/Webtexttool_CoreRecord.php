@@ -37,16 +37,6 @@ class Webtexttool_CoreRecord extends BaseRecord
         );
     }
 
-
-    //TODO entryId relation
-    /*
-    public function defineRelations()
-    {
-        return array(
-            'entryId' => array(static::BELONGS_TO, 'EntryRecord'),
-        );
-    }*/
-
     /**
      * Create a new instance of the current class. This allows us to
      * properly unit test our service layer.

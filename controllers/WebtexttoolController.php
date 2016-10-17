@@ -23,6 +23,18 @@ class WebtexttoolController extends BaseController
 
         $this->requirePostRequest();
 
+        //TODO idea 2
+/*        $entryId = craft()->request->getPost('entryId');
+        $recordId = craft()->request->getPost('recordId');
+
+        if (craft()->webtexttool->getRecordByEntryId($entryId) !== false) {
+            craft()->webtexttool->deleteRecordByEntryId($entryId);
+        }
+
+        $model = craft()->webtexttool->newRecord($recordId);*/
+
+
+        //TODO idea 1
         if ($id = craft()->request->getPost('recordId')) {
             $model = craft()->webtexttool->getRecordById($id);
         } else {
@@ -31,6 +43,7 @@ class WebtexttoolController extends BaseController
 
         $model->entryId = craft()->request->getPost('entryId');
         $model->wttKeywords = craft()->request->getPost('wtt_keyword');
+        $model->wttDescription = craft()->request->getPost('wtt_description');
         $model->wttLanguage = craft()->request->getPost('wttLanguage');
 
         if ($model->validate()) {

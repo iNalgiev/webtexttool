@@ -55,7 +55,7 @@
                     <input type="text" class="form-control" placeholder="Search for..." type="text" id="wtt-keyword"
                            name="wtt_keyword" autocomplete="off"
                            uib-tooltip="Fill in your keyword" tooltip-trigger="focus"
-                           tooltip-placement="top" tooltip-enable="!Keyword" value="">
+                           tooltip-placement="top" tooltip-enable="!Keyword" value="{{ record ? record.wttKeywords : null }}">
                 <span class="input-group-btn">
                     <input class="wtt-btn wtt-btn-default" type="button" value="Go!" type="button"
                            id="wtt-keyword-check" value="Use my keyword" ng-click="useMyKeyword()"

@@ -7,8 +7,8 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/underscorejs/1.8.3/underscore-min.js"></script>
-<script type="text/javascript" src="http://beta.webtexttool.com/wtt-core.min.js"></script>
-<!--<script type="text/javascript" src="../resources/webtexttool/js/wtt-core.min.js"></script>-->
+<!--<script type="text/javascript" src="http://beta.webtexttool.com/wtt-core.min.js"></script>-->
+<script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-core.min.js') }}"></script>
 
 <!--suppress JSJQueryEfficiency -->
 <script type="text/javascript">
@@ -44,10 +44,6 @@
 //                        $scope.permalink = permaLink.replace(/-/g, ' ');
                         $scope.permalink = "http://localhost:1337/craftcms/index.php/admin/entries/homepage/2-homepage";
 
-                        $j(".padded").find("input[type='hidden']").each(function () {
-                            console.log($j(this).val());
-                        });
-
                         $cookies.put('wtt_lang', userInfo.DefaultLanguageCode);
                         $scope.localLanguageCode = userInfo.DefaultLanguageCode;
 
@@ -75,7 +71,7 @@
                                     $scope.keywordSet = true;
                                 }, 500);
                             } else {
-                                alert("Keyword is required!");
+                                console.error("No keyword defined");
                             }
                         };
 
@@ -221,31 +217,31 @@
                         }
 
                         $scope.pageHasKeyword = function () {
-                            return getContent('wtt-keyword-field').length != 0;
+                            return getContent('wtt-keyword').length != 0;
                         };
 
                         var inputKeyword = document.getElementById('wtt-keyword');
-                        var inputKeywordDB = document.getElementById('wtt-keyword-field');
 
-                        var inputKeywordDBValue = getContent('wtt-keyword-field');
+                        if (inputKeyword.length != 0) {
+                            $scope.useMyKeyword();
+                        } else {
+                            console.error("Page has no keyword");
+                        }
 
-                        /*if (inputKeywordDBValue.length == 0) {
-                         $j(inputKeyword).keyup(function () {
-                         inputKeyword.setAttribute('value', $j(this).val());
-                         inputKeywordDB.setAttribute('value', $j(this).val());
-                         }).keyup();
-                         }
+                        var entryId = $j('input[type="hidden"][name="entryId"]').val();
 
-                         if (inputKeywordDBValue.length != 0) {
-                         inputKeyword.setAttribute('value', inputKeywordDBValue);
-                         $scope.useMyKeyword();
-                         }
+//                        if (entryId) {
+//                        }
 
-                         if (inputKeywordDBValue.length != 0 && !$scope.isCollapsed) {
-                         $j(inputKeyword).keyup(function () {
-                         inputKeywordDB.setAttribute('value', $j(this).val());
-                         })
-                         }*/
+                        $j('div[id="title-field"]').after(
+                                '<div id="descriptiondiv">' +
+                                '<label for="wttDescription">' +
+                                'Page description' +
+                                '</label>' +
+                                '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
+                                '<textarea id="wtt_description" placeholder="Page Description" name="wttDescription">' + '</textarea>' +
+                                '</div>'
+                        );
 
                         if ($j("#fields-body").length > 0) {
                             $j('#fields-body').redactor({
@@ -293,7 +289,6 @@
                         $scope.useKeyword = function (keyword) {
                             if ($scope.pageHasKeyword()) {
                                 inputKeyword.setAttribute('value', keyword.Keyword);
-                                inputKeywordDB.setAttribute('value', keyword.Keyword);
 
                                 $scope.Keyword = keyword.Keyword;
                                 $scope.HtmlContent = getContent('fields-body');
@@ -308,7 +303,7 @@
                                     $scope.keywordSet = true;
                                 }, 500);
                             } else {
-                                inputKeywordDB.setAttribute('value', "");
+                                inputKeyword.setAttribute('value', "");
                             }
                         };
 
@@ -739,14 +734,7 @@
 
 {% if recordId is not defined %}{% set recordId = null %}{% endif %}
 
-{% set postId = craft.request.getParam('entryId') %}
-{% set record = craft.webtexttool.getRecordByEntryId(postId) %}
-
-<p>Entry Keyword: <input type="text" value="{{ record ? record.wttKeywords : null }}"/></p>
-<p>RecordId: <input type="text" value="{{ record ? record.id : null }}"/></p>
-<p>EntryId: <input type="text" value="{{ postId }}"/></p>
-
-<input type="hidden" name="recordId" value="{{ recordId }}"/>
-<input type="hidden" id="wtt-keyword-field" name="wtt_keyword_field" value=""/>
-<input type="hidden" id="wtt-language-code-field" name="wttLanguage" value=""/>
+RecordId: <input type="text" name="recordId" value="{{ record ? record.id : null }}"/>
+Keyword: <input type="text" value="{{ record ? record.wttKeywords : null }}"/>
+<input type="hidden" id="wtt-language-code-field" name="wttLanguage" value="{{ record ? record.wttLanguage : null }}"/>
 
