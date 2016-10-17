@@ -50,4 +50,11 @@ class WebtexttoolController extends BaseController
             craft()->webtexttool->saveRecord($model);
         }
     }
+	
+	public function actionSaveAccessToken() 
+	{
+		$this->requireAjaxRequest();
+		
+		
+	}
 }

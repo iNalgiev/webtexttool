@@ -1041,30 +1041,47 @@ progress {
 /* ---- WTT Description textarea ---- */
 
 #descriptiondiv {
-    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 #descriptiondiv label {
-    font-size: 23px;
-    line-height: 29px;
+	font-weight: bold;
+    color: #576575;
+	font-size 13px;
     cursor: text;
 }
 
-#wtt_description {
+.desc-heading {
+	margin-bottom: 4px;
+}
+
+#wtt-description {
     width: 100%;
     min-height: 50px;
     white-space: pre-wrap;
     border: 1px solid #F6A01A;
+	border-radius: 3px;
     padding: 5px;
-    background: #f9f9f9;
-    font-size: 15px;
+    -webkit-box-shadow: 0 0 5px rgba(51, 170, 255, 0);
+    -moz-box-shadow: 0 0 5px rgba(51, 170, 255, 0);
+    box-shadow: 0 0 5px rgba(51, 170, 255, 0);
+    -webkit-transition: -webkit-box-shadow linear 100ms;
+    -moz-transition: box-shadow linear 100ms;
 }
 
-#wtt_description:focus {
+#wtt-description:focus {
     border-color: #66afe9;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+textarea#wtt-description {
+	font-size: 13px;
+    line-height: 16px;
+    color: #29323d;
+	min-height: 30px;
+	font-family: HelveticaNeue, sans-serif;
 }
 
 /* ---- WTT Select Keyword Controller ---- */

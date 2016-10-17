@@ -107,6 +107,11 @@ class WebtexttoolService extends BaseApplicationComponent
             }
         }
     }
+	
+	publiv function saveAccessToken(Webtexttool_AdminModel &$model)
+	{
+		
+	}
 
     /**
      * Delete a record from the database.

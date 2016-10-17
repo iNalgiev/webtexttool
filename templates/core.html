@@ -235,11 +235,13 @@
 
                         $j('div[id="title-field"]').after(
                                 '<div id="descriptiondiv">' +
-                                '<label for="wttDescription">' +
+								'<div class="desc-heading">' +
+                                '<label for="wtt_description">' +
                                 'Page description' +
                                 '</label>' +
                                 '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
-                                '<textarea id="wtt_description" placeholder="Page Description" name="wttDescription">' + '</textarea>' +
+								'</div>' +
+                                '<textarea id="wtt-description" placeholder="Page Description" name="wtt_description">'+'{{ record ? record.wttDescription : null }}'+'</textarea>' +
                                 '</div>'
                         );
 

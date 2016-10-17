@@ -8,7 +8,7 @@
 {% includeCssResource "webtexttool/css/angular-busy.min.css" %}
 {% includeCssResource "webtexttool/css/ladda-themeless.min.css" %}
 {% includeCssResource "webtexttool/css/wtt-admin.css" %}
-<script type="text/javascript" src="resources/webtexttool/js/wtt-admin.min.js"></script>
+<script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-admin.min.js') }}"></script>
 
 <!--
 {% includeJsResource "webtexttool/js/wtt-admin.min.js" %}
@@ -69,6 +69,23 @@
                 });
                 return deffered.promise;
             };
+			
+			var sendMessageToServer = function (code) {
+				var deffered = $q.defer();
+				
+				jQuery.ajax({
+					url: Craft.getActionUrl('webtexttool/saveAccessToken', code);
+					type: 'POST',
+					dataType: 'json',
+					data: {userId: user.id, data: code},
+					success: function (result) {
+						deffered.resolve(result);
+						}, error: function (jqXHR, textStatus, errorThrown) {
+							console.log(JSON.stringify(jqXHR));
+							console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+						}
+				});
+			}
 
             /*var sendMessageToServer = function (code) {
              var deffered = $q.defer();
@@ -96,12 +113,10 @@
                 postData(WttApiBaseUrl + "login", $scope.loginModel).then(function (response) {
 
                     if (response) {
-                        window.location.reload();
                         localStorage.setItem('wtt_token', response.access_token);
-                        /*localStorage.setItem('wtt_token', response.access_token);
-                         sendMessageToServer(response.access_token).then(function () {
-                         window.location.reload();
-                         });*/
+                        sendMessageToServer(response.access_token).then(function () {
+							window.location.reload();
+                        });
                     } else {
                         $scope.loading = false;
                         $scope.error = $scope.message;
@@ -116,12 +131,9 @@
 
                 getData(WttApiBaseUrl + "logout").then(function () {
                     localStorage.removeItem('wtt_token');
-                    window.location.reload();
-                    /*
-                     sendMessageToServer('').then(function () {
-                     window.location.reload();
-                     });
-                     */
+                    sendMessageToServer('').then(function () {
+						window.location.reload();
+                    });
                 });
             };
 
