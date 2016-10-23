@@ -7,8 +7,8 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/2.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/underscorejs/1.8.3/underscore-min.js"></script>
-<!--<script type="text/javascript" src="http://beta.webtexttool.com/wtt-core.min.js"></script>-->
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-core.min.js') }}"></script>
+<script type="text/javascript" src="{{ url('resources/webtexttool/js/observeDom.js') }}"></script>
 
 <!--suppress JSJQueryEfficiency -->
 <script type="text/javascript">
@@ -22,7 +22,8 @@
 
     app.controller("editPageController", ['$scope', '$http', '$q', '$timeout', '$interval', '$cookies', 'keywordService', 'httpService', 'languageService', '$sce',
         function ($scope, $http, $q, $timeout, $interval, $cookies, keywordService, httpService, languageService, $sce) {
-            var WttApiBaseUrl = "https://app.webtexttool.com/api/";
+//            var WttApiBaseUrl = "https://app.webtexttool.com/api/";
+            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api/";
             var $j = jQuery.noConflict();
 
             httpService.getData(WttApiBaseUrl + "user/authenticated").then(function (result) {
@@ -50,6 +51,18 @@
                         function getContent(id) {
                             return $j('#' + id).val();
                         }
+
+                        $j('div[id="title-field"]').after(
+                                '<div id="descriptiondiv">' +
+                                '<div class="desc-heading">' +
+                                '<label for="wtt_description">' +
+                                'Page description' +
+                                '</label>' +
+                                '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
+                                '</div>' +
+                                '<textarea id="wtt-description" placeholder="Page Description" name="wtt_description">'+'{{ record ? record.wttDescription : null }}'+'</textarea>' +
+                                '</div>'
+                        );
 
                         $scope.useMyKeyword = function () {
                             if ($scope.pageHasKeyword()) {
@@ -228,24 +241,9 @@
                             console.error("Page has no keyword");
                         }
 
-                        var entryId = $j('input[type="hidden"][name="entryId"]').val();
+//                        var entryId = $j('input[type="hidden"][name="entryId"]').val();
 
-//                        if (entryId) {
-//                        }
-
-                        $j('div[id="title-field"]').after(
-                                '<div id="descriptiondiv">' +
-								'<div class="desc-heading">' +
-                                '<label for="wtt_description">' +
-                                'Page description' +
-                                '</label>' +
-                                '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
-								'</div>' +
-                                '<textarea id="wtt-description" placeholder="Page Description" name="wtt_description">'+'{{ record ? record.wttDescription : null }}'+'</textarea>' +
-                                '</div>'
-                        );
-
-                        if ($j("#fields-body").length > 0) {
+/*                        if ($j("#fields-body").length > 0) {
                             $j('#fields-body').redactor({
                                 callbacks: {
                                     change: function () {
@@ -270,7 +268,17 @@
                             });
                         } else {
                             console.error("Editor is not available");
-                        }
+                        }*/
+
+                        observeDOM(document.getElementsByClassName("item")[0], function () {
+                            $scope.HtmlContent = document.getElementsByClassName("item")[0].textContent;
+
+                            if ($scope.HtmlContent != null) {
+                                $timeout(function () {
+                                    $scope.updateSuggestions();
+                                }, 2000);
+                            }
+                        });
 
                         $j("input#title").keyup(function () {
                             $scope.Title = $j(this).val();
@@ -512,7 +520,8 @@
 
     app.factory("languageService", ['$http', '$q', 'httpService', '$cookies',
         function ($http, $q, httpService, $cookies) {
-            var WttApiBaseUrl = "https://app.webtexttool.com/api";
+//            var WttApiBaseUrl = "https://app.webtexttool.com/api";
+            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api";
 
             var getLanguages = function () {
                 return httpService.getData(WttApiBaseUrl + "/languages");
@@ -541,7 +550,7 @@
 
     app.directive('wttSuggestion', function () {
         return {
-            templateUrl: 'wtt-suggestion.html',
+            templateUrl: "{{ url('webtexttool/directives/wtt-suggestion.html') }}",
             scope: {
                 suggestion: '=',
                 uid: '=',
@@ -624,7 +633,8 @@
 
     app.factory("keywordService", ['$http', '$q', '$rootScope', 'httpService',
         function ($http, $q, $rootScope, httpService) {
-            var WttApiBaseUrl = "https://app.webtexttool.com/api/keywords";
+//            var WttApiBaseUrl = "https://app.webtexttool.com/api/keywords";
+            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api/keywords";
 
             var getKeywordSources = function () {
                 return httpService.getData(WttApiBaseUrl + "/sources");
@@ -734,9 +744,5 @@
 
 </div>
 
-{% if recordId is not defined %}{% set recordId = null %}{% endif %}
-
-RecordId: <input type="text" name="recordId" value="{{ record ? record.id : null }}"/>
-Keyword: <input type="text" value="{{ record ? record.wttKeywords : null }}"/>
+<input type="hidden" name="recordId" value="{{ record ? record.id : null }}"/>
 <input type="hidden" id="wtt-language-code-field" name="wttLanguage" value="{{ record ? record.wttLanguage : null }}"/>
-

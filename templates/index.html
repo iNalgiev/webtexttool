@@ -10,15 +10,20 @@
 {% includeCssResource "webtexttool/css/wtt-admin.css" %}
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-admin.min.js') }}"></script>
 
-<!--
-{% includeJsResource "webtexttool/js/wtt-admin.min.js" %}
--->
-
 <script type="text/javascript">
-    var app = angular.module("wtt", ['angular-ladda', 'cgBusy']);
+    var app = angular.module("wtt", ['angular-ladda', 'ngRoute', 'cgBusy']);
 
-    app.config(['$httpProvider', '$interpolateProvider',
-        function ($httpProvider, $interpolateProvider) {
+    app.config(['$routeProvider', '$httpProvider', '$interpolateProvider',
+        function ($routeProvider, $httpProvider, $interpolateProvider) {
+
+            $routeProvider.when("/account", {
+                templateUrl: "{{ url('webtexttool/account.html') }}"
+            }).when("/login", {
+                templateUrl: "{{ url('webtexttool/login.html') }}"
+            }).otherwise({
+                redirectTo: '/account'
+            });
+
             $httpProvider.interceptors.push('authInterceptor');
             $interpolateProvider.startSymbol('{[').endSymbol(']}');
         }]);
@@ -29,12 +34,11 @@
             $scope.error = null;
             $scope.message = "Invalid Email or Password";
             $scope.loading = false;
-//            $scope.promiseTemplate = "<?php echo plugins_url('partials/directives/loadingTemplate.html', dirname(__FILE__)); ?>";
+            $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
             $scope.promiseMessage = "Please wait...";
             $scope.WttAppUrl = "https://app.webtexttool.com/#/";
-            var WttApiBaseUrl = "https://app.webtexttool.com/api/user/";
-//            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api/user/";
-//            var WttApiBaseUrl = "http://wtttest.webtexttool.com/WTT.Service/api/user/";
+//            var WttApiBaseUrl = "https://app.webtexttool.com/api/user/";
+            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api/user/";
 
             $scope.loginModel = {
                 RememberMe: false
@@ -69,42 +73,29 @@
                 });
                 return deffered.promise;
             };
-			
-			var sendMessageToServer = function (code) {
-				var deffered = $q.defer();
-				
-				jQuery.ajax({
-					url: Craft.getActionUrl('webtexttool/saveAccessToken', code);
-					type: 'POST',
-					dataType: 'json',
-					data: {userId: user.id, data: code},
-					success: function (result) {
-						deffered.resolve(result);
-						}, error: function (jqXHR, textStatus, errorThrown) {
-							console.log(JSON.stringify(jqXHR));
-							console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-						}
-				});
-			}
 
-            /*var sendMessageToServer = function (code) {
-             var deffered = $q.defer();
+            var sendMessageToServer = function (code) {
+                var deffered = $q.defer();
+                var userId = '{{ currentUser.id }}';
 
-             jQuery.ajax({
-             url: webtexttoolnonce.ajaxurl + '?action=' + webtexttoolnonce.action,
-             type: 'POST',
-             dataType: 'json',
-             data: {nonce: webtexttoolnonce.nonce, data: code},
-             success: function (result) {
-             deffered.resolve(result);
-             }, error: function (jqXHR, textStatus, errorThrown) {
-             console.log(JSON.stringify(jqXHR));
-             console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-             }
-             });
+                jQuery.ajax({
+                    url: Craft.getActionUrl('webtexttool/saveAccessToken'),
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        userId: userId, accessToken: code
+                    },
+                    success: function (result) {
+                        deffered.resolve(result);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(JSON.stringify(jqXHR));
+                        console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                    }
+                });
 
-             return deffered.promise;
-             };*/
+                return deffered.promise;
+            };
 
             $scope.login = function () {
 
@@ -115,7 +106,7 @@
                     if (response) {
                         localStorage.setItem('wtt_token', response.access_token);
                         sendMessageToServer(response.access_token).then(function () {
-							window.location.reload();
+                            window.location.reload();
                         });
                     } else {
                         $scope.loading = false;
@@ -132,29 +123,27 @@
                 getData(WttApiBaseUrl + "logout").then(function () {
                     localStorage.removeItem('wtt_token');
                     sendMessageToServer('').then(function () {
-						window.location.reload();
+                        window.location.reload();
                     });
                 });
             };
 
             function init() {
-                /*if (localStorage.getItem('wtt_token') === null) {
-                 var authCode = '<?php echo (get_user_meta(get_current_user_id(), "webtexttool_auth", true)); ?>';
-                 if (authCode != '') {
-                 localStorage.setItem('wtt_token', authCode);
-                 }
-                 }*/
+                if (localStorage.getItem('wtt_token') === null) {
+                    var authCode = "{{ craft.webtexttool.getAccessTokenByUserId(currentUser.id) ? craft.webtexttool.getAccessTokenByUserId(currentUser.id).accessToken : null }}";
+                    if (authCode != '') {
+                        localStorage.setItem('wtt_token', authCode);
+                    }
+                }
 
                 getData(WttApiBaseUrl + "authenticated").then(function (result) {
                     $scope.auth = result;
 
-                    /*
-                     if ($location.path().indexOf('account') > 0 && !$scope.auth) {
-                     $location.path('/login');
-                     } else if ($location.path().indexOf('login') > 0 && $scope.auth) {
-                     $location.path('/account');
-                     }
-                     */
+                    if ($location.path().indexOf('account') > 0 && !$scope.auth) {
+                        $location.path('/login');
+                    } else if ($location.path().indexOf('login') > 0 && $scope.auth) {
+                        $location.path('/account');
+                    }
 
                     if (result) {
                         $scope.accountPromise = getData(WttApiBaseUrl + "info").then(function (userInfo) {
@@ -194,9 +183,7 @@
 
 <div ng-app="wtt" ng-controller="appController">
 
-    <!--<div ng-view></div>-->
-    {% include ("webtexttool/login.html") %}
-    {% include ("webtexttool/account.html") %}
+    <div ng-view></div>
 
 </div>
 

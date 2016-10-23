@@ -28,7 +28,6 @@ class WebtexttoolVariable
         return craft()->webtexttool->getRecordById($id);
     }
 
-
     /**
      * Get a specific record by entryId. If no record is found, returns null
      *
@@ -40,5 +39,14 @@ class WebtexttoolVariable
         return craft()->webtexttool->getRecordByEntryId($entryId);
     }
 
-
+    /**
+     * Get the access token by userId. If no record is found, returns null
+     *
+     * @param  int $userId
+     * @return mixed
+     */
+    public function getAccessTokenByUserId($userId)
+    {
+        return craft()->webtexttool->getAccessTokenByUserId($userId);
+    }
 }

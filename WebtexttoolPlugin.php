@@ -47,15 +47,13 @@ class WebtexttoolPlugin extends BasePlugin
     public function init()
     {
         craft()->templates->hook('cp.entries.edit.right-pane', [$this, 'renderCoreTemplate']);
-        craft()->on('entries.onBeforeSaveEntry', [$this, 'handleEntrySave']);
-		
-		$user = $event->params['user'];
-		// $userId = $user->id;
+        craft()->on('entries.saveEntry', [$this, 'handleEntrySave']);
     }
 
     public function renderCoreTemplate(&$context)
     {
         $entry = $context['entry'];
+
         $entryId = $entry->id;
 
         $record = craft()->webtexttool->getRecordByEntryId($entryId);
@@ -95,6 +93,6 @@ class WebtexttoolPlugin extends BasePlugin
     public function onAfterInstall()
     {
         craft()->db->createCommand()->insert('webtexttool_core', "");
-		craft()->db->createCommand()->insert('webtexttool_admin', "");
+		craft()->db->createCommand()->insert('webtexttool_user', "");
     }
 }

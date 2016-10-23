@@ -54,7 +54,24 @@ class WebtexttoolController extends BaseController
 	public function actionSaveAccessToken() 
 	{
 		$this->requireAjaxRequest();
-		
-		
-	}
+
+        if ($id = craft()->request->getPost('userRecordId')) {
+            $model = craft()->webtexttool->getAccessTokenById($id);
+        } else {
+            $model = craft()->webtexttool->newUserRecord($id);
+        }
+
+        $model->userId = craft()->request->getPost('userId');
+        $model->accessToken = craft()->request->getPost('accessToken');
+
+        if ($model->validate()) {
+            craft()->webtexttool->saveAccessToken($model);
+        }
+
+        $response = [
+            'message' => 'success'
+        ];
+
+        $this->returnJson($response);
+    }
 }

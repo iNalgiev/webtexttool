@@ -3,14 +3,14 @@
 namespace Craft;
 
 /**
- * Webtexttool core record
+ * Webtexttool user record
  *
  * Provides a definition of the database tables required by our plugin,
  * and methods for updating the database. This class should only be called
  * by our service layer, to ensure a consistent API for the rest of the
  * application to use.
  */
-class Webtexttool_CoreRecord extends BaseRecord
+class Webtexttool_UserRecord extends BaseRecord
 {
     /**
      * Gets the database table name
@@ -19,7 +19,7 @@ class Webtexttool_CoreRecord extends BaseRecord
      */
     public function getTableName()
     {
-        return 'webtexttool_core';
+        return 'webtexttool_user';
     }
 
     /**
@@ -30,19 +30,10 @@ class Webtexttool_CoreRecord extends BaseRecord
     public function defineAttributes()
     {
         return array(
-            'entryId'                   => array(AttributeType::String, 'required' => true),
-            'wttKeywords'               => array(AttributeType::String, 'default' => ''),
-            'wttDescription'            => array(AttributeType::String, 'default' => ''),
-            'wttLanguage'               => array(AttributeType::String, 'default' => '')
+            'userId'                    => array(AttributeType::String),
+            'accessToken'               => array(AttributeType::String, 'default' => ''),
         );
     }
-
-/*    public function defineRelations()
-    {
-        return array(
-            'recordId' => array(static::HAS_ONE, 'EntryRecord', 'id'),
-        );
-    }*/
 
     /**
      * Create a new instance of the current class. This allows us to

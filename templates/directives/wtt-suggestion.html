@@ -7,7 +7,7 @@
             <i class="fa"
                ng-class="{'fa-angle-down': !suggestion.isCollapsed, 'fa-angle-right': suggestion.isCollapsed}"></i>
         </button>
-        <!--<button class="btn btn-link btn-xs btn-help" popover-template="'suggestion-popover-template.html'" popover-append-to-body="true" popover-trigger="mouseenter"><i class="fa fa-question-circle"></i> {{helpLabel}}</button>-->
+        <!--<button class="btn btn-link btn-xs btn-help" popover-template="'suggestion-popover-template.html'" popover-append-to-body="true" popover-trigger="mouseenter"><i class="fa fa-question-circle"></i> {[helpLabel]}</button>-->
         <h3>{[displayName]}</h3>
         <uib-progressbar animate="true" max="suggestion.Importance" value="suggestion.Score"
                          type="{[suggestion.progressType]}"></uib-progressbar>
