@@ -1,4 +1,4 @@
-<div class="wtt-box" ng-show="auth" style="clear: both">
+<div class="wtt-box" ng-if="auth" style="clear: both">
     <div id="wtt-blockseo" ng-class="{}">
         <div class="wtt-header">SEO Realtime Suggestions
             <button popover-placement="auto top" uib-popover-html="htmlPopoverS" popover-trigger="outsideClick"
@@ -32,7 +32,7 @@
 
             </div>
 
-            <div class="wtt-tbl wtt-page-score-area" ng-cloak>
+            <div class="wtt-tbl wtt-page-score-area">
 
                 <div class="wtt-tbl-cell" id="wtt-page-score-container">
                     <div id="wtt-page-score">

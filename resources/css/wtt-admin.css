@@ -190,6 +190,7 @@ h2.wtt-plan-title {
     width: 99%;
     max-width: 396px;
     border-radius: 3px;
+    margin-bottom: 10px;
 }
 
 .subscription-label-orange {
