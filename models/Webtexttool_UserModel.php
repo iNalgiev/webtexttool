@@ -3,7 +3,7 @@
 namespace Craft;
 
 /**
- * Webtexttool Core Model
+ * Webtexttool User Model
  *
  * Provides a read-only object representing the access token, which are returned
  * by our service class and can be used in our templates and controllers.

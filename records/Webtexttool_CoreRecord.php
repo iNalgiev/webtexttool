@@ -37,13 +37,6 @@ class Webtexttool_CoreRecord extends BaseRecord
         );
     }
 
-/*    public function defineRelations()
-    {
-        return array(
-            'recordId' => array(static::HAS_ONE, 'EntryRecord', 'id'),
-        );
-    }*/
-
     /**
      * Create a new instance of the current class. This allows us to
      * properly unit test our service layer.

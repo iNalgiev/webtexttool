@@ -18,16 +18,13 @@
 
     app.controller("editPageController", ['$scope', '$http', '$q', '$timeout', '$interval', '$cookies', 'keywordService', 'httpService', 'languageService', '$sce',
         function ($scope, $http, $q, $timeout, $interval, $cookies, keywordService, httpService, languageService, $sce) {
-//            var WttApiBaseUrl = "https://app.webtexttool.com/api/";
-            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api/";
+            var WttApiBaseUrl = "https://app.webtexttool.com/api/";
             var $j = jQuery.noConflict();
 
             $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
             $scope.promiseMessage = "Loading...";
 
-            $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated").then(function () {
-                console.log("done loading");
-            });
+            $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated");
 
             httpService.getData(WttApiBaseUrl + "user/authenticated").then(function (result) {
                 $scope.auth = result;
@@ -82,9 +79,9 @@
                                 $scope.Keyword = getContent('wtt-keyword');
 
                                 if ($j("div#tab1").length > 0) {
-                                    $scope.HtmlContent = replaceLineBreaks(document.getElementById("tab1").textContent);
+                                    $scope.HtmlContent = replaceLineBreaks(document.getElementById("tab1").innerHTML);
                                 } else {
-                                    $scope.HtmlContent = replaceLineBreaks(document.getElementsByClassName("item")[0].textContent);
+                                    $scope.HtmlContent = replaceLineBreaks(document.getElementsByClassName("item")[0].innerHTML);
                                 }
 
                                 $scope.Title = getContent('title');
@@ -264,22 +261,22 @@
 
                         if ($j("div#tab1").length > 0) {
                             observeDOM(document.getElementById("tab1"), function () {
-                                $scope.HtmlContent = replaceLineBreaks($j("div#tab1").text());
+                                $scope.HtmlContent = replaceLineBreaks($j("div#tab1").html());
 
                                 if ($scope.HtmlContent != null) {
                                     $timeout(function () {
                                         $scope.updateSuggestions();
-                                    }, 3000);
+                                    }, 2500);
                                 }
                             });
                         } else {
                             observeDOM(document.getElementsByClassName("item")[0], function () {
-                                $scope.HtmlContent = replaceLineBreaks($j("div#fields").text());
+                                $scope.HtmlContent = replaceLineBreaks($j("div#fields").html());
 
                                 if ($scope.HtmlContent != null) {
                                     $timeout(function () {
                                         $scope.updateSuggestions();
-                                    }, 3000);
+                                    }, 2500);
                                 }
                             });
                         }
@@ -307,9 +304,9 @@
                                 $scope.Keyword = keyword.Keyword;
 
                                 if ($j("div#tab1").length > 0) {
-                                    $scope.HtmlContent = replaceLineBreaks(document.getElementById("tab1").textContent);
+                                    $scope.HtmlContent = replaceLineBreaks(document.getElementById("tab1").innerHTML);
                                 } else {
-                                    $scope.HtmlContent = replaceLineBreaks(document.getElementsByClassName("item")[0].textContent);
+                                    $scope.HtmlContent = replaceLineBreaks(document.getElementsByClassName("item")[0].innerHTML);
                                 }
 
                                 $scope.Title = getContent('title');
@@ -528,8 +525,7 @@
 
     app.factory("languageService", ['$http', '$q', 'httpService', '$cookies',
         function ($http, $q, httpService, $cookies) {
-//            var WttApiBaseUrl = "https://app.webtexttool.com/api";
-            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api";
+            var WttApiBaseUrl = "https://app.webtexttool.com/api";
 
             var getLanguages = function () {
                 return httpService.getData(WttApiBaseUrl + "/languages");
@@ -558,7 +554,7 @@
 
     app.directive('wttSuggestion', function () {
         return {
-            templateUrl: "{{ url('webtexttool/directives/wtt-suggestion.html') }}",
+            templateUrl: "wtt-suggestion.html",
             scope: {
                 suggestion: '=',
                 uid: '=',
@@ -641,8 +637,7 @@
 
     app.factory("keywordService", ['$http', '$q', '$rootScope', 'httpService',
         function ($http, $q, $rootScope, httpService) {
-//            var WttApiBaseUrl = "https://app.webtexttool.com/api/keywords";
-            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api/keywords";
+            var WttApiBaseUrl = "https://app.webtexttool.com/api/keywords";
 
             var getKeywordSources = function () {
                 return httpService.getData(WttApiBaseUrl + "/sources");

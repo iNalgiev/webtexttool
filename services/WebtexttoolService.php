@@ -82,7 +82,7 @@ class WebtexttoolService extends BaseApplicationComponent
     }
 
     /**
-     * Returns a record by its entry ID.
+     * Returns a record by its record ID.
      *
      * @param int $userRecordId
      *
@@ -123,12 +123,12 @@ class WebtexttoolService extends BaseApplicationComponent
     public function saveRecord(Webtexttool_CoreModel &$model)
     {
         if ($id = $model->getAttribute('id')) {
-            $webtexttoolRecord = Webtexttool_CoreRecord::model()->findById($id);
-            if (!$webtexttoolRecord) {
+            $wttCoreRecord = Webtexttool_CoreRecord::model()->findById($id);
+            if (!$wttCoreRecord) {
                 throw new Exception(Craft::t('Can\'t find record with ID "{id}"', array('id' => $id)));
             }
         } else {
-            $webtexttoolRecord = new Webtexttool_CoreRecord();
+            $wttCoreRecord = new Webtexttool_CoreRecord();
         }
 
         if ($model->validate()) {
@@ -140,29 +140,36 @@ class WebtexttoolService extends BaseApplicationComponent
             );
 
             foreach ($attributes as $k => $v) {
-                $webtexttoolRecord->setAttribute($k, $v);
+                $wttCoreRecord->setAttribute($k, $v);
             }
 
-            if ($webtexttoolRecord->save()) {
+            if ($wttCoreRecord->save()) {
                 // update id on model (for new records)
-                $model->setAttribute('id', $webtexttoolRecord->getAttribute('id'));
+                $model->setAttribute('id', $wttCoreRecord->getAttribute('id'));
                 return true;
             } else {
-                $model->addErrors($webtexttoolRecord->getErrors());
+                $model->addErrors($wttCoreRecord->getErrors());
                 return false;
             }
         }
     }
 
+    /**
+     * Save a new or existing access token back to the database.
+     *
+     * @param Webtexttool_UserModel $model
+     * @return bool
+     * @throws Exception
+     */
     public function saveAccessToken(Webtexttool_UserModel &$model)
     {
         if ($id = $model->getAttribute('id')) {
-            $webtexttoolRecord = Webtexttool_UserRecord::model()->findById($id);
-            if (!$webtexttoolRecord) {
+            $wttUserRecord = Webtexttool_UserRecord::model()->findById($id);
+            if (!$wttUserRecord) {
                 throw new Exception(Craft::t('Can\'t find record with ID "{id}"', array('id' => $id)));
             }
         } else {
-            $webtexttoolRecord = new Webtexttool_UserRecord();
+            $wttUserRecord = new Webtexttool_UserRecord();
         }
 
         if ($model->validate()) {
@@ -172,28 +179,17 @@ class WebtexttoolService extends BaseApplicationComponent
             );
 
             foreach ($attributes as $k => $v) {
-                $webtexttoolRecord->setAttribute($k, $v);
+                $wttUserRecord->setAttribute($k, $v);
             }
 
-            if ($webtexttoolRecord->save()) {
+            if ($wttUserRecord->save()) {
                 // update id on model (for new records)
-                $model->setAttribute('id', $webtexttoolRecord->getAttribute('id'));
+                $model->setAttribute('id', $wttUserRecord->getAttribute('id'));
                 return true;
             } else {
-                $model->addErrors($webtexttoolRecord->getErrors());
+                $model->addErrors($wttUserRecord->getErrors());
                 return false;
             }
         }
-    }
-
-    /**
-     * Delete a record from the database.
-     *
-     * @param  int $entryId
-     * @return int The number of rows affected
-     */
-    public function deleteRecordByEntryId($entryId)
-    {
-        return Webtexttool_CoreRecord::model()->deleteAllByAttributes(array('entryId' => $entryId));
     }
 }

@@ -1,6 +1,6 @@
 {% extends "_layouts/cp" %}
 
-{% set title = "Webtexttool Craft CMS Plugin"|t %}
+{% set title = "Webtexttool v1.0.0"|t %}
 
 {% set content %}
 
@@ -37,11 +37,10 @@
             $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
             $scope.promiseMessage = "Please wait...";
             $scope.WttAppUrl = "https://app.webtexttool.com/#/";
-//            var WttApiBaseUrl = "https://app.webtexttool.com/api/user/";
-            var WttApiBaseUrl = "http://wtttest.webtexttool.com/api/user/";
+            var WttApiBaseUrl = "https://app.webtexttool.com/api/user/";
 
             $scope.loginModel = {
-                RememberMe: false
+                RememberMe: true
             };
 
             var getData = function (url) {
@@ -77,13 +76,14 @@
             var sendMessageToServer = function (code) {
                 var deffered = $q.defer();
                 var userId = '{{ currentUser.id }}';
+                var userRecordId = jQuery("#user-record-id").val();
 
                 jQuery.ajax({
                     url: Craft.getActionUrl('webtexttool/saveAccessToken'),
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        userId: userId, accessToken: code
+                        userId: userId, userRecordId: userRecordId, accessToken: code
                     },
                     success: function (result) {
                         deffered.resolve(result);
@@ -130,7 +130,8 @@
 
             function init() {
                 if (localStorage.getItem('wtt_token') === null) {
-                    var authCode = "{{ craft.webtexttool.getAccessTokenByUserId(currentUser.id) ? craft.webtexttool.getAccessTokenByUserId(currentUser.id).accessToken : null }}";
+
+                    var authCode = "{{craft.webtexttool.getAccessTokenByUserId(currentUser.id) ? craft.webtexttool.getAccessTokenByUserId(currentUser.id).accessToken : null}}";
                     if (authCode != '') {
                         localStorage.setItem('wtt_token', authCode);
                     }
@@ -169,7 +170,7 @@
                 request: function (config) {
                     config.headers = config.headers || {};
                     config.headers.Authorization = 'Bearer ' + localStorage.getItem('wtt_token');
-                    config.headers.WttSource = 'WordPress';
+                    config.headers.WttSource = 'CraftCMS';
                     return config;
                 },
                 response: function (response) {
@@ -186,5 +187,8 @@
     <div ng-view></div>
 
 </div>
+
+{% set record = craft.webtexttool.getAccessTokenByUserId(currentUser.id) %}
+<input type="hidden" name="userRecordId" id="user-record-id" value="{{ record ? record.id : null }}"/>
 
 {% endset %}
