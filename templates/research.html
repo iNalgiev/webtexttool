@@ -1,0 +1,188 @@
+<div class="wtt-box" ng-show="auth" ng-cloak>
+    <div class="wtt-header">Enter your Keyword
+        <button type="button" class="btn-collapse" ng-click="isCollapsed = !isCollapsed">
+            <i class="fa" ng-class="{'fa-minus-square': !isCollapsed, 'fa-plus-square': isCollapsed}"></i>
+        </button>
+    </div>
+
+    <div id="wtt-blocksearch" cg-busy="searchPromise"
+         ng-class="{'display-none': isCollapsed, 'display-block': !isCollapsed}">
+
+        <div id="keyword-language-well">
+            <table class="form-table">
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="step-no">1. Select language/country</div>
+                    </td>
+                    <td class="td-question-circle">
+                        <button popover-placement="auto top" uib-popover-html="htmlPopover"
+                                popover-trigger="outsideClick" type="button" class="btn-info"><i
+                                class="fa fa-question-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="td-dropdown-btn">
+                        <div class="btn-group">
+                            <button type="button" class="wtt-dropdown-btn btn-default dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"><i
+                                    class="flag flag-{[searchModel.selectedSource.Value]}"></i>
+                                {[searchModel.selectedSource.Name]} <span class="caret"></span></button>
+                            <ul class="dropdown-menu keyword-country-list">
+                                <li ng-repeat="keywordSource in KeywordSources"
+                                    ng-class="{active: searchModel.selectedSource == keywordSource}"><a
+                                        href="javascript:;"
+                                        ng-click="selectKeywordSource(keywordSource)"><i
+                                        class="flag flag-{[keywordSource.Value]}"></i>
+                                    {[keywordSource.Name]}</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="wtt-keyword" id="keyword-analysis-well">
+            <div class="step-no">2. Keyword analysis &
+                selection
+            </div>
+            <div class="cl-lg-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for..." type="text" id="wtt-keyword"
+                           name="wtt_keyword" autocomplete="off"
+                           uib-tooltip="Fill in your keyword" tooltip-trigger="focus"
+                           tooltip-placement="top" tooltip-enable="!Keyword" value="{{ record ? record.wttKeywords : null }}">
+                <span class="input-group-btn">
+                    <input class="wtt-btn wtt-btn-default" type="button" value="Go!" type="button"
+                           id="wtt-keyword-check" value="Use my keyword" ng-click="useMyKeyword()"
+                           uib-tooltip="Start optimizing"
+                           tooltip-trigger="mouseenter"
+                           tooltip-placement="top"/>
+                </span>
+                </div>
+            </div>
+
+            <div id="keyword-suggestion-button">
+                <input type="button" id="wtt-keyword-research" value="Give me suggestions"
+                       ng-click="submitSearchKeyword()"
+                       ng-disabled="userInfo.Credits <= 0 || userInfo.TrialDays < 0"
+                       uib-tooltip="Analyze the keyword and search for related suggestions"
+                       tooltip-trigger="mouseenter"
+                       tooltip-placement="top">
+            </div>
+
+            <div ng-show="searchModel.SearchResults.length > 0" id="score-analysis-area">
+                <p class="lead text-center" style="margin: 5px;">
+                    <em>&ldquo;{[inputKeywordResult.Keyword]}&rdquo;</em> keyword score:</p>
+                <div class="row" id="keyword-score-area">
+                    <ul class="details-list list-unstyled list-inline" data-items-per-row="3">
+                        <li>
+                            <div class="score-box {[inputKeywordResult.SearchVolumeScoreAttrs]}"
+                                 uib-popover="{[inputKeywordResult.VolumeHelp]}"
+                                 popover-title="{[inputKeywordResult.VolumeLabel]}"
+                                 popover-trigger="mouseenter" popover-append-to-body="true"
+                                 popover-placement="top">
+                                <p class="wtt-label">Volume</p>
+                                <div class="score-box-content">
+                                    <p class="value"><i class="fa fa-square"></i>
+                                        {[inputKeywordResult.VolumeLabel]}
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="score-box {[inputKeywordResult.CompetitionScoreAttrs]}"
+                                 uib-popover="{[inputKeywordResult.CompetitionHelp]}"
+                                 popover-title="{[inputKeywordResult.CompetitionLabel]}"
+                                 popover-trigger="mouseenter" popover-append-to-body="true"
+                                 popover-placement="top">
+                                <p class="wtt-label">Competition</p>
+                                <div class="score-box-content">
+                                    <p class="value"><i class="fa fa-square"></i>
+                                        {[inputKeywordResult.CompetitionLabel]}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="score-box">
+                                <p class="wtt-label">Overall</p>
+                                <div class="score-box-content {[inputKeywordResult.OverallScoreClass]}"
+                                     uib-popover="{[inputKeywordResult.OverallHelp]}"
+                                     popover-title="{[inputKeywordResult.OverallLabel]}"
+                                     popover-trigger="mouseenter" popover-append-to-body="true"
+                                     popover-placement="top">
+                                    <p class="value">{[inputKeywordResult.OverallLabel]}</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="well well-custom well-step" id="related-keywords-well"
+                 ng-if="searchModel.SearchResults.length > 0">
+                <h2 style="color: #f09000; font-weight: 700; text-align: left !important; padding: 5px 10px;">3.
+                    Related keywords that
+                    might be relevant for you</h2>
+
+                <div class="clearfix" id="related-keywords-wrapper">
+                    <scrollable-table watch="searchModel.SearchResults">
+                        <table class="table table-custom results-table" id="suggestionsTable">
+                            <thead>
+                            <tr>
+                                <th sortable-header col="Keyword">Keyword</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="relatedKeyword in searchModel.SearchResults">
+                                <td><a href="javascript:;" class="keyBox"
+                                       ng-click="useKeyword(relatedKeyword);"
+                                       uib-popover-template="dynamicPopover.templateUrl"
+                                       popover-placement="auto top"
+                                       popover-trigger="mouseenter"
+                                       popover-title="More Info"><span
+                                        class="keyword wtt-label {[relatedKeyword.OverallScoreLabelClass]}">{[relatedKeyword.Keyword]}</span></a>
+                                </td>
+                                <script id="moreinfo.html" type="text/ng-template">
+                                    <table style="100%" id="wtt-keywords-info">
+                                        <tr>
+                                            <td class="search-volume">
+                                                <span class="interval">
+                                                    <i class="fa fa-square {[relatedKeyword.SearchVolumeScoreAttrs]}"></i>
+                                                    <strong>Volume:</strong>
+                                                    <span
+                                                            class="int-value">{[relatedKeyword.SearchVolumeScoreLabel]}</span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="interval">
+                                                    <i class="fa fa-square {[relatedKeyword.CompetitionScoreAttrs]}"></i>
+                                                    <strong>Competition:</strong>
+                                                    <span
+                                                            class="int-value">{[relatedKeyword.CompetitionScoreLabel]}</span>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </script>
+                                <td class="text-right">
+                                    <input type="button" class="suggestion-button"
+                                           ng-click="fillKeyword(relatedKeyword)" value="Suggestions"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </scrollable-table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

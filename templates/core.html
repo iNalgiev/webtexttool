@@ -1,0 +1,791 @@
+{% includeCssResource "webtexttool/css/wtt-core.css" %}
+{% includeCssResource "webtexttool/css/angular-busy.min.css" %}
+{% includeCssResource "webtexttool/css/flag.min.css" %}
+{% includeCssResource "webtexttool/css/scrollable-table.css" %}
+{% includeJsResource  "webtexttool/js/observeDom.js" %}
+{% includeJsResource  "webtexttool/js/saveData.js" %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-core.min.js') }}"></script>
+<script type="text/javascript" src="{{ url('resources/webtexttool/js/getHtmlContent.js') }}"></script>
+<script type="text/javascript">
+    jQuery('div[id="title-field"]').after(
+            '<div id="descriptiondiv">' +
+            '<div class="desc-heading">' +
+            '<label for="wtt_description">' +
+            'Page description' +
+            '</label>' +
+            '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
+            '</div>' +
+            '<textarea id="wtt-description" placeholder="Page Description" name="wtt_description">' + '{{ record ? record.wttDescription : null }}' + '</textarea>' +
+            '</div>'
+    );
+</script>
+<script type="text/javascript">
+    var app = angular.module("wtt", ['tc.chartjs', 'ngSanitize', 'ui.bootstrap', 'ngCookies', 'cgBusy', 'scrollable-table']);
+
+    app.config(['$httpProvider', '$interpolateProvider',
+        function ($httpProvider, $interpolateProvider) {
+            $httpProvider.interceptors.push('authInterceptor');
+            $interpolateProvider.startSymbol('{[').endSymbol(']}');
+        }]);
+
+    app.controller("editPageController", ['$scope', '$http', '$q', '$timeout', '$interval', '$cookies', 'keywordService', 'httpService', 'languageService', '$sce',
+        function ($scope, $http, $q, $timeout, $interval, $cookies, keywordService, httpService, languageService, $sce) {
+            var WttApiBaseUrl = "https://app.webtexttool.com/api/";
+            var $j = jQuery.noConflict();
+
+            $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
+            $scope.promiseMessage = "Loading...";
+
+            $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated");
+
+            httpService.getData(WttApiBaseUrl + "user/authenticated").then(function (result) {
+                $scope.auth = result;
+
+                if (result) {
+                    httpService.getData(WttApiBaseUrl + "user/info").then(function (userInfo) {
+                        $scope.userInfo = userInfo;
+                        $scope.runRules = false;
+                        $scope.runRulesTimeout = 3000;
+                        $scope.isCollapsed = false;
+                        $scope.keywordSet = false;
+                        var selectedPageNodes = [];
+
+                        $scope.htmlPopover = $sce.trustAsHtml('<p class="tooltip-content">First select for which language / country you want to optimize your content.<br><br>Then enter your keyword.</p>');
+                        $scope.htmlPopoverS = $sce.trustAsHtml('<p class="tooltip-content">While writing, multiple suggestions appear here. These suggestions tell you how you can improve your text for the search engines, according to the latest SEO rules, but also how to structure your text for your readers. Following these suggestions, will raise your optimization score!</p>');
+
+                        var permaLink = '{% for entry in craft.entries.id(entryId) if entryId %}' +
+                                '{{ entry ? entry.url : null }}' +
+                                '{% endfor %}';
+                        $scope.permalink = permaLink.replace(/-/g, ' ');
+
+                        $cookies.put('wtt_lang', userInfo.DefaultLanguageCode);
+                        $scope.localLanguageCode = userInfo.DefaultLanguageCode;
+
+                        function getContent(id) {
+                            return $j('#' + id).val();
+                        }
+
+                        function replaceLineBreaks(str) {
+                            return str.replace(/(?:\r\n|\r|\n)/g, '');
+                        }
+
+                        $scope.useMyKeyword = function () {
+                            if ($scope.pageHasKeyword()) {
+                                if (!validateKeyword()) {
+                                    alert("Keyword is required!");
+                                    return;
+                                }
+
+                                $scope.Keyword = getContent('wtt-keyword');
+
+                                if ($j("div#tab1").length > 0) {
+                                    $scope.HtmlContent = replaceLineBreaks(document.getElementById("tab1").innerHTML);
+                                } else {
+                                    $scope.HtmlContent = replaceLineBreaks(document.getElementsByClassName("item")[0].innerHTML);
+                                }
+
+                                $scope.Title = getContent('title');
+                                $scope.Description = getContent('wtt-description');
+
+                                $scope.runRules = true;
+                                $scope.runSuggestions();
+
+                                $timeout(function () {
+                                    $scope.isCollapsed = true;
+                                    $scope.keywordSet = true;
+                                }, 500);
+                            } else {
+                                console.error("No keyword defined");
+                            }
+                        };
+
+                        $scope.updateSuggestionsStart = function () {
+                            $interval($scope.runSuggestions, $scope.runRulesTimeout);
+                        };
+
+                        $scope.rulesRunning = false;
+                        var suggestionsRanFirstTime = false;
+
+                        $scope.pageScoreChartOptions = {
+                            segmentShowStroke: false,
+                            showTooltips: false,
+                            percentageInnerCutout: 75,
+                            animateRotate: false
+                        };
+
+                        $scope.runSuggestions = function () {
+                            if ($scope.runRules == true && !$scope.rulesRunning) {
+
+                                $scope.rulesRunning = true;
+
+                                var content = getHtmlContent($scope.HtmlContent, $scope.Title, $scope.Description, $scope.permalink, $scope.Keyword);
+
+                                $scope.model = {
+                                    content: content,
+                                    keywords: $scope.Keyword,
+                                    languageCode: $scope.localLanguageCode,
+                                    synonyms: ""
+                                };
+
+                                httpService.postData(WttApiBaseUrl + "page/suggestions", $scope.model).then(function (response) {
+                                    if (!suggestionsRanFirstTime) {
+                                        $scope.suggestions = response.Suggestions;
+                                        suggestionsRanFirstTime = true;
+                                    } else {
+                                        var updatedSuggestions = response.Suggestions;
+                                        _.each($scope.suggestions, function (suggestion, index) {
+                                            suggestion.Tag = updatedSuggestions[index].Tag;
+                                            suggestion.Importance = updatedSuggestions[index].Importance;
+                                            suggestion.Penalty = updatedSuggestions[index].Penalty;
+                                            suggestion.Rules = updatedSuggestions[index].Rules;
+                                            suggestion.Score = updatedSuggestions[index].Score;
+                                            suggestion.progressType = suggestion.Score < suggestion.Importance ? 'warning' : 'success';
+                                        });
+                                    }
+
+                                    $j('#wtt-page-score-container').prop('progress', $scope.Score).animate({
+                                        progress: response.PageScore
+                                    }, {
+                                        duration: 1000,
+                                        step: function (currentPageScore) {
+                                            $scope.$applyAsync(function () {
+                                                $scope.Score = currentPageScore;
+
+                                                $scope.pageScoreData = [{
+                                                    value: parseInt(currentPageScore),
+                                                    color: '#20bc49'
+                                                }, {
+                                                    value: 100 - parseInt(currentPageScore),
+                                                    color: '#eee'
+                                                }];
+                                            });
+                                        }
+                                    });
+
+                                    $scope.ScoreTag = response.PageScoreTag;
+                                    $scope.runRules = false;
+                                    $scope.rulesRunning = false;
+                                    $scope.updateSuggestionsStart();
+
+                                    $timeout(function () {
+                                        broadcastSelectedNodes();
+                                    });
+
+                                    $scope.$broadcast('runSuggestions');
+                                });
+                            }
+                        };
+
+                        $scope.updateSuggestions = function () {
+                            $scope.runRules = true;
+                        };
+
+                        /**
+                         * Page section/node highlighting
+                         */
+
+                        var broadcastSelectedNodes = function () {
+                            $scope.$broadcast('editPageController:selectNodes', selectedPageNodes);
+                        };
+
+                        var broadcastZeroNodes = function () {
+                            var broadcastZeroDeferred = $q.defer();
+                            selectedPageNodes = [];
+                            $scope.$broadcast('editPageController:selectNodes', selectedPageNodes);
+                            broadcastZeroDeferred.resolve();
+                            return broadcastZeroDeferred.promise;
+                        };
+
+                        $j("input#title").focus(function () {
+                            broadcastZeroNodes().then(function () {
+                                selectedPageNodes = ['TITLE'];
+                                broadcastSelectedNodes();
+                            })
+                        });
+
+                        $j("input#title").blur(function () {
+                            broadcastZeroNodes();
+                        });
+
+                        $j("textarea#wtt-description").focus(function () {
+                            broadcastZeroNodes().then(function () {
+                                selectedPageNodes = ['DESCRIPTION'];
+                                broadcastSelectedNodes();
+                            })
+                        });
+
+                        $j("textarea#wtt-description").blur(function () {
+                            broadcastZeroNodes();
+                        });
+
+                        function hasCredits() {
+                            return userInfo.Credits > 0;
+                        }
+
+                        $scope.pageHasKeyword = function () {
+                            return getContent('wtt-keyword').length != 0;
+                        };
+
+                        var inputKeyword = document.getElementById('wtt-keyword');
+
+                        if (inputKeyword.length != 0) {
+                            $scope.useMyKeyword();
+                        } else {
+                            console.error("Page has no keyword");
+                        }
+
+                        $j("div#tab1").contents().find("div").focus(function () {
+                            broadcastZeroNodes().then(function () {
+                                selectedPageNodes = ['MAINCONTENT'];
+                                broadcastSelectedNodes();
+                            })
+                        });
+
+                        $j("div#tab1").contents().find("div").blur(function () {
+                            broadcastZeroNodes();
+                        });
+
+                        if ($j("div#tab1").length > 0) {
+                            observeDOM(document.getElementById("tab1"), function () {
+                                $scope.HtmlContent = replaceLineBreaks($j("div#tab1").html());
+
+                                if ($scope.HtmlContent != null) {
+                                    $timeout(function () {
+                                        $scope.updateSuggestions();
+                                    }, 2500);
+                                }
+                            });
+                        } else {
+                            observeDOM(document.getElementsByClassName("item")[0], function () {
+                                $scope.HtmlContent = replaceLineBreaks($j("div#fields").html());
+
+                                if ($scope.HtmlContent != null) {
+                                    $timeout(function () {
+                                        $scope.updateSuggestions();
+                                    }, 2500);
+                                }
+                            });
+                        }
+
+                        $j("input#title").keyup(function () {
+                            $scope.Title = $j(this).val();
+
+                            if ($scope.Title != null) {
+                                $scope.updateSuggestions();
+                            }
+                        });
+
+                        $j("textarea#wtt-description").keyup(function () {
+                            $scope.Description = $j(this).val();
+
+                            if ($scope.Description != null) {
+                                $scope.updateSuggestions();
+                            }
+                        });
+
+                        $scope.useKeyword = function (keyword) {
+                            if ($scope.pageHasKeyword()) {
+                                inputKeyword.setAttribute('value', keyword.Keyword);
+
+                                $scope.Keyword = keyword.Keyword;
+
+                                if ($j("div#tab1").length > 0) {
+                                    $scope.HtmlContent = replaceLineBreaks(document.getElementById("tab1").innerHTML);
+                                } else {
+                                    $scope.HtmlContent = replaceLineBreaks(document.getElementsByClassName("item")[0].innerHTML);
+                                }
+
+                                $scope.Title = getContent('title');
+                                $scope.Description = getContent('wtt-description');
+
+                                $scope.runRules = true;
+                                $scope.runSuggestions();
+
+                                $timeout(function () {
+                                    $scope.isCollapsed = true;
+                                    $scope.keywordSet = true;
+                                }, 500);
+                            } else {
+                                inputKeyword.setAttribute('value', "");
+                            }
+                        };
+
+                        // Select Keyword Controller
+
+                        var keywordSourceLangCookie = $cookies.get('wtt_keyword_source_lang');
+
+                        $scope.fillKeyword = function (keyword) {
+                            $j("#wtt-keyword").prop("value", keyword.Keyword);
+                            $timeout(function () {
+                                $scope.submitSearchKeyword();
+                            }, 500);
+                        };
+
+                        $scope.searchModel = {
+                            "inputKeyword": "",
+                            "KeywordSources": [],
+                            "selectedSource": {},
+                            "SearchResults": []
+                        };
+
+                        var keywordSourceCodeMap = {
+                            en: 'us'
+                        };
+
+                        // Get Google languages
+                        function loadKeywordSources() {
+                            keywordService.getKeywordSources().then(
+                                    function loaded(keywordSources) {
+                                        $scope.KeywordSources = keywordSources;
+
+                                        var appLanguageCode = languageService.getActiveLanguageCode();
+                                        var mappedLanguageCode = keywordSourceCodeMap[appLanguageCode] || appLanguageCode;
+
+                                        var appLanguageKeywordSource = _.find(keywordSources, function (item) {
+                                            return item.Value == mappedLanguageCode;
+                                        });
+
+                                        var selectedKeywordSource = _.isUndefined(keywordSourceLangCookie) ? appLanguageKeywordSource : _.find(keywordSources, function (item) {
+                                            return item.Value == keywordSourceLangCookie;
+                                        });
+
+                                        $scope.searchModel.selectedSource = selectedKeywordSource;
+                                    });
+                        }
+
+                        $scope.selectKeywordSource = function (keywordSource) {
+                            $scope.searchModel.selectedSource = keywordSource;
+                            $cookies.put('wtt_keyword_source_lang', keywordSource.Value);
+                        };
+
+                        // Mapping Keyword Scores
+                        var mapKeywordScores = function (keywords) {
+                            var overallScoreClassMap = {
+                                0: 'interval-very-poor',
+                                1: 'interval-moderate',
+                                2: 'interval-good'
+                            };
+
+                            var overallScoreLabelClassMap = {
+                                0: 'wtt-label-danger',
+                                1: 'wtt-label-warning',
+                                2: 'wtt-label-success'
+                            };
+
+                            var volumeScoreClassMap = {
+                                0: 'very-low',
+                                1: 'low',
+                                2: 'moderate',
+                                3: 'high',
+                                4: 'very-high'
+
+                            };
+
+                            var competitionClassMap = {
+                                4: 'very-easy',
+                                3: 'easy',
+                                2: 'moderate',
+                                1: 'hard',
+                                0: 'very-hard'
+                            };
+
+                            _.each(keywords, function (result) {
+                                if (result.OverallScore >= 0) {
+                                    result.OverallScoreClass = overallScoreClassMap[result.OverallScore];
+                                    result.OverallScoreHelp = result.OverallHelp;
+                                    result.OverallScoreLabelClass = overallScoreLabelClassMap[result.OverallScore];
+                                    result.OverallScoreLabel = result.OverallLabel;
+                                } else {
+                                    result.OverallScoreClass = "interval-moderate";
+                                    result.OverallScoreLabel = result.OverallLabel;
+                                    result.OverallScoreHelp = result.OverallHelp;
+                                    result.OverallScoreLabelClass = "wtt-label-warning";
+                                }
+                                if (result.VolumeScore >= 0) {
+                                    result.SearchVolumeScoreAttrs = volumeScoreClassMap[result.VolumeScore];
+                                    result.SearchVolumeScoreLabel = result.VolumeLabel;
+                                } else {
+                                    result.SearchVolumeScoreLabel = result.VolumeLabel;
+                                    result.SearchVolumeScoreAttrs = volumeScoreClassMap[2];
+                                }
+                                if (result.CompetitionScore >= 0) {
+                                    result.CompetitionScoreAttrs = competitionClassMap[result.CompetitionScore];
+                                    result.CompetitionScoreLabel = result.CompetitionLabel;
+                                } else {
+                                    result.CompetitionScoreLabel = result.CompetitionLabel;
+                                    result.CompetitionScoreAttrs = competitionClassMap[2];
+                                }
+                            });
+                            return keywords;
+                        };
+
+                        $scope.submitSearchKeyword = function () {
+
+                            if (hasCredits()) {
+
+                                if (!validateKeyword()) {
+                                    alert("Keyword is required!");
+                                    return;
+                                }
+
+                                $scope.searchPromise = keywordService.searchKeyword(getContent('wtt-keyword'), $scope.searchModel.selectedSource.Value, $scope.localLanguageCode, 10);
+                                $scope.searchPromise.then(
+                                        function loaded(results) {
+                                            $timeout(function () {
+                                                $j('body').animate({
+                                                    scrollTop: $j("#score-analysis-area").offset().top
+                                                }, 1000);
+                                            });
+
+                                            $scope.searchModel.SearchResults = mapKeywordScores(results);
+
+                                            $scope.inputKeywordResult = _.find(results, function (item) {
+                                                return item.Selected == true;
+                                            });
+
+                                        }, function () {
+                                            alert("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits. Please upgrade your plan.");
+                                        }
+                                );
+                            } else {
+                                alert("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits. Please upgrade your plan.")
+                            }
+                        };
+
+                        function validateKeyword() {
+                            if (!$j("#container")[0].checkValidity()) return false;
+                            return !(getContent('wtt-keyword') == "" || getContent('wtt-keyword') == null);
+                        }
+
+                        $scope.dynamicPopover = {
+                            templateUrl: 'moreinfo.html'
+                        };
+
+                        function sendMessageToServer() {
+
+                            var deffered = $q.defer(),
+                                    keyword = getContent('wtt-keyword'),
+                                    description = getContent('wtt-description'),
+                                    language = getContent('wtt-language-code-field'),
+                                    recordId = getContent('wtt-record-id'),
+                                    entryId = '{{entryId}}';
+
+                            $j.ajax({
+                                url: Craft.getActionUrl('webtexttool/ajaxSaveRecord'),
+                                type: 'POST',
+                                dataType: 'json',
+                                data: {
+                                    entryId: entryId,
+                                    recordId: recordId,
+                                    wttKeywords: keyword,
+                                    wttDescription: description,
+                                    wttLanguage: language
+                                },
+                                success: function (result) {
+                                    deffered.resolve(result);
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.log(JSON.stringify(jqXHR));
+                                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                                }
+                            });
+
+                            return deffered.promise;
+                        }
+
+                        var isNewEntry = '{{isNewEntry}}';
+
+                        if (isNewEntry == 'true') {
+                            // Before refreshing the page, save the input data to sessionStorage
+                            window.onbeforeunload = function () {
+                                sessionStorage.setItem("wttKeyword", $j('#wtt-keyword').val());
+                                sessionStorage.setItem("wttDescription", $j('#wtt-description').val());
+                                sessionStorage.setItem("wttLanguage", $j('#wtt-language-code-field').val());
+                            };
+                        } else {
+                            sessionStorage.removeItem("wttKeyword");
+                            sessionStorage.removeItem("wttDescription");
+                            sessionStorage.removeItem("wttLanguage");
+                        }
+
+                        function init() {
+                            loadKeywordSources();
+                            loadLanguages();
+
+                            var languageCodeDB = document.getElementById('wtt-language-code-field');
+                            languageCodeDB.setAttribute('value', $scope.localLanguageCode);
+
+                            if ($scope.pageHasKeyword()) {
+                                $scope.keywordSet = true;
+                            }
+
+                            var entryId = '{{entryId}}';
+
+                            if (entryId != '') {
+                                sendMessageToServer();
+                            }
+                        }
+
+                        init();
+
+                        // Language service
+                        function loadLanguages() {
+                            languageService.getLanguages().then(
+                                    function loaded(languages) {
+                                        $scope.languages = languages;
+                                    });
+                        }
+
+                        $scope.activeLanguageCode = languageService.getActiveLanguageCode();
+
+                        $scope.$on('userLanguageChanged', function () {
+                            $scope.activeLanguageCode = languageService.getActiveLanguageCode();
+                        });
+
+                        $scope.setActiveLanguage = function (language) {
+                            $scope.activeLanguageCode = language.LanguageCode;
+                            updateUserLanguage(language.LanguageCode);
+                        };
+
+                        var updateUserLanguage = function (languageCode) {
+                            httpService.postData(WttApiBaseUrl + "user/language/" + languageCode).then(function () {
+                                $scope.localLanguageCode = languageCode;
+                                var languageCodeDB = document.getElementById('wtt-language-code-field');
+                                languageCodeDB.setAttribute('value', languageCode);
+                                $scope.useMyKeyword();
+                            });
+                        };
+
+                    });
+                }
+            });
+        }
+    ]);
+
+    app.factory("languageService", ['$http', '$q', 'httpService', '$cookies',
+        function ($http, $q, httpService, $cookies) {
+            var WttApiBaseUrl = "https://app.webtexttool.com/api";
+
+            var getLanguages = function () {
+                return httpService.getData(WttApiBaseUrl + "/languages");
+            };
+
+            var getActiveLanguageCode = function () {
+
+                if (!_.isUndefined($cookies.get('wtt_lang'))) {
+                    return $cookies.get('wtt_lang');
+                }
+
+                var language = window.navigator.userLanguage || window.navigator.language;
+                if (language.indexOf("nl") >= 0) {
+                    return "nl";
+                }
+
+                return "en";
+            };
+
+            return {
+                getLanguages: getLanguages,
+                getActiveLanguageCode: getActiveLanguageCode
+            }
+        }
+    ]);
+
+    app.directive('wttSuggestion', function () {
+        return {
+            templateUrl: "wtt-suggestion.html",
+            scope: {
+                suggestion: '=',
+                uid: '=',
+                index: '@'
+            },
+            replace: true,
+            link: function (scope) {
+                scope.suggestion.selected = false;
+                scope.suggestion.isCollapsed = true;
+                scope.suggestion.progressType = scope.suggestion.Score < scope.suggestion.Importance ? 'warning' : 'success';
+
+                var tagMap = {
+                    'Page Title': ['TITLE'],
+                    'Page Description': ['DESCRIPTION'],
+                    'Headings': ['HEADINGS'],
+                    'Main Content': ['MAINCONTENT'],
+                    'Miscellaneous': ['MISCELLANEOUS']
+                };
+
+                var suggestionTags = tagMap[scope.suggestion.Tag];
+
+                scope.$on('editPageController:selectNodes', function (event, selectedNodeNames) {
+                    if (selectedNodeNames.length === 0) {
+                        scope.suggestion.selected = false;
+                        if (scope.suggestion.Score == scope.suggestion.Importance) {
+                            scope.suggestion.isCollapsed = true;
+                        }
+                    } else {
+
+                        // title or description collapse behaviour
+                        if (_.contains(selectedNodeNames, 'TITLE') || _.contains(selectedNodeNames, 'DESCRIPTION')) {
+                            scope.suggestion.isCollapsed = true;
+                            if (_.contains(selectedNodeNames, 'TITLE') && scope.suggestion.Tag == 'Page Title' && scope.suggestion.Score !== scope.suggestion.Importance) {
+                                scope.suggestion.isCollapsed = false;
+                            }
+                            if (_.contains(selectedNodeNames, 'DESCRIPTION') && scope.suggestion.Tag == 'Page Description' && scope.suggestion.Score !== scope.suggestion.Importance) {
+                                scope.suggestion.isCollapsed = false;
+                            }
+                        } else {
+
+                            // body nodes collapse behaviour
+                            if (scope.suggestion.Tag == 'Page Title' || scope.suggestion.Tag == 'Page Description') {
+                                scope.suggestion.isCollapsed = true;
+                            } else {
+                                if (scope.suggestion.Score !== scope.suggestion.Importance) {
+                                    scope.suggestion.isCollapsed = false;
+                                }
+                            }
+                        }
+
+                        // selection behaviour
+                        _.each(suggestionTags, function (suggestionTag) {
+                            if (_.contains(selectedNodeNames, suggestionTag)) {
+                                scope.suggestion.selected = true;
+                                scope.suggestion.isCollapsed = false;
+                                return;
+                            }
+                        });
+                    }
+                });
+
+                function camelize(str) {
+                    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
+                        if (+match === 0) return "";
+                        return index == 0 ? match.toLowerCase() : match.toUpperCase();
+                    });
+                }
+
+                var setDisplayTexts = function () {
+                    scope.name = scope.suggestion.Tag.replace(new RegExp(" ", 'g'), "") + 'Suggestion';
+                    scope.domId = camelize(scope.suggestion.Tag) + 'SuggestionBox';
+                    scope.displayName = scope.suggestion.Tag;
+                };
+
+                setDisplayTexts();
+
+            }
+        };
+    });
+
+    app.factory("keywordService", ['$http', '$q', '$rootScope', 'httpService',
+        function ($http, $q, $rootScope, httpService) {
+            var WttApiBaseUrl = "https://app.webtexttool.com/api/keywords";
+
+            var getKeywordSources = function () {
+                return httpService.getData(WttApiBaseUrl + "/sources");
+            };
+
+            var searchKeyword = function (keyword, database, language) {
+                var deffered = $q.defer();
+
+                httpService.getData(WttApiBaseUrl + "/" + keyword + "/" + database + "/" + language)
+                        .then(function (results) {
+                            deffered.resolve(results);
+                        }, function (results) {
+                            return deffered.reject(results);
+                        });
+
+                return deffered.promise;
+            };
+
+            return {
+                getKeywordSources: getKeywordSources,
+                searchKeyword: searchKeyword
+            }
+        }
+    ]);
+
+    app.factory("httpService", ['$http', '$q',
+        function ($http, $q) {
+
+            var getData = function (url) {
+
+                var deffered = $q.defer();
+
+                // Make a get request
+                $http.get(url, {
+                    withCredentials: true
+                })
+                        .success(function (data, status, headers, config) {
+                            deffered.resolve(data);
+                        }).error(function (error, status) {
+
+                    if (status == 401) {
+                        return;
+                    }
+
+                    deffered.reject(error.Message);
+                });
+
+                return deffered.promise;
+            };
+
+
+            var postData = function (url, dataIn) {
+
+                var deffered = $q.defer();
+
+                // Make a post request
+                $http.post(url, dataIn, {
+                    withCredentials: true
+                })
+                        .success(function (data, status, headers, config) {
+                            deffered.resolve(data);
+                        }).error(function (error, status) {
+
+                    if (status == 401) {
+                        return;
+                    }
+
+                    deffered.reject(error.Message);
+                });
+
+                return deffered.promise;
+
+            };
+
+            return {
+                getData: getData,
+                postData: postData
+            }
+        }
+    ]);
+
+    app.factory('authInterceptor', ["$q",
+        function ($q) {
+            var sessionInjector = {
+                request: function (config) {
+                    config.headers = config.headers || {};
+                    config.headers.Authorization = 'Bearer ' + localStorage.getItem('wtt_token');
+                    config.headers.WttSource = 'WordPress';
+                    return config;
+                },
+                response: function (response) {
+                    return response || $q.when(response);
+                }
+            };
+            return sessionInjector;
+        }
+    ]);
+</script>
+
+<div ng-app="wtt" ng-controller="editPageController"
+     cg-busy="{promise:loadingPromise,message:loadingMessage,backdrop:true,templateUrl:promiseTemplate}">
+
+    {% include "webtexttool/header.html" %}
+    {% include "webtexttool/warning.html" %}
+    {% include "webtexttool/research.html" %}
+    {% include "webtexttool/suggestions.html" %}
+
+</div>
+
+<input type="hidden" id="wtt-record-id" name="recordId" value="{{ record ? record.id : null }}"/>
+<input type="hidden" id="wtt-language-code-field" name="wtt_language" value="{{ record ? record.wttLanguage : null }}"/>
