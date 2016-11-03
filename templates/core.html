@@ -3,10 +3,23 @@
 {% includeCssResource "webtexttool/css/flag.min.css" %}
 {% includeCssResource "webtexttool/css/scrollable-table.css" %}
 {% includeJsResource  "webtexttool/js/observeDom.js" %}
+{% includeJsResource  "webtexttool/js/saveData.js" %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-core.min.js') }}"></script>
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/getHtmlContent.js') }}"></script>
-
+<script type="text/javascript">
+    jQuery('div[id="title-field"]').after(
+            '<div id="descriptiondiv">' +
+            '<div class="desc-heading">' +
+            '<label for="wtt_description">' +
+            'Page description' +
+            '</label>' +
+            '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
+            '</div>' +
+            '<textarea id="wtt-description" placeholder="Page Description" name="wtt_description">' + '{{ record ? record.wttDescription : null }}' + '</textarea>' +
+            '</div>'
+    );
+</script>
 <script type="text/javascript">
     var app = angular.module("wtt", ['tc.chartjs', 'ngSanitize', 'ui.bootstrap', 'ngCookies', 'cgBusy', 'scrollable-table']);
 
@@ -56,18 +69,6 @@
                         function replaceLineBreaks(str) {
                             return str.replace(/(?:\r\n|\r|\n)/g, '');
                         }
-
-                        $j('div[id="title-field"]').after(
-                                '<div id="descriptiondiv">' +
-                                '<div class="desc-heading">' +
-                                '<label for="wtt_description">' +
-                                'Page description' +
-                                '</label>' +
-                                '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
-                                '</div>' +
-                                '<textarea id="wtt-description" placeholder="Page Description" name="wtt_description">' + '{{ record ? record.wttDescription : null }}' + '</textarea>' +
-                                '</div>'
-                        );
 
                         $scope.useMyKeyword = function () {
                             if ($scope.pageHasKeyword()) {
@@ -232,20 +233,6 @@
                             $scope.useMyKeyword();
                         } else {
                             console.error("Page has no keyword");
-                        }
-
-                        var entryId = $j('input[type="hidden"][name="entryId"]').val();
-
-                        if (!entryId) {
-                            $j("input#wtt-keyword").keyup(function () {
-                                alert("Remember to save the entry first before adding a keyword!");
-                                $j("input#wtt-keyword").val('');
-                            });
-
-                            $j("textarea#wtt-description").keyup(function () {
-                                alert("Remember to save the entry first before adding a description!");
-                                $j("textarea#wtt-description").val('');
-                            })
                         }
 
                         $j("div#tab1").contents().find("div").focus(function () {
@@ -475,6 +462,53 @@
                             templateUrl: 'moreinfo.html'
                         };
 
+                        function sendMessageToServer() {
+
+                            var deffered = $q.defer(),
+                                    keyword = getContent('wtt-keyword'),
+                                    description = getContent('wtt-description'),
+                                    language = getContent('wtt-language-code-field'),
+                                    recordId = getContent('wtt-record-id'),
+                                    entryId = '{{entryId}}';
+
+                            $j.ajax({
+                                url: Craft.getActionUrl('webtexttool/ajaxSaveRecord'),
+                                type: 'POST',
+                                dataType: 'json',
+                                data: {
+                                    entryId: entryId,
+                                    recordId: recordId,
+                                    wttKeywords: keyword,
+                                    wttDescription: description,
+                                    wttLanguage: language
+                                },
+                                success: function (result) {
+                                    deffered.resolve(result);
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.log(JSON.stringify(jqXHR));
+                                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                                }
+                            });
+
+                            return deffered.promise;
+                        }
+
+                        var isNewEntry = '{{isNewEntry}}';
+
+                        if (isNewEntry == 'true') {
+                            // Before refreshing the page, save the input data to sessionStorage
+                            window.onbeforeunload = function () {
+                                sessionStorage.setItem("wttKeyword", $j('#wtt-keyword').val());
+                                sessionStorage.setItem("wttDescription", $j('#wtt-description').val());
+                                sessionStorage.setItem("wttLanguage", $j('#wtt-language-code-field').val());
+                            };
+                        } else {
+                            sessionStorage.removeItem("wttKeyword");
+                            sessionStorage.removeItem("wttDescription");
+                            sessionStorage.removeItem("wttLanguage");
+                        }
+
                         function init() {
                             loadKeywordSources();
                             loadLanguages();
@@ -484,6 +518,12 @@
 
                             if ($scope.pageHasKeyword()) {
                                 $scope.keywordSet = true;
+                            }
+
+                            var entryId = '{{entryId}}';
+
+                            if (entryId != '') {
+                                sendMessageToServer();
                             }
                         }
 
@@ -747,5 +787,5 @@
 
 </div>
 
-<input type="hidden" name="recordId" value="{{ record ? record.id : null }}"/>
-<input type="hidden" id="wtt-language-code-field" name="wttLanguage" value="{{ record ? record.wttLanguage : null }}"/>
+<input type="hidden" id="wtt-record-id" name="recordId" value="{{ record ? record.id : null }}"/>
+<input type="hidden" id="wtt-language-code-field" name="wtt_language" value="{{ record ? record.wttLanguage : null }}"/>

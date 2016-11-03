@@ -32,16 +32,38 @@ class WebtexttoolController extends BaseController
         $model->entryId = craft()->request->getPost('entryId');
         $model->wttKeywords = craft()->request->getPost('wtt_keyword');
         $model->wttDescription = craft()->request->getPost('wtt_description');
-        $model->wttLanguage = craft()->request->getPost('wttLanguage');
+        $model->wttLanguage = craft()->request->getPost('wtt_language');
 
         if ($model->validate()) {
             craft()->webtexttool->saveRecord($model);
         }
     }
-	
-	public function actionSaveAccessToken() 
-	{
-		$this->requireAjaxRequest();
+
+    public function actionAjaxSaveRecord()
+    {
+        $this->requireAjaxRequest();
+
+        if ($id = craft()->request->getPost('recordId')) {
+            $model = craft()->webtexttool->getRecordById($id);
+        } else {
+            $model = craft()->webtexttool->newRecord($id);
+        }
+
+        $model->entryId = craft()->request->getPost('entryId');
+        $model->wttKeywords = craft()->request->getPost('wttKeywords');
+        $model->wttDescription = craft()->request->getPost('wttDescription');
+        $model->wttLanguage = craft()->request->getPost('wttLanguage');
+
+        if ($model->validate()) {
+            craft()->webtexttool->saveRecord($model);
+        }
+
+        $this->returnJson(array('success' => true));
+    }
+
+    public function actionSaveAccessToken()
+    {
+        $this->requireAjaxRequest();
 
         if ($id = craft()->request->getPost('userRecordId')) {
             $model = craft()->webtexttool->getAccessTokenById($id);

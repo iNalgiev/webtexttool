@@ -53,12 +53,17 @@ class WebtexttoolPlugin extends BasePlugin
     public function renderCoreTemplate(&$context)
     {
         $entry = $context['entry'];
-
         $entryId = $entry->id;
+
+        if(!$entryId) {
+            $isNewEntry = 'true';
+        } else {
+            $isNewEntry = 'false';
+        }
 
         $record = craft()->webtexttool->getRecordByEntryId($entryId);
 
-        return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record]);
+        return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record, 'isNewEntry' => $isNewEntry]);
     }
 
     /**
