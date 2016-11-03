@@ -1,4 +1,4 @@
-![Webtexttool](webtexttool1/resources/images/banner.png)
+![Webtexttool](/resources/images/banner.png)
 
 # Webtexttool for Craft CMS
 
