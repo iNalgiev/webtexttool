@@ -1,4 +1,4 @@
-![Webtexttool](resources/images/banner.jpg)
+![Webtexttool](webtexttool1/resources/images/banner.png)
 
 # Webtexttool for Craft CMS
 
@@ -9,7 +9,7 @@ We've put the knowledge and expertise of many many SEO experts in our SEO sugges
 What you can do with the webtexttool plugin:
 
 ### Realtime optimization suggestions
-The webtexttool plugin integrates with the WordPress editor. While writing your content, you will see realtime suggestions on how to improve your content. The suggestions will show directly alongside the editor, so they are clearly visible and easy to follow.
+The webtexttool plugin integrates with the Craft CMS editor. While writing your content, you will see realtime suggestions on how to improve your content. The suggestions will show directly alongside the editor, so they are clearly visible and easy to follow.
 
 ### Analysis of your content
 Webtexttool will analyze your content and tell you how to optimize it for maximum results in search engine rankings.
@@ -59,7 +59,7 @@ Replace or modify your current SEO head code with, or to match, the following:
 
 ## FAQ
 
-### Is webtexttool for WordPress free?
+### Is webtexttool for Craft CMS free?
 Yes, it’s free. The plugin is free. To use it you will need a free webtexttool account. With a free account you will have access to realtime SEO suggestions and Keyword analysis & research. You will have at least 10 keyword analysis credits per month. If you would need more than that, you could consider upgrading your webtexttool account.
 
 ### Do you have a Pro / paid version?
