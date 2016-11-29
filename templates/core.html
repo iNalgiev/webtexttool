@@ -521,8 +521,9 @@
                             }
 
                             var entryId = '{{entryId}}';
+                            var keywordInputField = getContent('wtt-keyword');
 
-                            if (entryId != '') {
+                            if (entryId != '' && keywordInputField != '') {
                                 sendMessageToServer();
                             }
                         }
