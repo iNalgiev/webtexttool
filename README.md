@@ -63,7 +63,7 @@ Replace or modify your current SEO head code with, or to match, the following:
 Yes, it’s free. The plugin is free. To use it you will need a free webtexttool account. With a free account you will have access to realtime SEO suggestions and Keyword analysis & research. You will have at least 10 keyword analysis credits per month. If you would need more than that, you could consider upgrading your webtexttool account.
 
 ### Do you have a Pro / paid version?
-Yes, we have. We offer different subscriptions (Bronze, Silver, Gold, Team). Read more on our [website](http://www.webtexttool.com/pricing). The main difference with the free webtexttool account, is that you will get more keyword analysis credits.
+Yes, we have. We offer different subscriptions (Bronze, Silver, Gold, Pro). Read more on our [website](http://www.webtexttool.com/pricing). The main difference with the free webtexttool account, is that you will get more keyword analysis credits.
 
 ### Do you offer support?
 Yes, of course! If you have any questions, please don’t hesitate to [contact us](http://www.webtexttool.com/about-webtexttool/contact/). We love to hear from you and will try to solve any issues asap.
