@@ -9,15 +9,15 @@
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/getHtmlContent.js') }}"></script>
 <script type="text/javascript">
     jQuery('div[id="title-field"]').after(
-            '<div id="descriptiondiv">' +
-            '<div class="desc-heading">' +
-            '<label for="wtt_description">' +
-            'Page description' +
-            '</label>' +
-            '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
-            '</div>' +
-            '<textarea id="wtt-description" placeholder="Page Description" name="wtt_description">' + '{{ record ? record.wttDescription : null }}' + '</textarea>' +
-            '</div>'
+        '<div id="descriptiondiv">' +
+        '<div class="desc-heading">' +
+        '<label for="wtt_description">' +
+        'Page description' +
+        '</label>' +
+        '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
+        '</div>' +
+        '<textarea id="wtt-description" placeholder="Page Description" name="wtt_description">' + '{{ record ? record.wttDescription : null }}' + '</textarea>' +
+        '</div>'
     );
 </script>
 <script type="text/javascript">
@@ -55,8 +55,8 @@
                         $scope.htmlPopoverS = $sce.trustAsHtml('<p class="tooltip-content">While writing, multiple suggestions appear here. These suggestions tell you how you can improve your text for the search engines, according to the latest SEO rules, but also how to structure your text for your readers. Following these suggestions, will raise your optimization score!</p>');
 
                         var permaLink = '{% for entry in craft.entries.id(entryId) if entryId %}' +
-                                '{{ entry ? entry.url : null }}' +
-                                '{% endfor %}';
+                            '{{ entry ? entry.url : null }}' +
+                            '{% endfor %}';
                         $scope.permalink = permaLink.replace(/-/g, ' ');
 
                         $cookies.put('wtt_lang', userInfo.DefaultLanguageCode);
@@ -276,13 +276,27 @@
                             }
                         });
 
-                        $j("textarea#wtt-description").keyup(function () {
-                            $scope.Description = $j(this).val();
+                        var entryId = '{{entryId}}';
+
+                        if (!entryId) {
+                            $j("input#wtt-keyword").keyup(function () {
+                                $j("input#wtt-keyword").val('');
+                                alert('Save the entry before entering a keyword or description!');
+                            })
+                        }
+
+                        if(!entryId) {
+                            $j("textarea#wtt-description").keyup(function() {
+                                $j("textarea#wtt-description").val('');
+                                alert('Save the entry before entering a keyword or description!');
+                            })
+                        } else {
+                            $scope.Description = $j("textarea#wtt-description").val();
 
                             if ($scope.Description != null) {
                                 $scope.updateSuggestions();
                             }
-                        });
+                        }
 
                         $scope.useKeyword = function (keyword) {
                             if ($scope.pageHasKeyword()) {
@@ -336,22 +350,22 @@
                         // Get Google languages
                         function loadKeywordSources() {
                             keywordService.getKeywordSources().then(
-                                    function loaded(keywordSources) {
-                                        $scope.KeywordSources = keywordSources;
+                                function loaded(keywordSources) {
+                                    $scope.KeywordSources = keywordSources;
 
-                                        var appLanguageCode = languageService.getActiveLanguageCode();
-                                        var mappedLanguageCode = keywordSourceCodeMap[appLanguageCode] || appLanguageCode;
+                                    var appLanguageCode = languageService.getActiveLanguageCode();
+                                    var mappedLanguageCode = keywordSourceCodeMap[appLanguageCode] || appLanguageCode;
 
-                                        var appLanguageKeywordSource = _.find(keywordSources, function (item) {
-                                            return item.Value == mappedLanguageCode;
-                                        });
+                                    var appLanguageKeywordSource = _.find(keywordSources, function (item) {
+                                        return item.Value == mappedLanguageCode;
+                                    });
 
-                                        var selectedKeywordSource = _.isUndefined(keywordSourceLangCookie) ? appLanguageKeywordSource : _.find(keywordSources, function (item) {
+                                    var selectedKeywordSource = _.isUndefined(keywordSourceLangCookie) ? appLanguageKeywordSource : _.find(keywordSources, function (item) {
                                             return item.Value == keywordSourceLangCookie;
                                         });
 
-                                        $scope.searchModel.selectedSource = selectedKeywordSource;
-                                    });
+                                    $scope.searchModel.selectedSource = selectedKeywordSource;
+                                });
                         }
 
                         $scope.selectKeywordSource = function (keywordSource) {
@@ -431,22 +445,22 @@
 
                                 $scope.searchPromise = keywordService.searchKeyword(getContent('wtt-keyword'), $scope.searchModel.selectedSource.Value, $scope.localLanguageCode, 10);
                                 $scope.searchPromise.then(
-                                        function loaded(results) {
-                                            $timeout(function () {
-                                                $j('body').animate({
-                                                    scrollTop: $j("#score-analysis-area").offset().top
-                                                }, 1000);
-                                            });
+                                    function loaded(results) {
+                                        $timeout(function () {
+                                            $j('body').animate({
+                                                scrollTop: $j("#score-analysis-area").offset().top
+                                            }, 1000);
+                                        });
 
-                                            $scope.searchModel.SearchResults = mapKeywordScores(results);
+                                        $scope.searchModel.SearchResults = mapKeywordScores(results);
 
-                                            $scope.inputKeywordResult = _.find(results, function (item) {
-                                                return item.Selected == true;
-                                            });
+                                        $scope.inputKeywordResult = _.find(results, function (item) {
+                                            return item.Selected == true;
+                                        });
 
-                                        }, function () {
-                                            alert("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits. Please upgrade your plan.");
-                                        }
+                                    }, function () {
+                                        alert("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits. Please upgrade your plan.");
+                                    }
                                 );
                             } else {
                                 alert("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits. Please upgrade your plan.")
@@ -465,11 +479,11 @@
                         function sendMessageToServer() {
 
                             var deffered = $q.defer(),
-                                    keyword = getContent('wtt-keyword'),
-                                    description = getContent('wtt-description'),
-                                    language = getContent('wtt-language-code-field'),
-                                    recordId = getContent('wtt-record-id'),
-                                    entryId = '{{entryId}}';
+                                keyword = getContent('wtt-keyword'),
+                                description = getContent('wtt-description'),
+                                language = getContent('wtt-language-code-field'),
+                                recordId = getContent('wtt-record-id'),
+                                entryId = '{{entryId}}';
 
                             $j.ajax({
                                 url: Craft.getActionUrl('webtexttool/ajaxSaveRecord'),
@@ -533,9 +547,9 @@
                         // Language service
                         function loadLanguages() {
                             languageService.getLanguages().then(
-                                    function loaded(languages) {
-                                        $scope.languages = languages;
-                                    });
+                                function loaded(languages) {
+                                    $scope.languages = languages;
+                                });
                         }
 
                         $scope.activeLanguageCode = languageService.getActiveLanguageCode();
@@ -688,11 +702,11 @@
                 var deffered = $q.defer();
 
                 httpService.getData(WttApiBaseUrl + "/" + keyword + "/" + database + "/" + language)
-                        .then(function (results) {
-                            deffered.resolve(results);
-                        }, function (results) {
-                            return deffered.reject(results);
-                        });
+                    .then(function (results) {
+                        deffered.resolve(results);
+                    }, function (results) {
+                        return deffered.reject(results);
+                    });
 
                 return deffered.promise;
             };
@@ -715,9 +729,9 @@
                 $http.get(url, {
                     withCredentials: true
                 })
-                        .success(function (data, status, headers, config) {
-                            deffered.resolve(data);
-                        }).error(function (error, status) {
+                    .success(function (data, status, headers, config) {
+                        deffered.resolve(data);
+                    }).error(function (error, status) {
 
                     if (status == 401) {
                         return;
@@ -738,9 +752,9 @@
                 $http.post(url, dataIn, {
                     withCredentials: true
                 })
-                        .success(function (data, status, headers, config) {
-                            deffered.resolve(data);
-                        }).error(function (error, status) {
+                    .success(function (data, status, headers, config) {
+                        deffered.resolve(data);
+                    }).error(function (error, status) {
 
                     if (status == 401) {
                         return;
