@@ -84,10 +84,4 @@ class WebtexttoolPlugin extends BasePlugin
     {
         return "webtexttool";
     }
-
-    public function onAfterInstall()
-    {
-        craft()->db->createCommand()->insert('webtexttool_core', "");
-        craft()->db->createCommand()->insert('webtexttool_user', "");
-    }
 }
