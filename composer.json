@@ -1,0 +1,19 @@
+{
+    "name": "iNalgiev/webtexttool",
+    "type": "craft-plugin",
+    "homepage": "https://github.com/iNalgiev/webtexttool",
+    "license": "https://github.com/iNalgiev/webtexttool/blob/master/LICENSE",
+    "authors": [
+        {
+            "name": "Israpil Nalgiev"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Craft\\": "app/"
+        }
+    },
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
