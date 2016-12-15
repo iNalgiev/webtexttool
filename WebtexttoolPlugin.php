@@ -24,19 +24,24 @@ class WebtexttoolPlugin extends BasePlugin
         return 'Webtexttool is the easiest way to create SEO proof content to rank higher and get more traffic. Realtime optimization, keyword research and more.';
     }
 
-    function getVersion()
+    public function getVersion()
     {
         return '1.0.0';
     }
 
-    function getDeveloper()
+    public function getDeveloper()
     {
         return 'Webtexttool';
     }
 
-    function getDeveloperUrl()
+    public function getDeveloperUrl()
     {
         return 'http://webtexttool.com';
+    }
+
+    public function getReleaseFeedUrl()
+    {
+        return 'https://raw.githubusercontent.com/iNalgiev/webtexttool/master/releases.json';
     }
 
     public function hasCpSection()
@@ -78,11 +83,5 @@ class WebtexttoolPlugin extends BasePlugin
     public function getSettingsUrl()
     {
         return "webtexttool";
-    }
-
-    public function onAfterInstall()
-    {
-        craft()->db->createCommand()->insert('webtexttool_core', "");
-        craft()->db->createCommand()->insert('webtexttool_user', "");
     }
 }
