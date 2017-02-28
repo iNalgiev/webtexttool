@@ -32,7 +32,7 @@
     app.controller("editPageController", ['$scope', '$http', '$q', '$timeout', '$interval', '$cookies', 'keywordService', 'httpService', 'languageService', '$sce',
         function ($scope, $http, $q, $timeout, $interval, $cookies, keywordService, httpService, languageService, $sce) {
             var WttApiBaseUrl = "https://app.webtexttool.com/api/";
-            var $j = jQuery.noConflict();
+            var $j = jQuery;
 
             $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
             $scope.promiseMessage = "Loading...";

@@ -1,5 +1,13 @@
 [
   {
+    "version": "1.0.1",
+    "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.0.1.zip",
+    "date": "2017-02-28T10:30:00.000Z",
+    "notes": [
+      "Prevent jquery conflicts. Craft comes with it's own version of jquery."
+    ]
+  },
+  {
     "version": "1.0.0",
     "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.0.0.zip",
     "date": "2016-12-13T21:53:59.000Z",
