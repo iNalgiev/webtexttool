@@ -70,6 +70,9 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 
 ## Changelog
 
+### 1.0.1
+- Prevent jquery conflicts. Craft comes with it's own version of jquery.
+
 ### 1.0.0
 - Initial Release
 
