@@ -5,7 +5,6 @@ namespace Craft;
  * The MainController class is a controller that handles the plugin core functionality.
  *
  * @author    Webtexttool
- * @see       http://webtexttool.com
  * @package   plugins.webtexttool.controllers
  * @since     1.0
  */

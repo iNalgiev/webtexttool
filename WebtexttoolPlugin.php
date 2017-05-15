@@ -5,8 +5,8 @@ namespace Craft;
 /**
  *
  * @author    Webtexttool <support@webtexttool.com>
- * @copyright Copyright (c) 2016, Webtexttool
- * @see       http://webtexttool.com
+ * @copyright Copyright (c) 2017, Webtexttool
+ * @see       https://webtexttool.com
  * @package   webtexttool
  * @since     1.0
  */
@@ -26,7 +26,7 @@ class WebtexttoolPlugin extends BasePlugin
 
     public function getVersion()
     {
-        return '1.0.1';
+        return '1.1.0';
     }
 
     public function getDeveloper()
@@ -36,7 +36,7 @@ class WebtexttoolPlugin extends BasePlugin
 
     public function getDeveloperUrl()
     {
-        return 'http://webtexttool.com';
+        return 'https://webtexttool.com';
     }
 
     public function getReleaseFeedUrl()
@@ -67,8 +67,9 @@ class WebtexttoolPlugin extends BasePlugin
         }
 
         $record = craft()->webtexttool->getRecordByEntryId($entryId);
+        $wttApiBaseUrl = craft()->config->get('wttApiBaseUrl', 'webtexttool');
 
-        return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record, 'isNewEntry' => $isNewEntry]);
+        return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record, 'isNewEntry' => $isNewEntry, 'wttApiBaseUrl' => $wttApiBaseUrl]);
     }
 
     /**

@@ -63,12 +63,20 @@ Replace or modify your current SEO head code with, or to match, the following:
 Yes, it’s free. The plugin is free. To use it you will need a free webtexttool account. With a free account you will have access to realtime SEO suggestions and Keyword analysis & research. You will have at least 10 keyword analysis credits per month. If you would need more than that, you could consider upgrading your webtexttool account.
 
 ### Do you have a Pro / paid version?
-Yes, we have. We offer different subscriptions (Bronze, Silver, Gold, Pro). Read more on our [website](http://www.webtexttool.com/pricing). The main difference with the free webtexttool account, is that you will get more keyword analysis credits.
+Yes, we have. We offer different subscriptions (Personal, Business, Enterprise). Read more on our [website](https://www.webtexttool.com/pricing). The main difference with the free webtexttool account, is that you will get more keyword analysis credits.
 
 ### Do you offer support?
-Yes, of course! If you have any questions, please don’t hesitate to [contact us](http://www.webtexttool.com/about-webtexttool/contact/). We love to hear from you and will try to solve any issues asap.
+Yes, of course! If you have any questions, please don’t hesitate to [contact us](https://www.webtexttool.com/about-webtexttool/contact/). We love to hear from you and will try to solve any issues asap.
 
 ## Changelog
+
+### 1.1.0
+- Added config file (Use the config file to add the API key)
+- Removed Beta ribbon
+- Removed unnecessary JS files
+- Added domain url to suggestions
+- Fixed database column type (not enough characters)
+- Fixed a few other bugs
 
 ### 1.0.1
 - Prevent jquery conflicts. Craft comes with it's own version of jquery.
@@ -79,7 +87,7 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 
 ---
 
-Copyright © 2016 Webtexttool <info@webtexttool.com>
+Copyright © 2017 Webtexttool <info@webtexttool.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

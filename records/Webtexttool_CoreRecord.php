@@ -32,7 +32,7 @@ class Webtexttool_CoreRecord extends BaseRecord
         return array(
             'entryId'                   => array(AttributeType::String, 'required' => true),
             'wttKeywords'               => array(AttributeType::String, 'default' => ''),
-            'wttDescription'            => array(AttributeType::String, 'default' => ''),
+            'wttDescription'            => array(AttributeType::String, 'maxLength' => 1024, 'default' => ''),
             'wttLanguage'               => array(AttributeType::String, 'default' => '')
         );
     }

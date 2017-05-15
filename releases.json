@@ -1,5 +1,18 @@
 [
   {
+    "version": "1.1.0",
+    "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.1.0.zip",
+    "date": "2017-05-15T23:46:00.000Z",
+    "notes": [
+      "Added config file (Use the config file to add the API key)",
+      "Removed Beta ribbon",
+      "Removed unnecessary JS files",
+      "Added domain url to suggestions",
+      "Fixed database column type (not enough characters)",
+      "Fixed a few other bugs"
+    ]
+  },
+  {
     "version": "1.0.1",
     "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.0.1.zip",
     "date": "2017-02-28T10:30:00.000Z",

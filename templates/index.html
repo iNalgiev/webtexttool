@@ -1,6 +1,6 @@
 {% extends "_layouts/cp" %}
 
-{% set title = "Webtexttool v1.0.0"|t %}
+{% set title = "Webtexttool v" ~ craft.plugins.getPlugin('webtexttool').getVersion | t %}
 
 {% set content %}
 
@@ -36,8 +36,8 @@
             $scope.loading = false;
             $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
             $scope.promiseMessage = "Please wait...";
-            $scope.WttAppUrl = "https://app.webtexttool.com/#/";
-            var WttApiBaseUrl = "https://app.webtexttool.com/api/user/";
+            var WttApiBaseUrl = "{{craft.config.get('wttApiBaseUrl', 'webtexttool')}}";
+            $scope.WttAppUrl = WttApiBaseUrl.slice(0, -5) + "/#/";
 
             $scope.loginModel = {
                 RememberMe: true
@@ -101,7 +101,7 @@
 
                 $scope.loading = true;
 
-                postData(WttApiBaseUrl + "login", $scope.loginModel).then(function (response) {
+                postData(WttApiBaseUrl + "user/login", $scope.loginModel).then(function (response) {
 
                     if (response) {
                         localStorage.setItem('wtt_token', response.access_token);
@@ -120,7 +120,7 @@
 
                 $scope.loading = true;
 
-                getData(WttApiBaseUrl + "logout").then(function () {
+                getData(WttApiBaseUrl + "user/logout").then(function () {
                     localStorage.removeItem('wtt_token');
                     sendMessageToServer('').then(function () {
                         window.location.reload();
@@ -130,14 +130,16 @@
 
             function init() {
                 if (localStorage.getItem('wtt_token') === null) {
-
                     var authCode = "{{craft.webtexttool.getAccessTokenByUserId(currentUser.id) ? craft.webtexttool.getAccessTokenByUserId(currentUser.id).accessToken : null}}";
-                    if (authCode != '') {
+                    var apiKey = "{{craft.config.get('wttApiKey', 'webtexttool') ? craft.config.get('wttApiKey', 'webtexttool') : null}}";
+                    if (authCode !== '') {
                         localStorage.setItem('wtt_token', authCode);
+                    } else if (apiKey !== '') {
+                        localStorage.setItem('wtt_token', apiKey);
                     }
                 }
 
-                getData(WttApiBaseUrl + "authenticated").then(function (result) {
+                getData(WttApiBaseUrl + "user/authenticated").then(function (result) {
                     $scope.auth = result;
 
                     if ($location.path().indexOf('account') > 0 && !$scope.auth) {
@@ -147,7 +149,7 @@
                     }
 
                     if (result) {
-                        $scope.accountPromise = getData(WttApiBaseUrl + "info").then(function (userInfo) {
+                        $scope.accountPromise = getData(WttApiBaseUrl + "user/info").then(function (userInfo) {
                             $scope.userInfo = userInfo;
 
                             $scope.displayTrialDays = function (days) {

@@ -2,8 +2,6 @@
 {% includeCssResource "webtexttool/css/angular-busy.min.css" %}
 {% includeCssResource "webtexttool/css/flag.min.css" %}
 {% includeCssResource "webtexttool/css/scrollable-table.css" %}
-{% includeJsResource  "webtexttool/js/observeDom.js" %}
-{% includeJsResource  "webtexttool/js/saveData.js" %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-core.min.js') }}"></script>
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/getHtmlContent.js') }}"></script>
@@ -31,8 +29,18 @@
 
     app.controller("editPageController", ['$scope', '$http', '$q', '$timeout', '$interval', '$cookies', 'keywordService', 'httpService', 'languageService', '$sce',
         function ($scope, $http, $q, $timeout, $interval, $cookies, keywordService, httpService, languageService, $sce) {
-            var WttApiBaseUrl = "https://app.webtexttool.com/api/";
+            var WttApiBaseUrl = "{{wttApiBaseUrl}}";
             var $j = jQuery;
+
+            if (localStorage.getItem('wtt_token') === null) {
+                var authCode = "{{craft.webtexttool.getAccessTokenByUserId(currentUser.id) ? craft.webtexttool.getAccessTokenByUserId(currentUser.id).accessToken : null}}";
+                var apiKey = "{{craft.config.get('wttApiKey', 'webtexttool') ? craft.config.get('wttApiKey', 'webtexttool') : null}}";
+                if (authCode !== '') {
+                    localStorage.setItem('wtt_token', authCode);
+                } else if (apiKey !== '') {
+                    localStorage.setItem('wtt_token', apiKey);
+                }
+            }
 
             $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
             $scope.promiseMessage = "Loading...";
@@ -54,10 +62,19 @@
                         $scope.htmlPopover = $sce.trustAsHtml('<p class="tooltip-content">First select for which language / country you want to optimize your content.<br><br>Then enter your keyword.</p>');
                         $scope.htmlPopoverS = $sce.trustAsHtml('<p class="tooltip-content">While writing, multiple suggestions appear here. These suggestions tell you how you can improve your text for the search engines, according to the latest SEO rules, but also how to structure your text for your readers. Following these suggestions, will raise your optimization score!</p>');
 
-                        var permaLink = '{% for entry in craft.entries.id(entryId) if entryId %}' +
-                            '{{ entry ? entry.url : null }}' +
-                            '{% endfor %}';
-                        $scope.permalink = permaLink.replace(/-/g, ' ');
+                        var permaLink = '{% for entry in craft.entries.id(entryId) if entryId %} {{entry ? entry.url : null}} {% endfor %}';
+
+                        if (permaLink !== null) {
+                            $scope.permalink = permaLink.replace(/-/g, ' ');
+                        }
+
+                        $j("input#slug").keyup(function () {
+                            $scope.permalink = $j(this).val().replace(/-/g, ' ');
+
+                            if ($scope.permalink !== null) {
+                                $scope.updateSuggestions();
+                            }
+                        });
 
                         $cookies.put('wtt_lang', userInfo.DefaultLanguageCode);
                         $scope.localLanguageCode = userInfo.DefaultLanguageCode;
@@ -70,6 +87,59 @@
                             return str.replace(/(?:\r\n|\r|\n)/g, '');
                         }
 
+                        var domainUrl = '{{siteUrl}}';
+                        if (domainUrl !== null) {
+                            $scope.domainUrl = getDomain(domainUrl);
+                        }
+
+                        function getDomain(url) {
+                            var hostName = getHostName(url);
+                            var domain = hostName;
+
+                            if (hostName !== null) {
+                                var parts = hostName.split('.').reverse();
+
+                                if (parts !== null && parts.length > 1) {
+                                    domain = parts[1] + '.' + parts[0];
+
+                                    if (hostName.toLowerCase().indexOf('.co.uk') != -1 && parts.length > 2) {
+                                        domain = parts[2] + '.' + domain;
+                                    }
+                                }
+                            }
+
+                            return domain;
+                        }
+
+                        function getHostName(url) {
+                            var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+                            if (match !== null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {
+                                return match[2];
+                            }
+                            else {
+                                return null;
+                            }
+                        }
+
+                        var previewUrl = Craft.livePreview.previewUrl;
+
+                        var getLiveContent = function (previewUrl) {
+                            var deffered = $q.defer();
+
+                            $j.ajax({
+                                url: previewUrl,
+                                type: 'GET',
+                                success: function (result) {
+                                    deffered.resolve(result);
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.log(JSON.stringify(jqXHR));
+                                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                                }
+                            });
+                            return deffered.promise;
+                        };
+
                         $scope.useMyKeyword = function () {
                             if ($scope.pageHasKeyword()) {
                                 if (!validateKeyword()) {
@@ -78,18 +148,25 @@
                                 }
 
                                 $scope.Keyword = getContent('wtt-keyword');
-
-                                if ($j("div#tab1").length > 0) {
-                                    $scope.HtmlContent = replaceLineBreaks(document.getElementById("tab1").innerHTML);
-                                } else {
-                                    $scope.HtmlContent = replaceLineBreaks(document.getElementsByClassName("item")[0].innerHTML);
-                                }
-
                                 $scope.Title = getContent('title');
                                 $scope.Description = getContent('wtt-description');
 
-                                $scope.runRules = true;
-                                $scope.runSuggestions();
+                                function getHtmlAndRunSuggestions() {
+                                    $scope.runRules = true;
+                                    $scope.runSuggestions();
+                                }
+
+                                getLiveContent(previewUrl).then(function(response) {
+                                    var mainRegExp = new RegExp(/^.*?<main[^>]*>(.*?)<\/main>.*?$/);
+
+                                    if(mainRegExp.test(replaceLineBreaks(response))) {
+                                        $scope.HtmlContent = replaceLineBreaks(response).replace(mainRegExp, '$1');
+                                    } else {
+                                        $scope.HtmlContent = replaceLineBreaks(response).replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/g, '$1');
+                                    }
+
+                                    getHtmlAndRunSuggestions();
+                                });
 
                                 $timeout(function () {
                                     $scope.isCollapsed = true;
@@ -125,7 +202,7 @@
                                     content: content,
                                     keywords: $scope.Keyword,
                                     languageCode: $scope.localLanguageCode,
-                                    synonyms: ""
+                                    domain: $scope.domainUrl
                                 };
 
                                 httpService.postData(WttApiBaseUrl + "page/suggestions", $scope.model).then(function (response) {
@@ -246,28 +323,6 @@
                             broadcastZeroNodes();
                         });
 
-                        if ($j("div#tab1").length > 0) {
-                            observeDOM(document.getElementById("tab1"), function () {
-                                $scope.HtmlContent = replaceLineBreaks($j("div#tab1").html());
-
-                                if ($scope.HtmlContent != null) {
-                                    $timeout(function () {
-                                        $scope.updateSuggestions();
-                                    }, 2500);
-                                }
-                            });
-                        } else {
-                            observeDOM(document.getElementsByClassName("item")[0], function () {
-                                $scope.HtmlContent = replaceLineBreaks($j("div#fields").html());
-
-                                if ($scope.HtmlContent != null) {
-                                    $timeout(function () {
-                                        $scope.updateSuggestions();
-                                    }, 2500);
-                                }
-                            });
-                        }
-
                         $j("input#title").keyup(function () {
                             $scope.Title = $j(this).val();
 
@@ -285,36 +340,43 @@
                             })
                         }
 
-                        if(!entryId) {
-                            $j("textarea#wtt-description").keyup(function() {
+                        $j("textarea#wtt-description").keyup(function () {
+                            if (!entryId) {
                                 $j("textarea#wtt-description").val('');
                                 alert('Save the entry before entering a keyword or description!');
-                            })
-                        } else {
-                            $scope.Description = $j("textarea#wtt-description").val();
+                            } else {
+                                $scope.Description = $j("textarea#wtt-description").val();
 
-                            if ($scope.Description != null) {
-                                $scope.updateSuggestions();
+                                if ($scope.Description != null) {
+                                    $scope.updateSuggestions();
+                                }
                             }
-                        }
+                        });
 
                         $scope.useKeyword = function (keyword) {
                             if ($scope.pageHasKeyword()) {
                                 inputKeyword.setAttribute('value', keyword.Keyword);
 
                                 $scope.Keyword = keyword.Keyword;
-
-                                if ($j("div#tab1").length > 0) {
-                                    $scope.HtmlContent = replaceLineBreaks(document.getElementById("tab1").innerHTML);
-                                } else {
-                                    $scope.HtmlContent = replaceLineBreaks(document.getElementsByClassName("item")[0].innerHTML);
-                                }
-
                                 $scope.Title = getContent('title');
                                 $scope.Description = getContent('wtt-description');
 
-                                $scope.runRules = true;
-                                $scope.runSuggestions();
+                                function getHtmlAndRunSuggestions() {
+                                    $scope.runRules = true;
+                                    $scope.runSuggestions();
+                                }
+
+                                getLiveContent(previewUrl).then(function(response) {
+                                    var mainRegExp = new RegExp(/^.*?<main[^>]*>(.*?)<\/main>.*?$/);
+
+                                    if(mainRegExp.test(replaceLineBreaks(response))) {
+                                        $scope.HtmlContent = replaceLineBreaks(response).replace(mainRegExp, '$1');
+                                    } else {
+                                        $scope.HtmlContent = replaceLineBreaks(response).replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/g, '$1');
+                                    }
+
+                                    getHtmlAndRunSuggestions();
+                                });
 
                                 $timeout(function () {
                                     $scope.isCollapsed = true;
@@ -326,6 +388,10 @@
                         };
 
                         // Select Keyword Controller
+
+                        $scope.changeCollapse = function() {
+                            $scope.isCollapsed = false;
+                        };
 
                         var keywordSourceLangCookie = $cookies.get('wtt_keyword_source_lang');
 
@@ -361,8 +427,8 @@
                                     });
 
                                     var selectedKeywordSource = _.isUndefined(keywordSourceLangCookie) ? appLanguageKeywordSource : _.find(keywordSources, function (item) {
-                                            return item.Value == keywordSourceLangCookie;
-                                        });
+                                        return item.Value == keywordSourceLangCookie;
+                                    });
 
                                     $scope.searchModel.selectedSource = selectedKeywordSource;
                                 });
@@ -476,53 +542,6 @@
                             templateUrl: 'moreinfo.html'
                         };
 
-                        function sendMessageToServer() {
-
-                            var deffered = $q.defer(),
-                                keyword = getContent('wtt-keyword'),
-                                description = getContent('wtt-description'),
-                                language = getContent('wtt-language-code-field'),
-                                recordId = getContent('wtt-record-id'),
-                                entryId = '{{entryId}}';
-
-                            $j.ajax({
-                                url: Craft.getActionUrl('webtexttool/ajaxSaveRecord'),
-                                type: 'POST',
-                                dataType: 'json',
-                                data: {
-                                    entryId: entryId,
-                                    recordId: recordId,
-                                    wttKeywords: keyword,
-                                    wttDescription: description,
-                                    wttLanguage: language
-                                },
-                                success: function (result) {
-                                    deffered.resolve(result);
-                                },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    console.log(JSON.stringify(jqXHR));
-                                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                                }
-                            });
-
-                            return deffered.promise;
-                        }
-
-                        var isNewEntry = '{{isNewEntry}}';
-
-                        if (isNewEntry == 'true') {
-                            // Before refreshing the page, save the input data to sessionStorage
-                            window.onbeforeunload = function () {
-                                sessionStorage.setItem("wttKeyword", $j('#wtt-keyword').val());
-                                sessionStorage.setItem("wttDescription", $j('#wtt-description').val());
-                                sessionStorage.setItem("wttLanguage", $j('#wtt-language-code-field').val());
-                            };
-                        } else {
-                            sessionStorage.removeItem("wttKeyword");
-                            sessionStorage.removeItem("wttDescription");
-                            sessionStorage.removeItem("wttLanguage");
-                        }
-
                         function init() {
                             loadKeywordSources();
                             loadLanguages();
@@ -532,13 +551,6 @@
 
                             if ($scope.pageHasKeyword()) {
                                 $scope.keywordSet = true;
-                            }
-
-                            var entryId = '{{entryId}}';
-                            var keywordInputField = getContent('wtt-keyword');
-
-                            if (entryId != '' && keywordInputField != '') {
-                                sendMessageToServer();
                             }
                         }
 
@@ -580,10 +592,10 @@
 
     app.factory("languageService", ['$http', '$q', 'httpService', '$cookies',
         function ($http, $q, httpService, $cookies) {
-            var WttApiBaseUrl = "https://app.webtexttool.com/api";
+            var WttApiBaseUrl = "{{wttApiBaseUrl}}";
 
             var getLanguages = function () {
-                return httpService.getData(WttApiBaseUrl + "/languages");
+                return httpService.getData(WttApiBaseUrl + "languages");
             };
 
             var getActiveLanguageCode = function () {
@@ -692,7 +704,7 @@
 
     app.factory("keywordService", ['$http', '$q', '$rootScope', 'httpService',
         function ($http, $q, $rootScope, httpService) {
-            var WttApiBaseUrl = "https://app.webtexttool.com/api/keywords";
+            var WttApiBaseUrl = "{{wttApiBaseUrl}}" + 'keywords';
 
             var getKeywordSources = function () {
                 return httpService.getData(WttApiBaseUrl + "/sources");
@@ -780,7 +792,7 @@
                 request: function (config) {
                     config.headers = config.headers || {};
                     config.headers.Authorization = 'Bearer ' + localStorage.getItem('wtt_token');
-                    config.headers.WttSource = 'WordPress';
+                    config.headers.WttSource = 'CraftCMS';
                     return config;
                 },
                 response: function (response) {

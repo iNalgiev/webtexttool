@@ -31,7 +31,7 @@ class Webtexttool_UserRecord extends BaseRecord
     {
         return array(
             'userId'                    => array(AttributeType::String),
-            'accessToken'               => array(AttributeType::String, 'default' => ''),
+            'accessToken'               => array(AttributeType::String, 'maxLength' => 1024, 'default' => ''),
         );
     }
 

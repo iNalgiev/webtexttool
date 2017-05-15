@@ -6,13 +6,12 @@
                 <i class="fa fa-question-circle"></i>
             </button>
         </div>
-        <aside class="wtt-sidebar display-block"
+        <aside class="wtt_sidebar display-block"
                ng-class="{'display-none': !isCollapsed, 'display-block': isCollapsed, 'wtt-overlay': !keywordSet}">
 
             <div class="page-info" ng-cloak>
                 <label class="sub-label">Keyword:</label>
-                <div class="keyBox" ng-click="isCollapsed = !isCollapsed">
-                    <!--                    <span ng-if="Keyword == null || Keyword == ''" class="no-keyword">Add</span>-->
+                <div class="keyBox" ng-click="changeCollapse()">
                     <span class="keyword">{[Keyword]}</span>
                 </div>
 
@@ -29,7 +28,10 @@
                         </li>
                     </ul>
                 </div>
+            </div>
 
+            <div class="page-info display-none" style="text-align: center; font-weight: bold; color: #f6a101;" ng-class="{'display-none': !isCollapsed, 'display-block': isCollapsed}">
+                <h2>Save the page to update the score!</h2>
             </div>
 
             <div class="wtt-tbl wtt-page-score-area">
