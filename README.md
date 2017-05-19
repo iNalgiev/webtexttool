@@ -70,6 +70,9 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 
 ## Changelog
 
+### 1.1.1
+- Removed loadingTemplate causing issues
+
 ### 1.1.0
 - Added config file (Use the config file to add the API key)
 - Removed Beta ribbon

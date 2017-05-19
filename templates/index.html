@@ -34,7 +34,6 @@
             $scope.error = null;
             $scope.message = "Invalid Email or Password";
             $scope.loading = false;
-            $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
             $scope.promiseMessage = "Please wait...";
             var WttApiBaseUrl = "{{craft.config.get('wttApiBaseUrl', 'webtexttool')}}";
             $scope.WttAppUrl = WttApiBaseUrl.slice(0, -5) + "/#/";

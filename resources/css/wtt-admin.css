@@ -291,15 +291,6 @@ h2.wtt-plan-title {
     }
 }
 
-.wtt-loading-template {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url(../images/wtt-loading-template.png) no-repeat 50% 80px;
-}
-
 .account-options {
     border-bottom: 1px solid #ccc;
     max-width: 940px;

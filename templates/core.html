@@ -42,9 +42,7 @@
                 }
             }
 
-            $scope.promiseTemplate = "{{ url('webtexttool/loadingTemplate.html') }}";
             $scope.promiseMessage = "Loading...";
-
             $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated");
 
             httpService.getData(WttApiBaseUrl + "user/authenticated").then(function (result) {
@@ -805,7 +803,7 @@
 </script>
 
 <div ng-app="wtt" ng-controller="editPageController"
-     cg-busy="{promise:loadingPromise,message:loadingMessage,backdrop:true,templateUrl:promiseTemplate}">
+     cg-busy="{promise:loadingPromise,message:loadingMessage,backdrop:true}">
 
     {% include "webtexttool/header.html" %}
     {% include "webtexttool/warning.html" %}
