@@ -1,5 +1,13 @@
 [
   {
+    "version": "1.1.2",
+    "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.1.2.zip",
+    "date": "2017-06-28T15:00:00.000Z",
+    "notes": [
+      "Fixed preview url not working with inactive entries"
+    ]
+  },
+  {
     "version": "1.1.1",
     "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.1.1.zip",
     "date": "2017-05-19T17:30:00.000Z",

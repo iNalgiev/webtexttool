@@ -29,9 +29,9 @@ Webtexttool can be used alongside other popular SEO plugins.
 
 Clone this repo into `craft/plugins/webtexttool`.
 
-1. Activate the webtexttool plugin from the Plugins menu in Craft CMS.
-2. Webtexttool will now appear in your Craft dashboard [on the left].
-3. Click on webtexttool and login using your webtexttool credentials. If you don't have an account, you can create one for free [here](https://app.webtexttool.com/#/register-free).
+1. Activate the webtexttool plugin from the **Plugins** menu in Craft.
+2. Webtexttool will now appear in your Craft dashboard [on the left] (make sure you have admin rights).
+3. Click on webtexttool and login using your webtexttool credentials. If you don't have an account, you can create one for free [here](https://app.webtexttool.com/#/register-free). You can also use the API key. Overwrite the config file `wttApiKey` variable to add the API key.
 
 ### Meta Description Usage
 
@@ -69,6 +69,9 @@ Yes, we have. We offer different subscriptions (Personal, Business, Enterprise).
 Yes, of course! If you have any questions, please don’t hesitate to [contact us](https://www.webtexttool.com/about-webtexttool/contact/). We love to hear from you and will try to solve any issues asap.
 
 ## Changelog
+
+### 1.1.2
+- Fixed preview url not working with inactive entries
 
 ### 1.1.1
 - Removed loadingTemplate causing issues

@@ -6,7 +6,7 @@ return array(
     "wttApiBaseUrl" => "https://app.webtexttool.com/api/",
 
     /**
-     * Enter your API Key here. Make sure there are no spaces or enters.
+     * Overwrite your API Key here. Make sure there are no spaces or enters.
      */
     "wttApiKey" => ""
 );

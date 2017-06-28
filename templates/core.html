@@ -60,10 +60,13 @@
                         $scope.htmlPopover = $sce.trustAsHtml('<p class="tooltip-content">First select for which language / country you want to optimize your content.<br><br>Then enter your keyword.</p>');
                         $scope.htmlPopoverS = $sce.trustAsHtml('<p class="tooltip-content">While writing, multiple suggestions appear here. These suggestions tell you how you can improve your text for the search engines, according to the latest SEO rules, but also how to structure your text for your readers. Following these suggestions, will raise your optimization score!</p>');
 
-                        var permaLink = '{% for entry in craft.entries.id(entryId) if entryId %} {{entry ? entry.url : null}} {% endfor %}';
+                        var permaLink = '{% for entry in craft.entries.id(entryId) if entryId %} {{ entry ? entry.url : null }} {% endfor %}';
+                        var permaLinkOptional = $j("#slug").val();
 
-                        if (permaLink !== null) {
+                        if (permaLink !== "") {
                             $scope.permalink = permaLink.replace(/-/g, ' ');
+                        } else if (permaLinkOptional !== "") {
+                            $scope.permalink = permaLinkOptional.replace(/-/g, ' ');
                         }
 
                         $j("input#slug").keyup(function () {
@@ -119,13 +122,40 @@
                             }
                         }
 
-                        var previewUrl = Craft.livePreview.previewUrl;
+                        var entryStatus = '{% for entry in craft.entries.id(entryId) %} {{entry.status}} {% endfor %}';
 
-                        var getLiveContent = function (previewUrl) {
+                        var params = {
+                            url: Craft.livePreview.previewUrl,
+                            entryId: '{{entryId}}',
+                            locale: '{{locale}}',
+                            status: entryStatus.replace(/ /g, '')
+                        };
+
+                        var getUrlWithToken = function () {
                             var deffered = $q.defer();
 
                             $j.ajax({
-                                url: previewUrl,
+                                url: Craft.getActionUrl('webtexttool/getUrlWithToken'),
+                                type: 'POST',
+                                dataType: 'json',
+                                data: params,
+                                success: function (result) {
+                                    console.log("result:" + result.url);
+                                    deffered.resolve(result);
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.log(JSON.stringify(jqXHR));
+                                    console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                                }
+                            });
+                            return deffered.promise;
+                        };
+
+                        var getLiveContent = function (url) {
+                            var deffered = $q.defer();
+
+                            $j.ajax({
+                                url: url,
                                 type: 'GET',
                                 success: function (result) {
                                     deffered.resolve(result);
@@ -154,16 +184,18 @@
                                     $scope.runSuggestions();
                                 }
 
-                                getLiveContent(previewUrl).then(function(response) {
-                                    var mainRegExp = new RegExp(/^.*?<main[^>]*>(.*?)<\/main>.*?$/);
+                                getUrlWithToken().then(function(response) {
+                                    getLiveContent(response.url).then(function(response) {
+                                        var mainRegExp = new RegExp(/^.*?<main[^>]*>(.*?)<\/main>.*?$/);
 
-                                    if(mainRegExp.test(replaceLineBreaks(response))) {
-                                        $scope.HtmlContent = replaceLineBreaks(response).replace(mainRegExp, '$1');
-                                    } else {
-                                        $scope.HtmlContent = replaceLineBreaks(response).replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/g, '$1');
-                                    }
+                                        if(mainRegExp.test(replaceLineBreaks(response))) {
+                                            $scope.HtmlContent = replaceLineBreaks(response).replace(mainRegExp, '$1');
+                                        } else {
+                                            $scope.HtmlContent = replaceLineBreaks(response).replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/g, '$1');
+                                        }
 
-                                    getHtmlAndRunSuggestions();
+                                        getHtmlAndRunSuggestions();
+                                    });
                                 });
 
                                 $timeout(function () {
@@ -364,16 +396,18 @@
                                     $scope.runSuggestions();
                                 }
 
-                                getLiveContent(previewUrl).then(function(response) {
-                                    var mainRegExp = new RegExp(/^.*?<main[^>]*>(.*?)<\/main>.*?$/);
+                                getUrlWithToken().then(function(response) {
+                                    getLiveContent(response.url).then(function(response) {
+                                        var mainRegExp = new RegExp(/^.*?<main[^>]*>(.*?)<\/main>.*?$/);
 
-                                    if(mainRegExp.test(replaceLineBreaks(response))) {
-                                        $scope.HtmlContent = replaceLineBreaks(response).replace(mainRegExp, '$1');
-                                    } else {
-                                        $scope.HtmlContent = replaceLineBreaks(response).replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/g, '$1');
-                                    }
+                                        if(mainRegExp.test(replaceLineBreaks(response))) {
+                                            $scope.HtmlContent = replaceLineBreaks(response).replace(mainRegExp, '$1');
+                                        } else {
+                                            $scope.HtmlContent = replaceLineBreaks(response).replace(/^.*?<body[^>]*>(.*?)<\/body>.*?$/g, '$1');
+                                        }
 
-                                    getHtmlAndRunSuggestions();
+                                        getHtmlAndRunSuggestions();
+                                    });
                                 });
 
                                 $timeout(function () {

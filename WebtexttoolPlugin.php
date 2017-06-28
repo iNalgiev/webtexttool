@@ -26,7 +26,7 @@ class WebtexttoolPlugin extends BasePlugin
 
     public function getVersion()
     {
-        return '1.1.1';
+        return '1.1.2';
     }
 
     public function getDeveloper()
@@ -69,7 +69,7 @@ class WebtexttoolPlugin extends BasePlugin
         $record = craft()->webtexttool->getRecordByEntryId($entryId);
         $wttApiBaseUrl = craft()->config->get('wttApiBaseUrl', 'webtexttool');
 
-        return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record, 'isNewEntry' => $isNewEntry, 'wttApiBaseUrl' => $wttApiBaseUrl]);
+        return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record, 'isNewEntry' => $isNewEntry, 'wttApiBaseUrl' => $wttApiBaseUrl, 'locale' => $entry->locale]);
     }
 
     /**

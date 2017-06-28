@@ -38,26 +38,24 @@ class WebtexttoolController extends BaseController
         }
     }
 
-    public function actionAjaxSaveRecord()
+    public function actionGetUrlWithToken()
     {
         $this->requireAjaxRequest();
 
-        if ($id = craft()->request->getPost('recordId')) {
-            $model = craft()->webtexttool->getRecordById($id);
+        $params = array('entryId' => craft()->request->getPost('entryId'), 'locale' => craft()->request->getPost('locale'));
+
+        $status = array('status' => craft()->request->getPost('status'));
+
+        if($status['status'] != "live") {
+            craft()->tokens->deleteExpiredTokens();
+
+            $token = craft()->tokens->createToken(array('action' => 'entries/viewSharedEntry', 'params' => $params));
+            $url = UrlHelper::getUrlWithToken(craft()->request->getPost('url'), $token);
         } else {
-            $model = craft()->webtexttool->newRecord($id);
+            $url = craft()->request->getPost('url');
         }
 
-        $model->entryId = craft()->request->getPost('entryId');
-        $model->wttKeywords = craft()->request->getPost('wttKeywords');
-        $model->wttDescription = craft()->request->getPost('wttDescription');
-        $model->wttLanguage = craft()->request->getPost('wttLanguage');
-
-        if ($model->validate()) {
-            craft()->webtexttool->saveRecord($model);
-        }
-
-        $this->returnJson(array('success' => true));
+        $this->returnJson(array('url' => $url));
     }
 
     public function actionSaveAccessToken()
