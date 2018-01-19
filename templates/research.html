@@ -1,32 +1,31 @@
-<div class="wtt-box" ng-show="auth" ng-cloak>
-    <div class="wtt-header">Enter your Keyword
+<div class="wtt_box" ng-show="auth" ng-cloak>
+    <div class="wtt_header">Enter your Keyword
         <button type="button" class="btn-collapse" ng-click="isCollapsed = !isCollapsed">
             <i class="fa" ng-class="{'fa-minus-square': !isCollapsed, 'fa-plus-square': isCollapsed}"></i>
         </button>
     </div>
 
-    <div id="wtt-blocksearch" cg-busy="searchPromise"
-         ng-class="{'display-none': isCollapsed, 'display-block': !isCollapsed}">
+    <div id="wtt_blocksearch" cg-busy="searchPromise"
+         ng-class="{'display-none': isCollapsed, 'display-block': !isCollapsed}" style="padding: 5px !important">
 
         <div id="keyword-language-well">
-            <table class="form-table">
+            <table class="wtt-form-table">
                 <tbody>
                 <tr>
                     <td>
                         <div class="step-no">1. Select language/country</div>
                     </td>
-                    <td class="td-question-circle">
-                        <button popover-placement="auto top" uib-popover-html="htmlPopover"
+                    <td>
+                        <button popover-placement="auto top" uib-wtt-popover-html="htmlPopover"
                                 popover-trigger="outsideClick" type="button" class="btn-info"><i
                                 class="fa fa-question-circle"></i>
                         </button>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="td-dropdown-btn">
+                    <td colspan="2" class="wtt-country-list">
                         <div class="btn-group">
-                            <button type="button" class="wtt-dropdown-btn btn-default dropdown-toggle"
-                                    data-toggle="dropdown"
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                     aria-haspopup="true"
                                     aria-expanded="false"><i
                                     class="flag flag-{[searchModel.selectedSource.Value]}"></i>
@@ -54,12 +53,12 @@
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search for..." type="text" id="wtt-keyword"
                            name="wtt_keyword" autocomplete="off"
-                           uib-tooltip="Fill in your keyword" tooltip-trigger="focus"
+                           uib-wtt-tooltip="Fill in your keyword" tooltip-trigger="focus"
                            tooltip-placement="top" tooltip-enable="!Keyword" value="{{ record ? record.wttKeywords : null }}">
-                <span class="input-group-btn">
-                    <input class="wtt-btn wtt-btn-default" type="button" value="Go!" type="button"
-                           id="wtt-keyword-check" value="Use my keyword" ng-click="useMyKeyword()"
-                           uib-tooltip="Start optimizing"
+                    <span class="input-group-btn">
+                    <input class="wtt-btn wtt-btn-default" type="button" value="Go!"
+                           id="wtt-keyword-check" ng-click="useMyKeyword()"
+                           uib-wtt-tooltip="Start optimizing"
                            tooltip-trigger="mouseenter"
                            tooltip-placement="top"/>
                 </span>
@@ -70,7 +69,7 @@
                 <input type="button" id="wtt-keyword-research" value="Give me suggestions"
                        ng-click="submitSearchKeyword()"
                        ng-disabled="userInfo.Credits <= 0 || userInfo.TrialDays < 0"
-                       uib-tooltip="Analyze the keyword and search for related suggestions"
+                       uib-wtt-tooltip="Analyze the keyword and search for related suggestions"
                        tooltip-trigger="mouseenter"
                        tooltip-placement="top">
             </div>
@@ -81,41 +80,40 @@
                 <div class="row" id="keyword-score-area">
                     <ul class="details-list list-unstyled list-inline" data-items-per-row="3">
                         <li>
-                            <div class="score-box {[inputKeywordResult.SearchVolumeScoreAttrs]}"
-                                 uib-popover="{[inputKeywordResult.VolumeHelp]}"
-                                 popover-title="{[inputKeywordResult.VolumeLabel]}"
+                            <div class="score-box {[inputKeywordResult.SearchVolumeScoreAttrs.className]}"
+                                 uib-wtt-popover="{[inputKeywordResult.SearchVolumeScoreAttrs.helpText]}"
+                                 popover-title="{[inputKeywordResult.SearchVolumeScoreAttrs.label]}"
                                  popover-trigger="mouseenter" popover-append-to-body="true"
                                  popover-placement="top">
                                 <p class="label">Volume</p>
                                 <div class="score-box-content">
                                     <p class="value"><i class="fa fa-square"></i>
-                                        {[inputKeywordResult.VolumeLabel]}
+                                        {[inputKeywordResult.SearchVolumeScoreAttrs.label]}
                                     </p>
                                 </div>
                             </div>
                         </li>
                         <li>
-                            <div class="score-box {[inputKeywordResult.CompetitionScoreAttrs]}"
-                                 uib-popover="{[inputKeywordResult.CompetitionHelp]}"
-                                 popover-title="{[inputKeywordResult.CompetitionLabel]}"
+                            <div class="score-box {[inputKeywordResult.CompetitionScoreAttrs.className]}"
+                                 uib-wtt-popover="{[inputKeywordResult.CompetitionScoreAttrs.helpText]}"
+                                 popover-title="{[inputKeywordResult.CompetitionScoreAttrs.label]}"
                                  popover-trigger="mouseenter" popover-append-to-body="true"
                                  popover-placement="top">
                                 <p class="label">Competition</p>
                                 <div class="score-box-content">
                                     <p class="value"><i class="fa fa-square"></i>
-                                        {[inputKeywordResult.CompetitionLabel]}</p>
+                                        {[inputKeywordResult.CompetitionScoreAttrs.label]}</p>
                                 </div>
                             </div>
                         </li>
                         <li>
-                            <div class="score-box">
+                            <div class="score-box" uib-wtt-popover="{[inputKeywordResult.OverallScoreHelp]}"
+                                 popover-title="{[inputKeywordResult.OverallScoreLabel]}"
+                                 popover-trigger="mouseenter" popover-append-to-body="true"
+                                 popover-placement="top">
                                 <p class="label">Overall</p>
-                                <div class="score-box-content {[inputKeywordResult.OverallScoreClass]}"
-                                     uib-popover="{[inputKeywordResult.OverallHelp]}"
-                                     popover-title="{[inputKeywordResult.OverallLabel]}"
-                                     popover-trigger="mouseenter" popover-append-to-body="true"
-                                     popover-placement="top">
-                                    <p class="value">{[inputKeywordResult.OverallLabel]}</p>
+                                <div class="score-box-content {[inputKeywordResult.OverallScoreClass]}">
+                                    <p class="value">{[inputKeywordResult.OverallScoreLabel]}</p>
                                 </div>
                             </div>
                         </li>
@@ -125,13 +123,12 @@
 
             <div class="well well-custom well-step" id="related-keywords-well"
                  ng-if="searchModel.SearchResults.length > 0">
-                <h2 style="color: #f09000; font-weight: 700; text-align: left !important; padding: 5px 10px;">3.
-                    Related keywords that
+                <h2 style="color: #f09000; font-weight: 700; text-align: left !important;">Related keywords that
                     might be relevant for you</h2>
 
                 <div class="clearfix" id="related-keywords-wrapper">
                     <scrollable-table watch="searchModel.SearchResults">
-                        <table class="table table-custom results-table" id="suggestionsTable">
+                        <table class="table table-custom results-table" id="suggetionsTable">
                             <thead>
                             <tr>
                                 <th sortable-header col="Keyword">Keyword</th>
@@ -142,31 +139,29 @@
                             <tr ng-repeat="relatedKeyword in searchModel.SearchResults">
                                 <td><a href="javascript:;" class="keyBox"
                                        ng-click="useKeyword(relatedKeyword);"
-                                       uib-popover-template="dynamicPopover.templateUrl"
+                                       uib-wtt-popover-template="dynamicPopover.templateUrl"
                                        popover-placement="auto top"
                                        popover-trigger="mouseenter"
                                        popover-title="More Info"><span
                                         class="keyword wtt-label {[relatedKeyword.OverallScoreLabelClass]}">{[relatedKeyword.Keyword]}</span></a>
                                 </td>
                                 <script id="moreinfo.html" type="text/ng-template">
-                                    <table style="100%" id="wtt-keywords-info">
+                                    <table style="100%" id="wtt_keywords_info">
                                         <tr>
                                             <td class="search-volume">
                                                 <span class="interval">
-                                                    <i class="fa fa-square {[relatedKeyword.SearchVolumeScoreAttrs]}"></i>
+                                                    <i class="fa fa-square {[relatedKeyword.SearchVolumeScoreAttrs.className]}"></i>
                                                     <strong>Volume:</strong>
-                                                    <span
-                                                            class="int-value">{[relatedKeyword.SearchVolumeScoreLabel]}</span>
+                                                    <span class="int-value">{[relatedKeyword.SearchVolumeScoreAttrs.label]}</span>
                                                 </span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
                                                 <span class="interval">
-                                                    <i class="fa fa-square {[relatedKeyword.CompetitionScoreAttrs]}"></i>
+                                                    <i class="fa fa-square {[relatedKeyword.CompetitionScoreAttrs.className]}"></i>
                                                     <strong>Competition:</strong>
-                                                    <span
-                                                            class="int-value">{[relatedKeyword.CompetitionScoreLabel]}</span>
+                                                    <span class="int-value">{[relatedKeyword.CompetitionScoreAttrs.label]}</span>
                                                 </span>
                                             </td>
                                         </tr>
@@ -182,6 +177,33 @@
                     </scrollable-table>
                 </div>
             </div>
+        </div>
+
+        <div style="text-align:center;">
+            <table class="wtt-form-table">
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="step-no">3. Add synonyms (optional) </div>
+                    </td>
+                    <td>
+                        <button popover-placement="auto top" uib-wtt-popover-html="htmlPopoverP"
+                                popover-trigger="outsideClick" type="button" class="btn-info"><i
+                                class="fa fa-question-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div>
+                            <tags-input max-tags=3 enforce-max-tags ng-model="pageKeywordSynonyms" placeholder="Add" replace-spaces-with-dashes="false" class="ti-bootstrap wtt-edit" on-tag-added=onSynonymsAdded($tag) on-tag-removed=onSynonymsRemoved($tag)>
+                                <auto-complete source="getKeywordSynonyms($query)" debounce-delay="0" load-on-empty="true" load-on-focus="true" max-results-to-show="30" select-first-match="false"></auto-complete>
+                            </tags-input>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
     </div>

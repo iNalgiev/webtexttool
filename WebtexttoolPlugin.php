@@ -68,6 +68,25 @@ class WebtexttoolPlugin extends BasePlugin
 
         $record = craft()->webtexttool->getRecordByEntryId($entryId);
         $wttApiBaseUrl = craft()->config->get('wttApiBaseUrl', 'webtexttool');
+        $user = craft()->userSession->getUser();
+
+        craft()->templates->includeJs('wtt_globals = '.JsonHelper::encode(array(
+                'entryId' => $entryId,
+                'record' => $record,
+                'isNewEntry' => $isNewEntry,
+                'siteUrl' => craft()->getSiteUrl(),
+                'suggestionTemplate' => craft()->templates->render('webtexttool/directives/wtt-suggestion'),
+                'contentQualityTemplate' => craft()->templates->render('webtexttool/directives/wtt-content-quality'),
+                'suggestionContentQualityTemplate' => craft()->templates->render('webtexttool/directives/wtt-suggestion-content-quality'),
+                'wttApiBaseUrl' => $wttApiBaseUrl,
+                'locale' => $entry->locale,
+                'accessToken' => craft()->webtexttool->getAccessTokenByUserId($user->id),
+                'wttApiKey' => craft()->config->get('wttApiKey', 'webtexttool'),
+                'permaLink' => craft()->entries->getEntryById($entryId)->getUrl(),
+                'status' => craft()->entries->getEntryById($entryId)->getStatus(),
+                'getLastSuggestions' => "",
+                'getCQSettings' => ""
+            )).';');
 
         return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record, 'isNewEntry' => $isNewEntry, 'wttApiBaseUrl' => $wttApiBaseUrl, 'locale' => $entry->locale]);
     }

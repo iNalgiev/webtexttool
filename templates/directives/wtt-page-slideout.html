@@ -1,0 +1,46 @@
+<div id="slideout">
+    <div ng-if="info.Type=='list' || info.Type=='listex'">
+        <table>
+            <tr>
+                <th><span>{{info.Title}}</span></th>
+                <th>
+                    <a class="boxclose" onclick="jQuery('#slideout').toggleClass('on')"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></a>
+                </th>
+            </tr>
+            <tr>
+            <tr>
+                <td colspan="2" class="sub-title">
+                    <span ng-bind-html="info.Description"></span>
+                </td>
+            </tr>
+            <td class="tags" colspan="2">
+                <span class="post-tag" ng-repeat="item in info.tags track by $index" ng-click="markText(item)">{{item.Name}} <span class="badge" ng-show="item.Count > 1">{{item.Count}}</span></span>
+            </td>
+            </tr>
+        </table>
+    </div>
+    <div ng-if="info.Type=='suggestions'">
+        <table>
+            <tr>
+                <th colspan="2"><span>{{info.Title}}</span></th>
+                <th><a class="boxclose" onclick="jQuery('#slideout').toggleClass('on')"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></a></th>
+            </tr>
+            <tr>
+                <td colspan="3" class="sub-title">
+                    <span ng-bind-html="info.Description"></span>
+                </td>
+            </tr>
+            <tr ng-repeat="item in info.tags track by $index">
+                <td class="td-left tags">
+                    <span class="post-tag post-tag-orange" ng-repeat="from in item.From track by $index" ng-click="markText(item)">{{from}}</span>
+                </td>
+                <td ng-if="item.To.length > 0" class="td-center">
+                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                </td>
+                <td class="td-right">
+                    <span class="post-tag" ng-repeat="to in item.To track by $index">{{to}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
