@@ -30,10 +30,13 @@ class Webtexttool_CoreRecord extends BaseRecord
     public function defineAttributes()
     {
         return array(
-            'entryId'                   => array(AttributeType::String, 'required' => true),
-            'wttKeywords'               => array(AttributeType::String, 'default' => ''),
-            'wttDescription'            => array(AttributeType::String, 'maxLength' => 1024, 'default' => ''),
-            'wttLanguage'               => array(AttributeType::String, 'default' => '')
+            'entryId'                       => array(AttributeType::String, 'required' => true),
+            'wttKeywords'                   => array(AttributeType::String, 'default' => ''),
+            'wttDescription'                => array(AttributeType::String, 'maxLength' => 1024, 'default' => ''),
+            'wttLanguage'                   => array(AttributeType::String, 'default' => ''),
+            'wttSynonyms'                   => array(AttributeType::String, 'maxLength' => 1024, 'default' => ''),
+            'wttContentQualitySettings'     => array(AttributeType::String, 'column' => ColumnType::Text),
+            'wttContentQualitySuggestions'  => array(AttributeType::String, 'column' => ColumnType::Text)
         );
     }
 

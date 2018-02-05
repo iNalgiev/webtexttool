@@ -46,15 +46,14 @@
         </div>
 
         <div class="wtt-keyword" id="keyword-analysis-well">
-            <div class="step-no">2. Keyword analysis &
-                selection
-            </div>
+            <div class="step-no">2. Keyword analysis & selection</div>
             <div class="cl-lg-6">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search for..." type="text" id="wtt-keyword"
                            name="wtt_keyword" autocomplete="off"
                            uib-wtt-tooltip="Fill in your keyword" tooltip-trigger="focus"
-                           tooltip-placement="top" tooltip-enable="!Keyword" value="{{ record ? record.wttKeywords : null }}">
+                           tooltip-placement="top" tooltip-enable="!Keyword"
+                           value="{{ record ? record.wttKeywords : null }}">
                     <span class="input-group-btn">
                     <input class="wtt-btn wtt-btn-default" type="button" value="Go!"
                            id="wtt-keyword-check" ng-click="useMyKeyword()"
@@ -184,7 +183,7 @@
                 <tbody>
                 <tr>
                     <td>
-                        <div class="step-no">3. Add synonyms (optional) </div>
+                        <div class="step-no">3. Add synonyms (optional)</div>
                     </td>
                     <td>
                         <button popover-placement="auto top" uib-wtt-popover-html="htmlPopoverP"
@@ -196,8 +195,12 @@
                 <tr>
                     <td colspan="2">
                         <div>
-                            <tags-input max-tags=3 enforce-max-tags ng-model="pageKeywordSynonyms" placeholder="Add" replace-spaces-with-dashes="false" class="ti-bootstrap wtt-edit" on-tag-added=onSynonymsAdded($tag) on-tag-removed=onSynonymsRemoved($tag)>
-                                <auto-complete source="getKeywordSynonyms($query)" debounce-delay="0" load-on-empty="true" load-on-focus="true" max-results-to-show="30" select-first-match="false"></auto-complete>
+                            <tags-input max-tags=3 enforce-max-tags ng-model="pageKeywordSynonyms" placeholder="Add"
+                                        replace-spaces-with-dashes="false" class="ti-bootstrap wtt-edit"
+                                        on-tag-added=onSynonymsAdded($tag) on-tag-removed=onSynonymsRemoved($tag)>
+                                <auto-complete source="getKeywordSynonyms($query)" debounce-delay="0"
+                                               load-on-empty="true" load-on-focus="true" max-results-to-show="30"
+                                               select-first-match="false"></auto-complete>
                             </tags-input>
                         </div>
                     </td>

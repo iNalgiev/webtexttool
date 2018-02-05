@@ -23,49 +23,42 @@
             <div class="suggestions-content" uib-collapse="isSuggestionDetailsCollapsed">
                 <ul class="suggestions-list">
                     <li>Reading Time:<span class="pull-right">{[contentQualityDetails.ReadingTime]}</span></li>
-                    <!--<li>Reading Level:<span class="pull-right" ng-bind-html="contentQualityDetails.ReadingLevel"></span></li>-->
-                    <li>Reading Level:
-                        <a popover-placement="top" popover-trigger="mouseenter" uib-wtt-popover-template="showReadingLevelHelp.templateUrl" class="pull-right">
-                            {[contentQualityDetails.ReadingLevel]}
-                            <i class="fa fa-question-circle"></i>
-                        </a>
+                    <li>Reading Level:<span class="pull-right" ng-bind-html="contentQualityDetails.ReadingLevel"></span></li>
+                    <li ng-show="contentQualityDetails.ReadingValues">
+                        <table style="width: 100%;">
+                            <tbody>
+                            <tr>
+                                <td colspan="2">We have calculated three readability scores for your content and averaged this in
+                                    the overall readability score. Below you will find the specific scores and a link with more
+                                    information about each of them.<br/><br/></td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index" target="_blank">Coleman Liau
+                                    Index</a></td>
+                                <td> {[contentQualityDetails.ReadingValues.ColemanLiauIndex | number : 1]}</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://en.wikipedia.org/wiki/Automated_readability_index" target="_blank">Automated
+                                    Readability Index</a></td>
+                                <td> {[contentQualityDetails.ReadingValues.AutomatedReadabilityIndex | number : 1]}</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests"
+                                       target="_blank">Flesch-Kincaid Reading ease</a></td>
+                                <td> {[contentQualityDetails.ReadingValues.FleschKincaidReadingEasy | number : 1]}</td>
+                            </tr>
+                            <tr>
+                                <td> Average</td>
+                                <td> {[contentQualityDetails.ReadingValues.ReadingAvg | number : 1]}
+                                    ({[contentQualityDetails.ReadingLevel]})
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </li>
                 </ul>
             </div>
         </div>
-
-        <script id="readinginfo.html" type="text/ng-template">
-            <table style="width: 100%;">
-                <tbody>
-                    <tr>
-                        <td colspan="2">We have calculated three readability scores for your content and averaged this in
-                            the overall readability score. Below you will find the specific scores and a link with more
-                            information about each of them.<br/><br/></td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index" target="_blank">Coleman Liau
-                            Index</a></td>
-                        <td> {[contentQualityDetails.ReadingValues.ColemanLiauIndex | number : 1]}</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://en.wikipedia.org/wiki/Automated_readability_index" target="_blank">Automated
-                            Readability Index</a></td>
-                        <td> {[contentQualityDetails.ReadingValues.AutomatedReadabilityIndex | number : 1]}</td>
-                    </tr>
-                    <tr>
-                        <td><a href="https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests"
-                               target="_blank">Flesch-Kincaid Reading ease</a></td>
-                        <td> {[contentQualityDetails.ReadingValues.FleschKincaidReadingEasy | number : 1]}</td>
-                    </tr>
-                    <tr>
-                        <td> Average</td>
-                        <td> {[contentQualityDetails.ReadingValues.ReadingAvg | number : 1]}
-                            ({[contentQualityDetails.ReadingLevel]})
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </script>
 
         <div class="suggestions-box" ng-hide="contentQualityDetails">
             <div class="suggestions-content" uib-collapse="isSuggestionDetailsCollapsed">

@@ -52,7 +52,7 @@ class WebtexttoolController extends BaseController
             $token = craft()->tokens->createToken(array('action' => 'entries/viewSharedEntry', 'params' => $params));
             $url = UrlHelper::getUrlWithToken(craft()->request->getPost('url'), $token);
         } else {
-            $url = "http://localhost:1337/craft/index.php/news/2016/seo-in-the-url";
+            $url = "http://localhost:8080/craftcms/public/index.php/news/2018/seo-tool-voor-iedere-tekstschrijver";
 //            $url = craft()->request->getPost('url');
         }
 
@@ -81,5 +81,78 @@ class WebtexttoolController extends BaseController
         ];
 
         $this->returnJson($response);
+    }
+
+    public function actionSaveContentQualitySettings() {
+        $this->requireAjaxRequest();
+
+        $params = array('data' => craft()->request->getPost('data'), 'entryId' => craft()->request->getPost('entryId'));
+
+        //TODO check if already exists then overwrite, else create new record and save to database
+      /*  if ($id = craft()->request->getPost('recordId')) {
+            $model = craft()->webtexttool->getRecordById($id);
+        } else {
+            $model = craft()->webtexttool->newRecord($id);
+        }*/
+
+        if($id = $params['entryId']) {
+            $model = craft()->webtexttool->getRecordByEntryId($id);
+        } else {
+            $model = new Webtexttool_CoreModel();
+        }
+
+        $model->entryId = $id;
+        $model->wttContentQualitySettings = json_encode($params['data']);
+
+        if ($model->validate()) {
+            $response = [
+                'message' => 'success',
+                'model' => $model->wttContentQualitySettings,
+                'data' => $params['data']
+            ];
+
+            craft()->webtexttool->saveRecord($model);
+
+            $this->returnJson($response);
+        }
+
+        $this->returnJson(array('message' => 'failed'));
+    }
+
+    public function actionSaveContentQualitySuggestions() {
+        $this->requireAjaxRequest();
+
+        $params = array('data' => craft()->request->getPost('data'), 'entryId' => craft()->request->getPost('entryId'));
+
+        //TODO check if already exists then overwrite, else create new record and save to database
+
+/*        if ($id = craft()->request->getPost('recordId')) {
+            $model = craft()->webtexttool->getRecordById($id);
+        } else {
+            $model = craft()->webtexttool->newRecord($id);
+        }*/
+
+        if($id = $params['entryId']) {
+            $model = craft()->webtexttool->getRecordByEntryId($id);
+        } else {
+            $model = new Webtexttool_CoreModel();
+        }
+
+        $model->entryId = $id;
+        $model->wttContentQualitySuggestions = json_encode($params['data']);
+
+        if ($model->validate()) {
+            $response = [
+                'message' => 'success',
+                'model' => $model->wttContentQualitySuggestions,
+                'data' => $params['data']
+            ];
+
+            craft()->webtexttool->saveRecord($model);
+
+            $this->returnJson($response);
+        }
+
+        $this->returnJson(array('message' => 'failed'));
     }
 }

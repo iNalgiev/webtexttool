@@ -78,6 +78,8 @@ class WebtexttoolService extends BaseApplicationComponent
 
         if ($coreRecord) {
             return Webtexttool_CoreModel::populateModel($coreRecord);
+        } else {
+            return "";
         }
     }
 
@@ -137,6 +139,9 @@ class WebtexttoolService extends BaseApplicationComponent
                 'wttKeywords' => $model->wttKeywords,
                 'wttDescription' => $model->wttDescription,
                 'wttLanguage' => $model->wttLanguage,
+                'wttSynonyms' => $model->wttSynonyms,
+                'wttContentQualitySettings' => $model->wttContentQualitySettings,
+                'wttContentQualitySuggestions' => $model->wttContentQualitySuggestions
             );
 
             foreach ($attributes as $k => $v) {

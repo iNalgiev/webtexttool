@@ -286,21 +286,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         $scope.data.Resources[el.ResourceKey] = $sce.trustAsHtml(el.HtmlContent);
                     });
 
-                    // $scope.showReadingLevelHelp = $scope.data.Resources['ReadingLevelHelp'].toString();
-                    // $scope.showReadingLevelHelp = ;
-                    $scope.showReadingLevelHelp = {
-                        templateUrl: 'readinginfo.html'
-                    };
-
-                    /*$scope.open = function (size) {
-
-                        $uibModal.open({
-                            templateUrl: 'myModalContent.html',
-                            size: size
-                        });
-
-                    };*/
-
                     $scope.analyze = function () {
                         var minValue = 1;
 
@@ -316,7 +301,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                             //Save content quality settings to wp database
 
-                            // saveContentQualitySettings($scope.QualityLevels);
+                            saveContentQualitySettings($scope.QualityLevels);
 
                             analyzeContentQuality(20);
                         } else {
@@ -345,9 +330,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             RepetitionLevel: 1,
                             TextLengthRuleLevel: 1
                         };
-                    };
-
-
+                    }
 
                     function GetPageContent() {
                         var content = $scope.HtmlContent;
@@ -385,7 +368,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             renderSuggestions(response.Suggestions);
 
                             //Save content quality suggestions to database with ajax call
-                            // saveContentQualitySuggestions(response);
+                            saveContentQualitySuggestions(response);
 
                             // update run date
                             $scope.LastQualityRun = response.ModifiedDate;
@@ -429,6 +412,58 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         // save details
                         $scope.contentQualityDetails = json.Details;*/
                     }
+
+                    var saveContentQualitySuggestions = function (suggestions) {
+                        var deffered = $q.defer();
+
+                        var details = {
+                            "Details": {
+                                "ReadingLevel": suggestions.Details.ReadingLevel,
+                                "ReadingTime": suggestions.Details.ReadingTime,
+                                "ReadingValues": suggestions.Details.ReadingValues
+                            }
+                        };
+
+                        var data = $j.extend({}, details, suggestions.Suggestions);
+
+                        $j.ajax({
+                            url: Craft.getActionUrl('webtexttool/saveContentQualitySuggestions'),
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {
+                                data: data,
+                                entryId: wtt_globals.entryId
+                            }, success: function (result) {
+                                deffered.resolve(result);
+                            }, error: function (jqXHR, textStatus, errorThrown) {
+                                console.log(JSON.stringify(jqXHR));
+                                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                            }
+                        });
+
+                        return deffered.promise;
+                    };
+
+                    var saveContentQualitySettings = function (settings) {
+                        var deffered = $q.defer();
+
+                        $j.ajax({
+                            url: Craft.getActionUrl('webtexttool/saveContentQualitySettings'),
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {
+                                data: settings,
+                                entryId: wtt_globals.entryId
+                            }, success: function (result) {
+                                deffered.resolve(result);
+                            }, error: function (jqXHR, textStatus, errorThrown) {
+                                console.log(JSON.stringify(jqXHR));
+                                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                            }
+                        });
+
+                        return deffered.promise;
+                    };
 
                     function renderSuggestions(response, broadcast) {
                         $scope.contentQualitySuggestions = response.Suggestions;
@@ -965,9 +1000,9 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                         $scope.QualityLevels = '';
 
-                        // get content quality settings from wp
-                        if (wtt_globals.getCQSettings !== "") {
-                            $scope.QualityLevels = wtt_globals.getCQSettings;
+                        // get content quality settings from db
+                        if (wtt_globals.record !== "" && wtt_globals.record.wttContentQualitySettings !== "") {
+                            $scope.QualityLevels = JSON.parse(wtt_globals.record.wttContentQualitySettings);
                         }
 
                         // get page quality levels from settings
@@ -977,10 +1012,11 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             $scope.settings = getDefaultQualitySettings();
                         }
 
-                        if (wtt_globals.getLastSuggestions !== "") {
+                        if (wtt_globals.record !== "" && wtt_globals.record.wttContentQualitySuggestions !== "") {
                             // load last run suggestions
-                            $scope.contentQualityDetails = wtt_globals.getLastSuggestions.Details;
-                            renderSuggestions(wtt_globals.getLastSuggestions, false);
+                            var contentQualityDetails = JSON.parse(wtt_globals.record.wttContentQualitySuggestions);
+                            $scope.contentQualityDetails = contentQualityDetails.Details;
+                            renderSuggestions(contentQualityDetails, false);
                         } else {
                             // load initial template
                             $scope.contentQualitySuggestions = initialCQTemplate.Suggestions.Suggestions;
@@ -1092,6 +1128,17 @@ app.factory("languageService", ['$http', '$q', 'httpService', '$cookies',
     }
 ]);
 
+app.directive("wttPageSlideout", function () {
+    return {
+        template: wtt_globals.pageSlideOut,
+        scope: {
+            info: "="
+        },
+        replace: true,
+        link: function() {
+        }
+    };
+});
 
 app.directive('enforceMaxTags', function () {
     return {
@@ -1382,6 +1429,7 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
         };
     }]);
 
+
 app.factory("keywordService", ['$http', '$q', '$rootScope', 'httpService',
     function ($http, $q, $rootScope, httpService) {
         var WttApiBaseUrl = wtt_globals.wttApiBaseUrl + 'keywords';
@@ -1511,7 +1559,7 @@ app.factory("stateService", [function () {
 
     return {
         data: data,
-        clear: clear,
+        clear: clear
     };
 }]);
 

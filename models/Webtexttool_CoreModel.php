@@ -21,7 +21,10 @@ class Webtexttool_CoreModel extends BaseModel
         return array(
             $this->wttKeywords,
             $this->wttDescription,
-            $this->wttLanguage
+            $this->wttLanguage,
+            $this->wttSynonyms,
+            $this->wttContentQualitySettings,
+            $this->wttContentQualitySuggestions,
         );
     }
 
@@ -33,11 +36,14 @@ class Webtexttool_CoreModel extends BaseModel
     public function defineAttributes()
     {
         return array(
-            'id'                => AttributeType::Number,
-            'entryId'           => AttributeType::Number,
-            'wttKeywords'       => AttributeType::String,
-            'wttDescription'    => AttributeType::String,
-            'wttLanguage'       => AttributeType::String,
+            'id'                            => AttributeType::Number,
+            'entryId'                       => AttributeType::Number,
+            'wttKeywords'                   => AttributeType::String,
+            'wttDescription'                => AttributeType::String,
+            'wttLanguage'                   => AttributeType::String,
+            'wttSynonyms'                   => AttributeType::String,
+            'wttContentQualitySettings'     => AttributeType::String,
+            'wttContentQualitySuggestions'  => AttributeType::String,
         );
     }
 }
