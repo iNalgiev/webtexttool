@@ -1011,7 +1011,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         $scope.QualityLevels = '';
 
                         // get content quality settings from db
-                        if (wtt_globals.record !== "" && wtt_globals.record.wttContentQualitySettings !== "") {
+                        if (wtt_globals.record !== "" && wtt_globals.record.wttContentQualitySettings !== "" && wtt_globals.record.wttContentQualitySettings !== null) {
                             $scope.QualityLevels = JSON.parse(wtt_globals.record.wttContentQualitySettings);
                         }
 
@@ -1022,7 +1022,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             $scope.settings = getDefaultQualitySettings();
                         }
 
-                        if (wtt_globals.record !== "" && wtt_globals.record.wttContentQualitySuggestions !== "") {
+                        if (wtt_globals.record !== "" && wtt_globals.record.wttContentQualitySuggestions !== "" && wtt_globals.record.wttContentQualitySuggestions !== null) {
                             // load last run suggestions
                             var contentQualityDetails = JSON.parse(wtt_globals.record.wttContentQualitySuggestions);
 
