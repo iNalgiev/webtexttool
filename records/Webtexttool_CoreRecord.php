@@ -34,7 +34,7 @@ class Webtexttool_CoreRecord extends BaseRecord
             'wttKeywords'                   => array(AttributeType::String, 'default' => ''),
             'wttDescription'                => array(AttributeType::String, 'maxLength' => 1024, 'default' => ''),
             'wttLanguage'                   => array(AttributeType::String, 'default' => ''),
-            'wttSynonyms'                   => array(AttributeType::String, 'maxLength' => 1024, 'default' => ''),
+            'wttSynonyms'                   => array(AttributeType::String, 'column' => ColumnType::Text),
             'wttContentQualitySettings'     => array(AttributeType::String, 'column' => ColumnType::Text),
             'wttContentQualitySuggestions'  => array(AttributeType::String, 'column' => ColumnType::Text)
         );

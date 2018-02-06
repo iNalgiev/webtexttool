@@ -14,7 +14,7 @@ class m180205_123400_webtexttool_addCoreColumns extends BaseMigration
 
         $this->addColumnAfter('webtexttool_core', 'wttContentQualitySettings', array(ColumnType::Text), 'wttLanguage');
         $this->addColumnAfter('webtexttool_core', 'wttContentQualitySuggestions', array(ColumnType::Text), 'wttLanguage');
-        $this->addColumnAfter('webtexttool_core', 'wttSynonyms', array(ColumnType::Varchar, 'maxLength' => 1024), 'wttLanguage');
+        $this->addColumnAfter('webtexttool_core', 'wttSynonyms', array(ColumnType::Text), 'wttLanguage');
 
         return true;
     }

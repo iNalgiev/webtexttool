@@ -32,6 +32,7 @@ class WebtexttoolController extends BaseController
         $model->wttKeywords = craft()->request->getPost('wtt_keyword');
         $model->wttDescription = craft()->request->getPost('wtt_description');
         $model->wttLanguage = craft()->request->getPost('wtt_language');
+        $model->wttSynonyms = craft()->request->getPost('wtt_synonym_tags');
 
         if ($model->validate()) {
             craft()->webtexttool->saveRecord($model);

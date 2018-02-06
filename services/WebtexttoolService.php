@@ -157,6 +157,8 @@ class WebtexttoolService extends BaseApplicationComponent
                 return false;
             }
         }
+
+//        $this->returnJson($model);
     }
 
     /**

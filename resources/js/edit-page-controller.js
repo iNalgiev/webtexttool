@@ -41,11 +41,20 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     var selectedPageNodes = [];
                     var keywordSynonyms = null;
 
-                    var synonymValues = $j("input#wtt-synonym-tags");
+                    // var synonymValues = $j("input#wtt-synonym-tags");
+                    var synonymValues = wtt_globals.synonyms;
 
                     var synonymList = $j.map(synonymValues, function (element) {
-                        return {text: element.value};
+                        return {text: element};
                     });
+
+                    if(synonymValues !== "") {
+                        $j.map(synonymValues, function (element) {
+                            if ($j('#wttSynonymTags li').length <= 2) {
+                                $j("#wttSynonymTags").append('<li><input type="hidden" id="wtt-synonym-tags" name="wtt_synonym_tags[]" value=\"' + element + '\"/></li>');
+                            }
+                        })
+                    }
 
                     $scope.htmlPopover = $sce.trustAsHtml('<p class="tooltip-content">First select for which language / country you want to optimize your content.<br><br>Then enter your keyword.</p>');
                     $scope.htmlPopoverS = $sce.trustAsHtml('<p class="tooltip-content">While writing, multiple suggestions appear here. These suggestions tell you how you can improve your text for the search engines, according to the latest SEO rules, but also how to structure your text for your readers. Following these suggestions, will raise your optimization score!</p>');
@@ -197,7 +206,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     $scope.useMyKeyword = function () {
                         if ($scope.pageHasKeyword()) {
                             if (!validateKeyword()) {
-                                alert("Keyword is required!");
+                                toastr.warning("Keyword is required!");
                                 return;
                             }
 
@@ -229,7 +238,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                 $scope.keywordSet = true;
                             }, 500);
                         } else {
-                            console.error("No keyword defined");
+                            toastr.error("No keyword defined");
                         }
                     };
 
@@ -503,7 +512,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                 content: content,
                                 keywords: $scope.Keyword,
                                 languageCode: $scope.localLanguageCode,
-                                domain: $scope.domainUrl
+                                domain: $scope.domainUrl,
+                                ruleSet: $scope.ruleSet
                             };
 
                             httpService.postData(WttApiBaseUrl + "page/suggestions", $scope.model).then(function (response) {
@@ -666,14 +676,14 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     if (!entryId) {
                         $j("input#wtt-keyword").keyup(function () {
                             $j("input#wtt-keyword").val('');
-                            alert('Save the entry before entering a keyword or description!');
+                            toastr.warning('Save the entry before entering a keyword or description!');
                         })
                     }
 
                     $j("textarea#wtt_description").keyup(function () {
                         if (!entryId) {
                             $j("textarea#wtt_description").val('');
-                            alert('Save the entry before entering a keyword or description!');
+                            toastr.warning('Save the entry before entering a keyword or description!');
                         } else {
                             $scope.Description = $j("textarea#wtt_description").val();
 
@@ -1015,8 +1025,11 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         if (wtt_globals.record !== "" && wtt_globals.record.wttContentQualitySuggestions !== "") {
                             // load last run suggestions
                             var contentQualityDetails = JSON.parse(wtt_globals.record.wttContentQualitySuggestions);
-                            $scope.contentQualityDetails = contentQualityDetails.Details;
-                            renderSuggestions(contentQualityDetails, false);
+
+                            if(contentQualityDetails !== null) {
+                                $scope.contentQualityDetails = contentQualityDetails.Details;
+                                renderSuggestions(contentQualityDetails, false);
+                            }
                         } else {
                             // load initial template
                             $scope.contentQualitySuggestions = initialCQTemplate.Suggestions.Suggestions;

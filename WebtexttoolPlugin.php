@@ -73,6 +73,7 @@ class WebtexttoolPlugin extends BasePlugin
         craft()->templates->includeJs('wtt_globals = '.JsonHelper::encode(array(
                 'entryId' => $entryId,
                 'record' => $record,
+                'synonyms' => JsonHelper::decode($record->wttSynonyms),
                 'isNewEntry' => $isNewEntry,
                 'siteUrl' => craft()->getSiteUrl(),
                 'suggestionTemplate' => craft()->templates->render('webtexttool/directives/wtt-suggestion'),

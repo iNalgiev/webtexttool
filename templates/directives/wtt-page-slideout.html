@@ -2,7 +2,7 @@
     <div ng-if="info.Type=='list' || info.Type=='listex'">
         <table>
             <tr>
-                <th><span>{[info.Title]}</span></th>
+                <th style="font-weight: bold;"><span>{[info.Title]}</span></th>
                 <th>
                     <a class="boxclose" onclick="jQuery('#slideout').toggleClass('on')"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></a>
                 </th>
@@ -22,7 +22,7 @@
     <div ng-if="info.Type=='suggestions'">
         <table>
             <tr>
-                <th colspan="2"><span>{[info.Title]}</span></th>
+                <th style="font-weight: bold;" colspan="2"><span>{[info.Title]}</span></th>
                 <th><a class="boxclose" onclick="jQuery('#slideout').toggleClass('on')"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></a></th>
             </tr>
             <tr>

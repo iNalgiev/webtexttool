@@ -2,6 +2,7 @@
 {% includeCssResource "webtexttool/css/angular-busy.min.css" %}
 {% includeCssResource "webtexttool/css/flag.min.css" %}
 {% includeCssResource "webtexttool/css/scrollable-table.css" %}
+{% includeCssResource "webtexttool/css/ng-tags-input.css" %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-core.min.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}"></script>
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/getHtmlContent.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}"></script>
@@ -18,15 +19,6 @@
         '</div>'
     );
 </script>
-<script>
-    jQuery('div[id="descriptiondiv"]').after(
-        '<ul id="wttSynonymTags" name="wttSynonymTags" style="list-style:none;">' +
-        {% for synonym in record.synoyms %}
-            '<li><input type="hidden" id="wtt-synonym-tags" name="wtt_synonym_tags[]" value="' + '{{ record.text }}' + '"/></li>' +
-        {% endfor %}
-        '</ul>'
-    )
-</script>
 <script src="{{ url('resources/webtexttool/js/edit-page-controller.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}" type="text/javascript"></script>
 
 <div ng-app="wtt" ng-controller="editPageController"
@@ -41,3 +33,4 @@
 
 <input type="hidden" id="wtt-record-id" name="recordId" value="{{ record ? record.id : null }}"/>
 <input type="hidden" id="wtt-language-code-field" name="wtt_language" value="{{ record ? record.wttLanguage : null }}"/>
+<ul id="wttSynonymTags" style="list-style:none;"></ul>
