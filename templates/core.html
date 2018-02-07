@@ -3,6 +3,7 @@
 {% includeCssResource "webtexttool/css/flag.min.css" %}
 {% includeCssResource "webtexttool/css/scrollable-table.css" %}
 {% includeCssResource "webtexttool/css/ng-tags-input.css" %}
+{% includeCssResource "webtexttool/css/angular-toastr.min.css" %}
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-core.min.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}"></script>
 <script type="text/javascript" src="{{ url('resources/webtexttool/js/getHtmlContent.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}"></script>
@@ -21,7 +22,7 @@
 </script>
 <script src="{{ url('resources/webtexttool/js/edit-page-controller.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}" type="text/javascript"></script>
 
-<div ng-app="wtt" ng-controller="editPageController"
+<div ng-app="wttApp" ng-controller="editPageController"
      cg-busy="{promise:loadingPromise,message:loadingMessage,backdrop:true}">
 
     {% include "webtexttool/header.html" %}

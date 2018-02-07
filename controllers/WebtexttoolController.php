@@ -89,13 +89,6 @@ class WebtexttoolController extends BaseController
 
         $params = array('data' => craft()->request->getPost('data'), 'entryId' => craft()->request->getPost('entryId'));
 
-        //TODO check if already exists then overwrite, else create new record and save to database
-      /*  if ($id = craft()->request->getPost('recordId')) {
-            $model = craft()->webtexttool->getRecordById($id);
-        } else {
-            $model = craft()->webtexttool->newRecord($id);
-        }*/
-
         if($id = $params['entryId']) {
             $model = craft()->webtexttool->getRecordByEntryId($id);
         } else {
@@ -108,8 +101,8 @@ class WebtexttoolController extends BaseController
         if ($model->validate()) {
             $response = [
                 'message' => 'success',
-                'model' => $model->wttContentQualitySettings,
-                'data' => $params['data']
+                /*'model' => $model->wttContentQualitySettings,
+                'data' => $params['data']*/
             ];
 
             craft()->webtexttool->saveRecord($model);
@@ -125,14 +118,6 @@ class WebtexttoolController extends BaseController
 
         $params = array('data' => craft()->request->getPost('data'), 'entryId' => craft()->request->getPost('entryId'));
 
-        //TODO check if already exists then overwrite, else create new record and save to database
-
-/*        if ($id = craft()->request->getPost('recordId')) {
-            $model = craft()->webtexttool->getRecordById($id);
-        } else {
-            $model = craft()->webtexttool->newRecord($id);
-        }*/
-
         if($id = $params['entryId']) {
             $model = craft()->webtexttool->getRecordByEntryId($id);
         } else {
@@ -145,8 +130,8 @@ class WebtexttoolController extends BaseController
         if ($model->validate()) {
             $response = [
                 'message' => 'success',
-                'model' => $model->wttContentQualitySuggestions,
-                'data' => $params['data']
+                /*'model' => $model->wttContentQualitySuggestions,
+                'data' => $params['data']*/
             ];
 
             craft()->webtexttool->saveRecord($model);

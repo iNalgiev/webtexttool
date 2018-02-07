@@ -1,4 +1,4 @@
-var app = angular.module("wtt", ['tc.chartjs', 'ngSanitize', 'wtt.ui.bootstrap', 'ngCookies', 'cgBusy', 'scrollable-table', 'toastr', 'ngTagsInputWtt', 'angular-ladda']);
+var app = angular.module("wttApp", ['tc.chartjs', 'ngSanitize', 'wtt.ui.bootstrap', 'ngCookies', 'cgBusy', 'scrollable-table', 'toastr', 'ngTagsInputWtt', 'angular-ladda']);
 
 app.config(['$httpProvider', '$interpolateProvider',
     function ($httpProvider, $interpolateProvider) {
@@ -9,12 +9,12 @@ app.config(['$httpProvider', '$interpolateProvider',
 app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '$timeout', '$interval', '$cookies', 'suggestionsService', 'keywordService', 'httpService', 'languageService', '$sce', 'toastr', 'synonymService',
     function ($scope, $http, $q, stateService, $timeout, $interval, $cookies, suggestionsService, keywordService, httpService, languageService, $sce, toastr, synonymService) {
 
-        var WttApiBaseUrl = wtt_globals.wttApiBaseUrl; //"{{wttApiBaseUrl}}";
+        var WttApiBaseUrl = wtt_globals.wttApiBaseUrl;
         var $j = jQuery;
+        var authCode = wtt_globals.userData.accessToken;
+        var apiKey = wtt_globals.wttApiKey;
 
-        if (localStorage.getItem('wtt_token') === null) {
-            var authCode = wtt_globals.accessToken; //"{{craft.webtexttool.getAccessTokenByUserId(currentUser.id) ? craft.webtexttool.getAccessTokenByUserId(currentUser.id).accessToken : null}}";
-            var apiKey = wtt_globals.wttApiKey; //"{{craft.config.get('wttApiKey', 'webtexttool') ? craft.config.get('wttApiKey', 'webtexttool') : null}}";
+        if (localStorage.getItem('wtt_token') === null || localStorage.getItem('wtt_token') === "") {
             if (authCode !== '') {
                 localStorage.setItem('wtt_token', authCode);
             } else if (apiKey !== '') {
@@ -23,9 +23,9 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
         }
 
         $scope.promiseMessage = "Loading...";
-        $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated");
+        // $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated");
 
-        httpService.getData(WttApiBaseUrl + "user/authenticated").then(function (result) {
+        $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated").then(function (result) {
             $scope.auth = result;
 
             if (result) {
@@ -196,6 +196,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                 deffered.resolve(result);
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
+                                deffered.reject(errorThrown);
                                 console.log(JSON.stringify(jqXHR));
                                 console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
                             }
@@ -230,7 +231,11 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                     }
 
                                     getHtmlAndRunSuggestions();
+                                }, function(result) {
+                                    toastr.warning(result, "Something went wrong while fetching the page!");
                                 });
+                            }, function(result) {
+                                toastr.warning(result, "Something went wrong!");
                             });
 
                             $timeout(function () {
@@ -238,7 +243,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                 $scope.keywordSet = true;
                             }, 500);
                         } else {
-                            toastr.error("No keyword defined");
+                            console.error("No keyword defined");
                         }
                     };
 
@@ -1530,6 +1535,7 @@ app.factory("httpService", ['$http', '$q',
 app.factory("stateService", [function () {
     var data = {
         Resources: [
+            {"ResourceKey":"CQGenericError", "HtmlContent": "We’re sorry, we could not analyze your content. Please try again or contact support@webtexttool.com in case the issues persist.", "LanguageCode": "en"},
             {"ResourceKey":"ContentRequiredError","HtmlContent":"Your page needs some content.","LanguageCode":"en"},
             {"ResourceKey":"ContentMinLengthError","HtmlContent":"Your page content must have at least 150 words.","LanguageCode":"en"},
             {"ResourceKey":"GenericError","HtmlContent":"Something went wrong!","LanguageCode":"en"},
@@ -1539,7 +1545,7 @@ app.factory("stateService", [function () {
             {"ResourceKey":"HeadingsLabel","HtmlContent":"Headings","LanguageCode":"en"},
             {"ResourceKey":"MainContentLabel","HtmlContent":"Main Content","LanguageCode":"en"},
             {"ResourceKey":"MiscellaneousLabel","HtmlContent":"Miscellaneous","LanguageCode":"en"},
-            {"ResourceKey":"HeadingsSuggestion","HtmlContent":"To optimize your content both in terms of readability and SEO, you should structure your content by adding several headings. At the start of your page you normally have an H1 / heading 1 with the title of your page. In some CMS&#39;s / themes this H1 is added automatically. If this is the case, you can select the option &quot;Process page title as H1&quot; from the settings above. Next to H1, you should add smaller heading (H2-H6) to structure your content even further.","LanguageCode":"en"},
+            {"ResourceKey":"HeadingsSuggestion","HtmlContent":"To optimize your content both in terms of readability and SEO, you should structure your content by adding several headings. At the start of your page you normally have an H1 / heading 1 with the title of your page. Next to H1, you should add smaller heading (H2-H6) to structure your content even further.","LanguageCode":"en"},
             {"ResourceKey":"MainContentSuggestion","HtmlContent":"Here you will find several important suggestions for your content. Please have a look at our knowledgebase (Learn tab in the app) to find more background information about these suggestions.","LanguageCode":"en"},
             {"ResourceKey":"MiscellaneousSuggestion","HtmlContent":"Here you will find suggestions to optimize your content. These will have smaller impact on overall optimization, but are good to consider and see if they can fit in your content.","LanguageCode":"en"},
             {"ResourceKey":"PageTitleSuggestion","HtmlContent":"<p>The Page title is important to search engines. And therefore it&#39;s important to you. Think of a catchy title that will trigger a user to click on your page when it&#39;s listed in the search results. Of course it should also cover the content of the page.</p>\r\n\t","LanguageCode":"en"},

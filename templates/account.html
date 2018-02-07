@@ -68,10 +68,14 @@
                     target="_blank">Transactions overview</a></li>
         </ul>
     </div>
-
-    <button type="submit" class="btn submit" ng-click="logout()"
-            data-style="expand-left" ladda="loading">
-        <span class="ladda-label">Sign out</span>
-        <span class="ladda-spinner"></span>
-    </button>
+    <div ng-show="apiKey !== ''">
+        <span>To logout, remove the api key in the config file.</span>
+    </div>
+    <div ng-show="authCode">
+        <button type="submit" class="btn submit" ng-click="logout()"
+                data-style="expand-left" ladda="loading">
+            <span class="ladda-label">Sign out</span>
+            <span class="ladda-spinner"></span>
+        </button>
+    </div>
 </div>
