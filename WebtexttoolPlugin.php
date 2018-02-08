@@ -55,15 +55,18 @@ class WebtexttoolPlugin extends BasePlugin
 
         $wttApiBaseUrl = craft()->config->get('wttApiBaseUrl', 'webtexttool');
         $user = craft()->userSession->getUser();
+        $path = craft()->request->getPath();
 
-        craft()->templates->includeJs('wtt_dashboard = '.JsonHelper::encode(array(
-                'accountTemplate' => craft()->templates->render('webtexttool/account'),
-                'loginTemplate' => craft()->templates->render('webtexttool/login'),
-                'wttApiBaseUrl' => $wttApiBaseUrl,
-                'currentUserId' => $user->id,
-                'userData' => craft()->webtexttool->getAccessTokenByUserId($user->id),
-                'wttApiKey' => craft()->config->get('wttApiKey', 'webtexttool'),
-            )).';');
+        if($path == 'webtexttool') {
+            craft()->templates->includeJs('wtt_dashboard = '.JsonHelper::encode(array(
+                    'accountTemplate' => craft()->templates->render('webtexttool/account'),
+                    'loginTemplate' => craft()->templates->render('webtexttool/login'),
+                    'wttApiBaseUrl' => $wttApiBaseUrl,
+                    'currentUserId' => $user->id,
+                    'userData' => craft()->webtexttool->getAccessTokenByUserId($user->id),
+                    'wttApiKey' => craft()->config->get('wttApiKey', 'webtexttool'),
+                )).';');
+        }
 
         craft()->on('entries.onSaveEntry', [$this, 'handleEntrySave']);
     }
