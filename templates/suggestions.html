@@ -7,7 +7,7 @@
             </button>
         </div>
         <aside class="wtt-sidebar display-block"
-               ng-show="isCollapsed"> <!-- ng-class="{'display-none': !isCollapsed, 'display-block': isCollapsed, 'wtt_overlay': !keywordSet}" -->
+               ng-show="isCollapsed">
 
             <div class="page-info" ng-cloak>
                 <label class="sub-label">Keyword:</label>
@@ -81,7 +81,6 @@
                 <div class="wtt-tbl-cell" ng-show="showScore">
                     <div ng-class="contentClass" id="wtt-content-score" title="{[contentScoreTag]}">
                         <input class="wtt-content-score-text" id="wtt-content-score-input" type="text" ng-value="contentScore">
-                        <!--                        <span class="wtt-page-score-text">{[contentScore | number: 0]}%</span>-->
                         <canvas tc-chartjs-doughnut chart-data="contentPageScoreData"
                                 chart-options="pageScoreChartOptions" width="110" height="110"></canvas>
                     </div>
@@ -99,32 +98,6 @@
                     <wtt-suggestion ng-repeat="suggestion in suggestions"
                                     suggestion="suggestion"
                                     index="{[$index]}"></wtt-suggestion>
-
-                    <!--<script id="wtt-suggestion.html" type="text/ng-template">
-                        <div class="suggestions-box" ng-class="{'active': suggestion.selected}" id="{[domId]}">
-
-                            <div class="suggestions-header">
-                                <button class="btn-collapse" type="button"
-                                        ng-click="suggestion.isCollapsed = !suggestion.isCollapsed">
-                                    <i class="fa"
-                                       ng-class="{'fa-angle-down': !suggestion.isCollapsed, 'fa-angle-right': suggestion.isCollapsed}"></i>
-                                </button>
-                                <h3>{[displayName]}</h3>
-                                <uib-progressbar animate="true" max="suggestion.Importance" value="suggestion.Score"
-                                                 type="{[suggestion.progressType]}"></uib-progressbar>
-                            </div>
-                            <div class="suggestions-content" uib-collapse="suggestion.isCollapsed">
-                                <ul class="suggestions-list">
-                                    <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': rule.Checked}">
-                                        <i class="fa"
-                                           ng-class="{'fa-circle-o': !rule.Checked, 'fa-check-circle': rule.Checked}"></i>
-                                        <span ng-bind-html="rule.Text"></span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </script>-->
-
                 </div>
             </div>
 

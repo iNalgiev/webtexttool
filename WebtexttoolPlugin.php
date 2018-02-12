@@ -78,7 +78,7 @@ class WebtexttoolPlugin extends BasePlugin
 
         $record = craft()->webtexttool->getRecordByEntryId($entryId);
         $wttApiBaseUrl = craft()->config->get('wttApiBaseUrl', 'webtexttool');
-        $user = craft()->userSession->getUser();
+        $currentUser = craft()->userSession->getUser();
 
         craft()->templates->includeJs('wtt_globals = '.JsonHelper::encode(array(
                 'entryId' => $entryId,
@@ -91,7 +91,7 @@ class WebtexttoolPlugin extends BasePlugin
                 'pageSlideOut' => craft()->templates->render('webtexttool/directives/wtt-page-slideout'),
                 'wttApiBaseUrl' => $wttApiBaseUrl,
                 'locale' => $entry->locale,
-                'userData' => craft()->webtexttool->getAccessTokenByUserId($user->id),
+                'userData' => craft()->webtexttool->getAccessTokenByUserId($currentUser->id),
                 'wttApiKey' => craft()->config->get('wttApiKey', 'webtexttool'),
                 'permaLink' => craft()->entries->getEntryById($entryId) ? craft()->entries->getEntryById($entryId)->getUrl() : "",
                 'status' => craft()->entries->getEntryById($entryId) ? craft()->entries->getEntryById($entryId)->getStatus() : ""

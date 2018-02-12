@@ -23,7 +23,7 @@
 <script src="{{ url('resources/webtexttool/js/edit-page-controller.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}" type="text/javascript"></script>
 
 <div ng-app="wttApp" ng-controller="editPageController"
-     cg-busy="{promise:loadingPromise,message:loadingMessage,backdrop:true}">
+     cg-busy="{promise:loadingPromise,message:promiseMessage,backdrop:true}">
 
     {% include "webtexttool/header.html" %}
     {% include "webtexttool/warning.html" %}

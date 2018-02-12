@@ -19,7 +19,6 @@ class WebtexttoolController extends BaseController
      */
     public function actionSaveRecord()
     {
-
         $this->requirePostRequest();
 
         if ($id = craft()->request->getPost('recordId')) {
@@ -87,25 +86,21 @@ class WebtexttoolController extends BaseController
     public function actionSaveContentQualitySettings() {
         $this->requireAjaxRequest();
 
-        $params = array('data' => craft()->request->getPost('data'), 'entryId' => craft()->request->getPost('entryId'));
+        $params = array('data' => craft()->request->getPost('data'), 'entryId' => craft()->request->getPost('entryId'), 'recordId' => craft()->request->getPost('recordId'));
+        $entryId = $params['entryId'];
 
-        if($id = $params['entryId']) {
-            $model = craft()->webtexttool->getRecordByEntryId($id);
+        if($entryId && $params['recordId']) {
+            $model = craft()->webtexttool->getRecordByEntryId($entryId);
         } else {
             $model = new Webtexttool_CoreModel();
         }
 
-        $model->entryId = $id;
+        $model->entryId = $entryId;
         $model->wttContentQualitySettings = json_encode($params['data']);
 
         if ($model->validate()) {
-            $response = [
-                'message' => 'success',
-                /*'model' => $model->wttContentQualitySettings,
-                'data' => $params['data']*/
-            ];
 
-            craft()->webtexttool->saveRecord($model);
+            $response = craft()->webtexttool->saveRecord($model);
 
             $this->returnJson($response);
         }
@@ -116,22 +111,21 @@ class WebtexttoolController extends BaseController
     public function actionSaveContentQualitySuggestions() {
         $this->requireAjaxRequest();
 
-        $params = array('data' => craft()->request->getPost('data'), 'entryId' => craft()->request->getPost('entryId'));
+        $params = array('data' => craft()->request->getPost('data'), 'entryId' => craft()->request->getPost('entryId'), 'recordId' => craft()->request->getPost('recordId'));
+        $entryId = $params['entryId'];
 
-        if($id = $params['entryId']) {
-            $model = craft()->webtexttool->getRecordByEntryId($id);
+        if($entryId && $params['recordId']) {
+            $model = craft()->webtexttool->getRecordByEntryId($entryId);
         } else {
             $model = new Webtexttool_CoreModel();
         }
 
-        $model->entryId = $id;
+        $model->entryId = $entryId;
         $model->wttContentQualitySuggestions = json_encode($params['data']);
 
         if ($model->validate()) {
             $response = [
                 'message' => 'success',
-                /*'model' => $model->wttContentQualitySuggestions,
-                'data' => $params['data']*/
             ];
 
             craft()->webtexttool->saveRecord($model);

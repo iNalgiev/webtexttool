@@ -1,9 +1,15 @@
 var app = angular.module("wttApp", ['tc.chartjs', 'ngSanitize', 'wtt.ui.bootstrap', 'ngCookies', 'cgBusy', 'scrollable-table', 'toastr', 'ngTagsInputWtt', 'angular-ladda']);
 
-app.config(['$httpProvider', '$interpolateProvider',
-    function ($httpProvider, $interpolateProvider) {
+app.config(['$httpProvider', '$interpolateProvider', 'toastrConfig',
+    function ($httpProvider, $interpolateProvider, toastrConfig) {
         $httpProvider.interceptors.push('authInterceptor');
         $interpolateProvider.startSymbol('{[').endSymbol(']}');
+
+        angular.extend(toastrConfig, {
+            maxOpened: 3,
+            preventDuplicates: true,
+            preventOpenDuplicates: true
+        });
     }]);
 
 app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '$timeout', '$interval', '$cookies', 'suggestionsService', 'keywordService', 'httpService', 'languageService', '$sce', 'toastr', 'synonymService',
@@ -358,13 +364,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                     function analyzeContentQuality(ruleSet) {
 
-                        // console.log("contentQualityController -> run Content Suggestions");
-
                         $scope.analyzing = true;
                         startContentQualityCompute();
-
-                        // var content = getHtmlContent($scope.HtmlContent, $scope.Title, $scope.Description, $scope.permalink, $scope.Keyword, $scope.checkboxModel.isChecked);
-                        // var content = $scope.HtmlContent;
 
                         $scope.cqModel = {
                             content: GetPageContent(),
@@ -398,37 +399,35 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             showError($scope.data.Resources[errorKey].toString());
                             $scope.analyzing = false;
                         });
-
-                        /*var json = (function () {
-                            var json = null;
-                            $j.ajax({
-                                'async': false,
-                                'global': false,
-                                'url': wtt_globals.pluginsUrl + "js/contentquality.json",
-                                'dataType': "json",
-                                'success': function (data) {
-                                    json = data;
-                                }
-                            });
-                            return json;
-                        })();
-
-                        endContentQualityCompute();
-
-                        $scope.userInfo.Credits = $scope.userInfo.Credits - 1;
-
-                        renderSuggestions(json.Suggestions);
-
-                        // update run date
-                        $scope.LastQualityRun = json.ModifiedDate;
-                        $scope.LastModified = json.ModifiedDate;
-
-                        // save details
-                        $scope.contentQualityDetails = json.Details;*/
                     }
+
+                    var saveContentQualitySettings = function (settings) {
+                        var deffered = $q.defer();
+                        var recordId = getContent("wtt-record-id");
+
+                        $j.ajax({
+                            url: Craft.getActionUrl('webtexttool/saveContentQualitySettings'),
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {
+                                data: settings,
+                                entryId: wtt_globals.entryId,
+                                recordId: recordId !== "" ? recordId : wtt_globals.record.id
+                            }, success: function (result) {
+                                document.getElementById("wtt-record-id").setAttribute('value', result.id);
+                                deffered.resolve(result);
+                            }, error: function (jqXHR, textStatus, errorThrown) {
+                                console.log(JSON.stringify(jqXHR));
+                                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
+                            }
+                        });
+
+                        return deffered.promise;
+                    };
 
                     var saveContentQualitySuggestions = function (suggestions) {
                         var deffered = $q.defer();
+                        var recordId = getContent("wtt-record-id");
 
                         var details = {
                             "Details": {
@@ -446,28 +445,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             dataType: 'json',
                             data: {
                                 data: data,
-                                entryId: wtt_globals.entryId
-                            }, success: function (result) {
-                                deffered.resolve(result);
-                            }, error: function (jqXHR, textStatus, errorThrown) {
-                                console.log(JSON.stringify(jqXHR));
-                                console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
-                            }
-                        });
-
-                        return deffered.promise;
-                    };
-
-                    var saveContentQualitySettings = function (settings) {
-                        var deffered = $q.defer();
-
-                        $j.ajax({
-                            url: Craft.getActionUrl('webtexttool/saveContentQualitySettings'),
-                            type: 'POST',
-                            dataType: 'json',
-                            data: {
-                                data: settings,
-                                entryId: wtt_globals.entryId
+                                entryId: wtt_globals.entryId,
+                                recordId: recordId !== "" ? recordId : wtt_globals.record.id
                             }, success: function (result) {
                                 deffered.resolve(result);
                             }, error: function (jqXHR, textStatus, errorThrown) {
