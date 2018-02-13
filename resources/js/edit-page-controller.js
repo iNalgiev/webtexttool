@@ -14,7 +14,6 @@ app.config(['$httpProvider', '$interpolateProvider', 'toastrConfig',
 
 app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '$timeout', '$interval', '$cookies', 'suggestionsService', 'keywordService', 'httpService', 'languageService', '$sce', 'toastr', 'synonymService',
     function ($scope, $http, $q, stateService, $timeout, $interval, $cookies, suggestionsService, keywordService, httpService, languageService, $sce, toastr, synonymService) {
-
         var WttApiBaseUrl = wtt_globals.wttApiBaseUrl;
         var $j = jQuery;
         var authCode = wtt_globals.userData.accessToken;
@@ -29,7 +28,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
         }
 
         $scope.promiseMessage = "Loading...";
-        // $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated");
 
         $scope.loadingPromise = httpService.getData(WttApiBaseUrl + "user/authenticated").then(function (result) {
             $scope.auth = result;
@@ -47,10 +45,9 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     var selectedPageNodes = [];
                     var keywordSynonyms = null;
 
-                    // var synonymValues = $j("input#wtt-synonym-tags");
                     var synonymValues = wtt_globals.synonyms;
 
-                    var synonymList = $j.map(synonymValues, function (element) {
+                    $scope.pageKeywordSynonyms = $j.map(synonymValues, function (element) {
                         return {text: element};
                     });
 
@@ -66,7 +63,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     $scope.htmlPopoverS = $sce.trustAsHtml('<p class="tooltip-content">While writing, multiple suggestions appear here. These suggestions tell you how you can improve your text for the search engines, according to the latest SEO rules, but also how to structure your text for your readers. Following these suggestions, will raise your optimization score!</p>');
                     $scope.htmlPopoverP = $sce.trustAsHtml('<p class="tooltip-content">Here you can set max 3 alternative keywords that support the main keyword.</p>');
 
-                    var permaLink = wtt_globals.permaLink; //'{% for entry in craft.entries.id(entryId) if entryId %} {{ entry ? entry.url : null }} {% endfor %}';
+                    var permaLink = wtt_globals.permaLink;
                     var permaLinkOptional = $j("#slug").val();
 
                     if (permaLink !== "") {
@@ -82,8 +79,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             $scope.updateSuggestions();
                         }
                     });
-
-                    $scope.pageKeywordSynonyms = synonymList;
 
                     $scope.getKeywordSynonyms = function (query) {
 
@@ -128,8 +123,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         return str.replace(/(?:\r\n|\r|\n)/g, '');
                     }
 
-                    var domainUrl2 = '{{siteUrl}}';
-                    var domainUrl = wtt_globals.siteUrl; //'{{siteUrl}}';
+                    var domainUrl = wtt_globals.siteUrl;
                     if (domainUrl !== null) {
                         $scope.domainUrl = getDomain(domainUrl);
                     }
@@ -163,12 +157,12 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         }
                     }
 
-                    var entryStatus = wtt_globals.status; //'{% for entry in craft.entries.id(entryId) %} {{entry.status}} {% endfor %}';
+                    var entryStatus = wtt_globals.status;
 
                     var params = {
                         url: Craft.livePreview.previewUrl,
-                        entryId: wtt_globals.entryId,//'{{entryId}}',
-                        locale: wtt_globals.locale, //'{{locale}}',
+                        entryId: wtt_globals.entryId,
+                        locale: wtt_globals.locale,
                         status: entryStatus.replace(/ /g, '')
                     };
 
@@ -181,7 +175,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             dataType: 'json',
                             data: params,
                             success: function (result) {
-                                console.log("result:" + result.url);
                                 deffered.resolve(result);
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
@@ -352,23 +345,13 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         };
                     }
 
-                    function GetPageContent() {
-                        var content = $scope.HtmlContent;
-
-                        /*if ($scope.checkboxModel.isChecked) {
-                            content = '<H1>' + $scope.Title + '</H1>' + content;
-                        }*/
-
-                        return content;
-                    }
-
                     function analyzeContentQuality(ruleSet) {
 
                         $scope.analyzing = true;
                         startContentQualityCompute();
 
                         $scope.cqModel = {
-                            content: GetPageContent(),
+                            content: $scope.HtmlContent,
                             languageCode: $scope.localLanguageCode,
                             qualityLevels: $scope.settings,
                             ruleSet: ruleSet
@@ -548,8 +531,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         $scope.showError = false;
                         $scope.seoScoreTag = $scope.ScoreTag;
                         $scope.contentScoreTag = $scope.QualityScoreTag;
-                        $scope.seoScore = (Math.round($scope.Score || 0)) + "%"; //$scope.Score || 0;
-                        $scope.contentScore = (Math.round($scope.QualityScore || 0)) + "%"; //$scope.QualityScore || 0;
+                        $scope.seoScore = (Math.round($scope.Score || 0)) + "%";
+                        $scope.contentScore = (Math.round($scope.QualityScore || 0)) + "%";
 
                         if (args.engine == "seo") {
                             $scope.seoClass = "page-score";
@@ -633,7 +616,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     if (inputKeyword.length != 0) {
                         $scope.useMyKeyword();
                     } else {
-                        console.error("Page has no keyword");
+                        return;
                     }
 
                     $j("div#tab1").contents().find("div").focus(function () {
@@ -655,21 +638,21 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         }
                     });
 
-                    var entryId = wtt_globals.entryId; //'{{entryId}}';
+                    var entryId = wtt_globals.entryId;
 
                     if (!entryId) {
                         $j("input#wtt-keyword").keyup(function () {
-                            $j("input#wtt-keyword").val('');
-                            toastr.warning('Save the entry before entering a keyword or description!');
+                            $j(this).val('');
+                            toastr.warning('Save the entry before entering a keyword!');
                         })
                     }
 
                     $j("textarea#wtt_description").keyup(function () {
                         if (!entryId) {
-                            $j("textarea#wtt_description").val('');
-                            toastr.warning('Save the entry before entering a keyword or description!');
+                            $j(this).val('');
+                            toastr.warning('Save the entry before entering a page description!');
                         } else {
-                            $scope.Description = $j("textarea#wtt_description").val();
+                            $scope.Description = $j(this).val();
 
                             if ($scope.Description != null) {
                                 $scope.updateSuggestions();
@@ -714,11 +697,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     };
 
                     // Select Keyword Controller
-
-                    $scope.changeCollapse = function() {
-                        $scope.isCollapsed = false;
-                    };
-
                     var keywordSourceLangCookie = $cookies.get('wtt_keyword_source_lang');
 
                     $scope.fillKeyword = function (keyword) {
@@ -913,11 +891,11 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                     });
 
                                 }, function () {
-                                    toastr.warning("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits. Please upgrade your plan.");
+                                    toastr.warning("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits.");
                                 }
                             );
                         } else {
-                            toastr.warning("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits. Please upgrade your plan.")
+                            toastr.warning("Please upgrade to use this feature. You have used all your available keyword search credits", "Please upgrade your plan.");
                         }
                     };
 
@@ -1098,7 +1076,7 @@ app.factory("synonymService", ['$http', '$q', 'httpService',
 
 app.factory("languageService", ['$http', '$q', 'httpService', '$cookies',
     function ($http, $q, httpService, $cookies) {
-        var WttApiBaseUrl = wtt_globals.wttApiBaseUrl; //"{{wttApiBaseUrl}}";
+        var WttApiBaseUrl = wtt_globals.wttApiBaseUrl;
 
         var getLanguages = function () {
             return httpService.getData(WttApiBaseUrl + "languages");
@@ -1131,9 +1109,7 @@ app.directive("wttPageSlideout", function () {
         scope: {
             info: "="
         },
-        replace: true,
-        link: function() {
-        }
+        replace: true
     };
 });
 
@@ -1155,7 +1131,7 @@ app.directive('enforceMaxTags', function () {
 
 app.directive("wttContentQuality", function () {
     return {
-        template: wtt_globals.contentQualityTemplate, //'<div ng-include="getTemplateUrl()"></div>',
+        template: wtt_globals.contentQualityTemplate,
         link: function () {
         }
     };
@@ -1163,7 +1139,7 @@ app.directive("wttContentQuality", function () {
 
 app.directive('wttSuggestion', ["suggestionsService", "$sce", "stateService", function (suggestionsService, $sce, stateService) {
     return {
-        template: wtt_globals.suggestionTemplate, //'<div ng-include="getTemplateUrl()"></div>', //templateUrl: "wtt-suggestion.html",
+        template: wtt_globals.suggestionTemplate,
         scope: {
             suggestion: '=',
             uid: '=',
@@ -1174,10 +1150,6 @@ app.directive('wttSuggestion', ["suggestionsService", "$sce", "stateService", fu
             scope.suggestion.selected = false;
             scope.suggestion.isCollapsed = true;
             suggestionsService.computeDisplayType(scope.suggestion);
-
-           /* scope.getTemplateUrl = function () {
-                return wtt_globals.siteUrl + '/wtt-suggestion.html';
-            };*/
 
             var data = stateService.data;
             scope.data = data;
@@ -1262,7 +1234,7 @@ app.directive('wttSuggestion', ["suggestionsService", "$sce", "stateService", fu
 app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "stateService",
     function (suggestionsService, $sce, stateService) {
         return {
-            template: wtt_globals.suggestionContentQualityTemplate, //'<div ng-include="getTemplateUrl()"></div>',
+            template: wtt_globals.suggestionContentQualityTemplate,
             scope: {
                 settings: "=",
                 suggestion: "=",
@@ -1271,10 +1243,6 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
             },
             replace: true,
             link: function (scope, elem, attr) {
-                /*scope.getTemplateUrl = function () {
-                    return wtt_globals.pluginsUrl + 'partials/directives/wtt-suggestion-content-quality.html';
-                };*/
-
                 var updateOnAction = function (value) {
                     scope.suggestion.selected = (value != 0);
                 };
@@ -1378,7 +1346,6 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                 scope.suggestion.isCollapsed = false;
 
                 suggestionsService.computeDisplayType(scope.suggestion);
-                // popoverService.initDynamicPopovers(elem);
 
                 var camelize = function (str) {
                     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
@@ -1417,8 +1384,6 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                                 Count: items.length}
                         }).value();
                     }
-
-                    // console.log(data2.sliderInfo);
 
                     jQuery('#slideout').addClass('on');
                 }

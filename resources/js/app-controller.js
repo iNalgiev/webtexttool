@@ -69,12 +69,15 @@ app.controller("appController", ['$scope', '$http', '$q', '$location',
                 type: 'POST',
                 dataType: 'json',
                 data: {
-                    userId: userId, userRecordId: userRecordId, accessToken: code
+                    userId: userId,
+                    userRecordId: userRecordId,
+                    accessToken: code
                 },
                 success: function (result) {
                     deffered.resolve(result);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
+                    deffered.reject(errorThrown);
                     console.log(JSON.stringify(jqXHR));
                     console.log("AJAX error: " + textStatus + ' : ' + errorThrown);
                 }
@@ -93,6 +96,9 @@ app.controller("appController", ['$scope', '$http', '$q', '$location',
                     localStorage.setItem('wtt_token', response.access_token);
                     sendMessageToServer(response.access_token).then(function () {
                         window.location.reload();
+                    }, function(result) {
+                        $scope.loading = false;
+                        $scope.error = result;
                     });
                 } else {
                     $scope.loading = false;
@@ -110,12 +116,15 @@ app.controller("appController", ['$scope', '$http', '$q', '$location',
                 localStorage.removeItem('wtt_token');
                 sendMessageToServer('').then(function () {
                     window.location.reload();
+                }, function(result) {
+                    $scope.loading = false;
+                    $scope.error = result;
                 });
             });
         };
 
         function init() {
-            $scope.authCode = wtt_dashboard.userData.accessToken;
+            $scope.authCode = wtt_dashboard.userData !== null ? wtt_dashboard.userData.accessToken : "";
             $scope.apiKey = wtt_dashboard.wttApiKey;
 
             if (localStorage.getItem('wtt_token') === "" || localStorage.getItem('wtt_token') === null) {

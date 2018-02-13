@@ -63,6 +63,10 @@ class WebtexttoolController extends BaseController
     {
         $this->requireAjaxRequest();
 
+        $response = [
+            'message' => 'Something went wrong'
+        ];
+
         if ($id = craft()->request->getPost('userRecordId')) {
             $model = craft()->webtexttool->getAccessTokenById($id);
         } else {
@@ -73,12 +77,12 @@ class WebtexttoolController extends BaseController
         $model->accessToken = craft()->request->getPost('accessToken');
 
         if ($model->validate()) {
+            $response = [
+                'message' => 'success'
+            ];
+
             craft()->webtexttool->saveAccessToken($model);
         }
-
-        $response = [
-            'message' => 'success'
-        ];
 
         $this->returnJson($response);
     }

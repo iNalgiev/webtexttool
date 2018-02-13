@@ -6,7 +6,7 @@ return array(
     "wttApiBaseUrl" => "https://app.webtexttool.com/api/",
 
     /**
-     * Overwrite your API Key here. Make sure there are no spaces or enters.
+     * Add your API Key here or add your own webtexttool config file (craft/config/webtexttool.php). Make sure there are no spaces or enters.
      */
     "wttApiKey" => ""
 );
