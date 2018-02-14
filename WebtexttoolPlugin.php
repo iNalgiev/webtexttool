@@ -54,16 +54,19 @@ class WebtexttoolPlugin extends BasePlugin
         craft()->templates->hook('cp.entries.edit.right-pane', [$this, 'renderCoreTemplate']);
 
         $wttApiBaseUrl = craft()->config->get('wttApiBaseUrl', 'webtexttool');
-        $user = craft()->userSession->getUser();
+        $currentUser = craft()->userSession->getUser();
         $path = craft()->request->getPath();
 
         if($path == 'webtexttool') {
-            craft()->templates->includeJs('wtt_dashboard = '.JsonHelper::encode(array(
+            craft()->templates->includeJsResource('webtexttool/js/wtt-admin.min.js');
+            craft()->templates->includeJsResource('webtexttool/js/app-controller.js');
+
+            craft()->templates->includeJs('var wtt_dashboard = '.JsonHelper::encode(array(
                     'accountTemplate' => craft()->templates->render('webtexttool/account'),
                     'loginTemplate' => craft()->templates->render('webtexttool/login'),
                     'wttApiBaseUrl' => $wttApiBaseUrl,
-                    'currentUserId' => $user->id,
-                    'userData' => craft()->webtexttool->getAccessTokenByUserId($user->id),
+                    'currentUserId' => $currentUser->id,
+                    'userData' => craft()->webtexttool->getAccessTokenByUserId($currentUser->id),
                     'wttApiKey' => craft()->config->get('wttApiKey', 'webtexttool'),
                 )).';');
         }
@@ -80,7 +83,11 @@ class WebtexttoolPlugin extends BasePlugin
         $wttApiBaseUrl = craft()->config->get('wttApiBaseUrl', 'webtexttool');
         $currentUser = craft()->userSession->getUser();
 
-        craft()->templates->includeJs('wtt_globals = '.JsonHelper::encode(array(
+        craft()->templates->includeJsResource('webtexttool/js/wtt-core.min.js', false);
+        craft()->templates->includeJsResource('webtexttool/js/getHtmlContent.js', false);
+        craft()->templates->includeJsResource('webtexttool/js/edit-page-controller.js', false);
+
+        craft()->templates->includeJs('var wtt_globals = '.JsonHelper::encode(array(
                 'entryId' => $entryId,
                 'record' => $record,
                 'synonyms' => JsonHelper::decode($record ? $record->wttSynonyms : ""),
@@ -95,7 +102,7 @@ class WebtexttoolPlugin extends BasePlugin
                 'wttApiKey' => craft()->config->get('wttApiKey', 'webtexttool'),
                 'permaLink' => craft()->entries->getEntryById($entryId) ? craft()->entries->getEntryById($entryId)->getUrl() : "",
                 'status' => craft()->entries->getEntryById($entryId) ? craft()->entries->getEntryById($entryId)->getStatus() : ""
-            )).';');
+            )).';', false);
 
         return craft()->templates->render('webtexttool/core', ['entryId' => $entryId, 'record' => $record, 'wttApiBaseUrl' => $wttApiBaseUrl, 'locale' => $entry->locale]);
     }

@@ -1,26 +1,29 @@
 {% includeCssResource "webtexttool/css/wtt-core.css" %}
 {% includeCssResource "webtexttool/css/angular-busy.min.css" %}
 {% includeCssResource "webtexttool/css/flag.min.css" %}
-{% includeCssResource "webtexttool/css/scrollable-table.css" %}
+{% includeCssResource "webtexttool/css/scrollable-table.min.css" %}
 {% includeCssResource "webtexttool/css/ng-tags-input.css" %}
 {% includeCssResource "webtexttool/css/angular-toastr.min.css" %}
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-<script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-core.min.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}"></script>
-<script type="text/javascript" src="{{ url('resources/webtexttool/js/getHtmlContent.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}"></script>
-<script type="text/javascript">
-    jQuery('div[id="title-field"]').after(
-        '<div id="descriptiondiv">' +
+{% includeCssResource "webtexttool/css/font-awesome.min.css" %}
+
+{% set descriptionFieldJS %}
+$(function($j) {
+    $j('div[id="title-field"]').after(
+    '<div id="descriptiondiv">' +
         '<div class="desc-heading">' +
-        '<label for="wtt_description">' +
-        'Page description' +
-        '</label>' +
-        '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
-        '</div>' +
+            '<label for="wtt_description">' +
+                'Page description' +
+                '</label>' +
+            '<button type="button" class="btn-info-d" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="This is the summary of your page that will be shown in the search results and what a potential visitor of your page will see. So it’s important to create a catchy description of your page."><i class="fa fa-question-circle"></i></button>' +
+            '</div>' +
         '<textarea id="wtt_description" placeholder="Page Description" name="wtt_description">' + '{{ record ? record.wttDescription : null }}' + '</textarea>' +
         '</div>'
     );
-</script>
-<script src="{{ url('resources/webtexttool/js/edit-page-controller.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}" type="text/javascript"></script>
+});
+
+{% endset %}
+
+{% includeJs descriptionFieldJS %}
 
 <div ng-app="wttApp" ng-controller="editPageController"
      cg-busy="{promise:loadingPromise,message:promiseMessage,backdrop:true}">

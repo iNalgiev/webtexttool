@@ -752,9 +752,9 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         };
 
                         var overallScoreHelpMap = {
-                            0: "Overall Score Very Poor Help Content",
-                            1: "Overall Score Moderate Help Content",
-                            2: "Overall Score Good Help Content"
+                            0: "Overall Score Very Poor",
+                            1: "Overall Score Moderate",
+                            2: "Overall Score Good"
                         };
 
                         var overallScoreClassMap = {
@@ -890,12 +890,12 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                         return item.Selected == true;
                                     });
 
-                                }, function () {
-                                    toastr.warning("This feature is available in paid webtexttool subscriptions. Please upgrade to use this feature. You have used all your available keyword search credits.");
+                                }, function (message) {
+                                    toastr.warning("You have used all your available keyword search credits.", message);
                                 }
                             );
                         } else {
-                            toastr.warning("Please upgrade to use this feature. You have used all your available keyword search credits", "Please upgrade your plan.");
+                            toastr.warning("You have used all your available keyword search credits.", "Credits below limit.");
                         }
                     };
 

@@ -4,13 +4,10 @@
 
 {% set content %}
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+{% includeCssResource "webtexttool/css/font-awesome.min.css" %}
 {% includeCssResource "webtexttool/css/angular-busy.min.css" %}
 {% includeCssResource "webtexttool/css/ladda-themeless.min.css" %}
 {% includeCssResource "webtexttool/css/wtt-admin.css" %}
-
-<script type="text/javascript" src="{{ url('resources/webtexttool/js/wtt-admin.min.js') }}"></script>
-<script type="text/javascript" src="{{ url('resources/webtexttool/js/app-controller.js') ~ '?v=' ~ craft.plugins.getPlugin('webtexttool').getVersion }}"></script>
 
 <div ng-app="wttDashboard" ng-controller="appController">
     <div ng-view></div>
