@@ -755,7 +755,7 @@ table {
     height: 90px;
 }
 
-.gray-score .wtt-page-score-text, .gray-score .wtt-content-score-text {
+/*.gray-score .wtt-page-score-text, .gray-score .wtt-content-score-text {
     -webkit-appearance: none;
     box-shadow: none !important;
     background-color: rgba(0, 0, 0, 0);
@@ -788,6 +788,27 @@ table {
     tab-index: -1;
     pointer-events: none;
     font-weight: 500;
+}*/
+
+#page-score .page-score-text, .page-score .page-score-text {
+    width: 120px;
+    position: absolute;
+    text-align: center;
+    display: inline-block;
+    line-height: 130px;
+    font-size: 27px;
+    font-weight: 700;
+}
+
+.gray-score .page-score-text {
+    width: 90px;
+    position: absolute;
+    text-align: center;
+    display: inline-block;
+    line-height: 100px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #D5D5D5;
 }
 
 .suggestions-mask {
@@ -1614,6 +1635,31 @@ textarea#wtt_description {
     background-color: #31b0d5;
     border-color: #269abc;
 }
+
+
+
+#wtt-menu-outer {
+    height: 84px;
+}
+
+.wtt-table {
+    display: table;   /* Allow the centering to work */
+    margin: 0 auto;
+}
+
+ul#wtt-horizontal-list {
+    min-width: 696px;
+    list-style: none;
+    padding-top: 20px;
+}
+ul#wtt-horizontal-list li {
+    display: inline;
+}
+
+
+
+
+
 
 /* ---- Score Box CSS ---- */
 

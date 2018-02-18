@@ -16,7 +16,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
     function ($scope, $http, $q, stateService, $timeout, $interval, $cookies, suggestionsService, keywordService, httpService, languageService, $sce, toastr, synonymService) {
         var WttApiBaseUrl = wtt_globals.wttApiBaseUrl;
         var $j = jQuery;
-        var authCode = wtt_globals.userData.accessToken;
+        var authCode = wtt_globals.userData !== null ? wtt_globals.userData.accessToken : "";
         var apiKey = wtt_globals.wttApiKey;
 
         if (localStorage.getItem('wtt_token') === null || localStorage.getItem('wtt_token') === "") {
@@ -231,7 +231,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                                     getHtmlAndRunSuggestions();
                                 }, function(result) {
-                                    toastr.warning(result, "Something went wrong while fetching the page!");
+                                    toastr.warning("Something went wrong while fetching the page!");
                                 });
                             }, function(result) {
                                 toastr.warning(result, "Something went wrong!");
@@ -531,8 +531,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         $scope.showError = false;
                         $scope.seoScoreTag = $scope.ScoreTag;
                         $scope.contentScoreTag = $scope.QualityScoreTag;
-                        $scope.seoScore = (Math.round($scope.Score || 0)) + "%";
-                        $scope.contentScore = (Math.round($scope.QualityScore || 0)) + "%";
+                        $scope.seoScore = $scope.Score || 0; //(Math.round($scope.Score || 0)) + "%";
+                        $scope.contentScore = $scope.QualityScore || 0; //(Math.round($scope.QualityScore || 0)) + "%";
 
                         if (args.engine == "seo") {
                             $scope.seoClass = "page-score";

@@ -68,7 +68,34 @@
                     <div class="sk-circle12 sk-child"></div>
                 </div>
 
-                <div class="wtt-tbl-cell" id="wtt-page-score-container" ng-show="showScore">
+                <div id="wtt-menu-outer">
+                    <div class="wtt-table">
+                        <ul id="wtt-horizontal-list">
+                            <li ng-show="showScore">
+                                <div ng-class="seoClass" id="wtt-page-score" title="{[seoScoreTag]}">
+<!--                                    <input class="wtt-page-score-text" id="wtt-page-score-input" name="wtt_page_score_field"
+                                           type="text"
+                                           ng-value="seoScore">-->
+                                    <span class="page-score-text">{[seoScore | number: 0]}%</span>
+
+                                    <canvas tc-chartjs-doughnut chart-data="seoPageScoreData"
+                                            chart-options="pageScoreChartOptions" width="110" height="110"></canvas>
+                                </div>
+                            </li>
+                            <li ng-show="showScore">
+                                <div ng-class="contentClass" id="wtt-content-score" title="{[contentScoreTag]}">
+                                    <!--<input class="wtt-content-score-text" id="wtt-content-score-input" type="text" ng-value="contentScore">-->
+                                    <span class="page-score-text">{[contentScore | number: 0]}%</span>
+
+                                    <canvas tc-chartjs-doughnut chart-data="contentPageScoreData"
+                                            chart-options="pageScoreChartOptions" width="110" height="110"></canvas>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+             <!--   <div class="wtt-tbl-cell" id="wtt-page-score-container" ng-show="showScore">
                     <div ng-class="seoClass" id="wtt-page-score" title="{[seoScoreTag]}">
                         <input class="wtt-page-score-text" id="wtt-page-score-input" name="wtt_page_score_field"
                                type="text"
@@ -84,7 +111,7 @@
                         <canvas tc-chartjs-doughnut chart-data="contentPageScoreData"
                                 chart-options="pageScoreChartOptions" width="110" height="110"></canvas>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="wtt-tbl-cell wtt-score-error" ng-show="showError">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i><br/>{[error]}
