@@ -42,8 +42,8 @@
                 </div>
             </div>
             <ul class="suggestions-list">
-                <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': rule.Checked}">
-                    <i class="fa" ng-class="{'fa-circle-o': !rule.Checked, 'fa-check-circle': rule.Checked}"></i><span
+                <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': (rule.Checked|boolText)}">
+                    <i class="fa" ng-class="{'fa-circle-o': !(rule.Checked|boolText), 'fa-check-circle': (rule.Checked|boolText)}"></i><span
                         ng-bind-html="rule.Text"></span>
                     <button type="button" ng-if="rule.ExtraInfo" class="btn btn-link btn-xs" id="viewExtraInfo"
                             ng-click="viewExtraInfoList(rule)" title="Display List"><i class="fa fa-lg fa-eye"

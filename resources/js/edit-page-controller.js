@@ -38,7 +38,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     $scope.runRules = false;
                     $scope.runRulesTimeout = 3000;
                     $scope.isCollapsed = false;
-                    $scope.keywordSet = false;
                     $scope.ruleSet = 1;
                     $scope.activeEngine = 'seo';
                     $scope.HtmlContent = "";
@@ -86,8 +85,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                         if (_.isNull(keywordSynonyms)) {
 
-                            if ($j('#wtt-keyword').val() !== "") {
-                                var localKeyword = $j('#wtt-keyword').val();
+                            if (getContent('wtt-keyword') !== "") {
+                                var localKeyword = getContent('wtt-keyword');
 
                                 synonymService.getSynonyms(localKeyword)
                                     .then(function (rawSynonymsData) {
@@ -158,11 +157,12 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     }
 
                     var entryStatus = wtt_globals.status;
+                    var livePreviewUrl = Garnish.isMobileBrowser ? wtt_globals.permaLink : Craft.livePreview.previewUrl;
 
                     var params = {
-                        url: Craft.livePreview.previewUrl,
+                        url: livePreviewUrl,
                         entryId: wtt_globals.entryId,
-                        locale: wtt_globals.locale,
+                        locale: Craft.locale,
                         status: entryStatus.replace(/ /g, '')
                     };
 
@@ -239,7 +239,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                             $timeout(function () {
                                 $scope.isCollapsed = true;
-                                $scope.keywordSet = true;
                             }, 500);
                         } else {
                             console.error("No keyword defined");
@@ -328,7 +327,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                     function getDefaultQualitySettings() {
                         return {
-                            ReadingLevel: 1,
+                            ReadingLevel: "1",
                             DifficultWordsLevel: 1,
                             LongSentencesLevel: 1,
                             AdjectivesLevel: 1,
@@ -480,6 +479,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                 keywords: $scope.Keyword,
                                 languageCode: $scope.localLanguageCode,
                                 domain: $scope.domainUrl,
+                                synonyms: $scope.pageKeywordSynonyms,
                                 ruleSet: $scope.ruleSet
                             };
 
@@ -662,7 +662,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                     $scope.useKeyword = function (keyword) {
                         if ($scope.pageHasKeyword()) {
-                            inputKeyword.setAttribute('value', keyword.Keyword);
+                            $j("#wtt-keyword").prop('value', keyword.Keyword);
 
                             $scope.Keyword = keyword.Keyword;
                             $scope.Title = getContent('title');
@@ -689,7 +689,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                             $timeout(function () {
                                 $scope.isCollapsed = true;
-                                $scope.keywordSet = true;
                             }, 500);
                         } else {
                             inputKeyword.setAttribute('value', "");
@@ -737,6 +736,13 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                 $scope.searchModel.selectedSource = selectedKeywordSource;
                             });
                     }
+
+                    $scope.onKeywordBlur = function () {
+                        var localKeyword = document.getElementById("wtt-keyword");
+                        if(localKeyword !== "") {
+                            localKeyword.setAttribute('value', $j.trim(cleanKeyword(localKeyword.value)));
+                        }
+                    };
 
                     $scope.selectKeywordSource = function (keywordSource) {
                         $scope.searchModel.selectedSource = keywordSource;
@@ -904,6 +910,13 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         return !(getContent('wtt-keyword') == "" || getContent('wtt-keyword') == null);
                     }
 
+                    function cleanKeyword(keyword) {
+                        if (isNullOrEmpty(keyword)) {
+                            return keyword;
+                        }
+                        return keyword.replace(/[`~!@#$%^&*|+\=?;:'",.<>\{\}\[\]\\\/]/gi, " ");
+                    }
+
                     $scope.dynamicPopover = {
                         templateUrl: 'moreinfo.html'
                     };
@@ -1000,10 +1013,6 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                         var languageCodeDB = document.getElementById('wtt-language-code-field');
                         languageCodeDB.setAttribute('value', $scope.localLanguageCode);
-
-                        if ($scope.pageHasKeyword()) {
-                            $scope.keywordSet = true;
-                        }
                     }
 
                     init();
@@ -1135,6 +1144,16 @@ app.directive("wttContentQuality", function () {
         link: function () {
         }
     };
+});
+
+app.filter("boolText", function() {
+    return function (boolValue) {
+        if (boolValue === "true" || boolValue === true)
+            return true;
+        else {
+            return false;
+        }
+    }
 });
 
 app.directive('wttSuggestion', ["suggestionsService", "$sce", "stateService", function (suggestionsService, $sce, stateService) {

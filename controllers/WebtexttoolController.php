@@ -100,7 +100,7 @@ class WebtexttoolController extends BaseController
         }
 
         $model->entryId = $entryId;
-        $model->wttContentQualitySettings = json_encode($params['data']);
+        $model->wttContentQualitySettings = $params['data'];
 
         if ($model->validate()) {
 
@@ -125,7 +125,7 @@ class WebtexttoolController extends BaseController
         }
 
         $model->entryId = $entryId;
-        $model->wttContentQualitySuggestions = json_encode($params['data']);
+        $model->wttContentQualitySuggestions = $params['data'];
 
         if ($model->validate()) {
             $response = [

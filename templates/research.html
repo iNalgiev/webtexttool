@@ -53,7 +53,8 @@
                            name="wtt_keyword" autocomplete="off"
                            uib-wtt-tooltip="Fill in your keyword" tooltip-trigger="focus"
                            tooltip-placement="top" tooltip-enable="!Keyword"
-                           value="{{ record ? record.wttKeywords : null }}">
+                           value="{{ record ? record.wttKeywords : null }}"
+                            ng-blur="onKeywordBlur()">
                     <span class="input-group-btn">
                     <input class="wtt-btn wtt-btn-default" type="button" value="Go!"
                            id="wtt-keyword-check" ng-click="useMyKeyword()"

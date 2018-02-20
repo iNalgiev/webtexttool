@@ -17,6 +17,9 @@ Webtexttool will analyze your content and tell you how to optimize it for maximu
 ### Keyword analysis & research
 Webtexttool will help you find the best keywords for your content. Fill in your keyword to have it analyzed on volume and competition in realtime and also get suggestions on other keywords you could use.
 
+### Text Conversion Optimizer
+This module analyses your content and gives you tips to increase the readability of your text and improve the chances of conversion. Check our [video](https://youtu.be/5NZ6IjHntIQ) to find out more about this module!
+
 ### Uptodate SEO rules
 We make sure that the webtexttool engine is always uptodate with the latest SEO rules. So you will always have access to the latest SEO rules and insights to optimize your content
 
@@ -38,23 +41,30 @@ Clone this repo into `craft/plugins/webtexttool`.
 Replace or modify your current SEO head code with, or to match, the following:
 
 ```twig
-{# Webtexttool Meta Description #}
-{% if record is not defined %}
-    {% set record = craft.webtexttool.getRecordByEntryId(entry.id) %}
-{% endif %}
+<!-- Webtexttool Meta Description -->
 
-<meta name="description" content="{{ record ? record.wttDescription : null }}" />
+{% if entry is defined %}
+{% set wttRecord = craft.webtexttool.getRecordByEntryId(entry.id) %}
+
+{% if wttRecord is not null %}
+        
+<meta name="description" content="{{ wttRecord ? wttRecord.wttDescription : null }}" />
 
 <meta property='og:url' content='{{ craft.request.url }}' />
-<meta property='og:description' content='{{ record ? record.wttDescription : null }}' />
+<meta property='og:description' content='{{ wttRecord ? wttRecord.wttDescription : null }}' />
 
 <meta property='twitter:site' content='{# Your Twitter Handle (no @) #}' />
-<meta property='twitter:description' content='{{ record ? record.wttDescription : null }}' />
+<meta property='twitter:description' content='{{ wttRecord ? wttRecord.wttDescription : null }}' />
 <meta property='twitter:url' content='{{ craft.request.url }}' />
 
 <link rel="home" href="{{ siteUrl }}" />
 <link rel="canonical" href="{{ craft.request.url }}">
-{# Webtexttool Meta Description #}
+
+{% endif %}
+
+{% endif %}
+
+<!-- / Webtexttool Meta Description -->
 ```
 
 ## FAQ
@@ -69,6 +79,16 @@ Yes, we have. We offer different subscriptions (Personal, Business, Enterprise).
 Yes, of course! If you have any questions, please don’t hesitate to [contact us](https://www.webtexttool.com/about-webtexttool/contact/). We love to hear from you and will try to solve any issues asap.
 
 ## Changelog
+
+### 1.2.0
+- Added Text Conversion Optimizer module
+    - Updated record & model
+    - Added database migration
+- Added option to insert or select optional synonyms
+- Added toastr warnings and notifications
+- Updated the way templates/directives are loaded
+- Fixed saving records before recordId exits
+- Fixed a few small bugs
 
 ### 1.1.2
 - Fixed preview url not working with inactive entries

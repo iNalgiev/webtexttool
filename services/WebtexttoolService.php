@@ -151,7 +151,7 @@ class WebtexttoolService extends BaseApplicationComponent
             if ($wttCoreRecord->save()) {
                 // update id on model (for new records)
                 $model->setAttribute('id', $wttCoreRecord->getAttribute('id'));
-                return $model; //return true;
+                return $model;
             } else {
                 $model->addErrors($wttCoreRecord->getErrors());
                 return false;
