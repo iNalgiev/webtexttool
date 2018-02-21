@@ -41,6 +41,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     $scope.ruleSet = 1;
                     $scope.activeEngine = 'seo';
                     $scope.HtmlContent = "";
+                    $scope.isReadingLevelDetailsCollapsed = true;
                     var selectedPageNodes = [];
                     var keywordSynonyms = null;
 
@@ -347,6 +348,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     function analyzeContentQuality(ruleSet) {
 
                         $scope.analyzing = true;
+
                         startContentQualityCompute();
 
                         $scope.cqModel = {
@@ -643,14 +645,22 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     if (!entryId) {
                         $j("input#wtt-keyword").keyup(function () {
                             $j(this).val('');
-                            toastr.warning('Save the entry before entering a keyword!');
+                            toastr.warning('Save the entry before entering a keyword!', {
+                                closeButton: true,
+                                timeOut: 10000,
+                                extendedTimeOut: 0
+                            });
                         })
                     }
 
                     $j("textarea#wtt_description").keyup(function () {
                         if (!entryId) {
                             $j(this).val('');
-                            toastr.warning('Save the entry before entering a page description!');
+                            toastr.warning('Save the entry before entering a page description!', {
+                                closeButton: true,
+                                timeOut: 10000,
+                                extendedTimeOut: 0
+                            });
                         } else {
                             $scope.Description = $j(this).val();
 
@@ -738,10 +748,13 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     }
 
                     $scope.onKeywordBlur = function () {
-                        var localKeyword = document.getElementById("wtt-keyword");
+
+                        $j('#wtt-keyword').prop('value', $j.trim(cleanKeyword($j('#wtt-keyword').val())));
+
+                        /*var localKeyword = document.getElementById("wtt-keyword");
                         if(localKeyword !== "") {
                             localKeyword.setAttribute('value', $j.trim(cleanKeyword(localKeyword.value)));
-                        }
+                        }*/
                     };
 
                     $scope.selectKeywordSource = function (keywordSource) {

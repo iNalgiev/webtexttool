@@ -11,6 +11,11 @@
 <div class="suggestions-mask cq">
     <div class="suggestions">
         <div class="suggestions-box" ng-show="contentQualityDetails">
+            <script type="text/ng-template" id="suggestion-popover-template2.html">
+                <div>We have calculated three readability scores for your content and averaged this in
+                    the overall readability score. Below you will find the specific scores and a link with more
+                    information about each of them.</div>
+            </script>
             <div class="suggestions-header">
                 <button class="btn-collapse" type="button"
                         ng-click="isSuggestionDetailsCollapsed = !isSuggestionDetailsCollapsed">
@@ -24,39 +29,49 @@
                 <ul class="suggestions-list">
                     <li>Reading Time:<span class="pull-right">{[contentQualityDetails.ReadingTime]}</span></li>
                     <li>Reading Level:<span class="pull-right" ng-bind-html="contentQualityDetails.ReadingLevel"></span></li>
-                    <li ng-show="contentQualityDetails.ReadingValues">
-                        <table style="width: 100%;">
-                            <tbody>
-                            <tr>
-                                <td colspan="2">We have calculated three readability scores for your content and averaged this in
-                                    the overall readability score. Below you will find the specific scores and a link with more
-                                    information about each of them.<br/><br/></td>
-                            </tr>
-                            <tr>
-                                <td><a href="https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index" target="_blank">Coleman Liau
-                                    Index</a></td>
-                                <td> {[contentQualityDetails.ReadingValues.ColemanLiauIndex | number : 1]}</td>
-                            </tr>
-                            <tr>
-                                <td><a href="https://en.wikipedia.org/wiki/Automated_readability_index" target="_blank">Automated
-                                    Readability Index</a></td>
-                                <td> {[contentQualityDetails.ReadingValues.AutomatedReadabilityIndex | number : 1]}</td>
-                            </tr>
-                            <tr>
-                                <td><a href="https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests"
-                                       target="_blank">Flesch-Kincaid Reading ease</a></td>
-                                <td> {[contentQualityDetails.ReadingValues.FleschKincaidReadingEasy | number : 1]}</td>
-                            </tr>
-                            <tr>
-                                <td> Average</td>
-                                <td> {[contentQualityDetails.ReadingValues.ReadingAvg | number : 1]}
-                                    ({[contentQualityDetails.ReadingLevel]})
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </li>
                 </ul>
+            </div>
+        </div>
+
+        <div class="suggestions-box" ng-show="contentQualityDetails.ReadingValues">
+
+            <div class="suggestions-header">
+                <button class="btn-collapse" type="button"
+                        ng-click="isReadingLevelDetailsCollapsed = !isReadingLevelDetailsCollapsed">
+                    <i class="fa"
+                       ng-class="{'fa-angle-down': !isReadingLevelDetailsCollapsed, 'fa-angle-right': isReadingLevelDetailsCollapsed}"></i>
+                </button>
+                <h3>Reading Level Details</h3>
+                <button class="btn btn-link btn-xs btn-help btn-help-cq" type="button"
+                        uib-wtt-popover-template="'suggestion-popover-template2.html'" popover-append-to-body="true"
+                        popover-trigger="mouseenter" popover-placement="top"><i class="fa fa-question-circle"></i></button>
+            </div>
+            <div class="suggestions-content" uib-collapse="isReadingLevelDetailsCollapsed">
+                <table style="width: 100%;">
+                    <tbody>
+                    <tr>
+                        <td><a href="https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index" target="_blank">Coleman Liau
+                            Index</a></td>
+                        <td> {[contentQualityDetails.ReadingValues.ColemanLiauIndex | number : 1]}</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://en.wikipedia.org/wiki/Automated_readability_index" target="_blank">Automated
+                            Readability Index</a></td>
+                        <td> {[contentQualityDetails.ReadingValues.AutomatedReadabilityIndex | number : 1]}</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests"
+                               target="_blank">Flesch-Kincaid Reading ease</a></td>
+                        <td> {[contentQualityDetails.ReadingValues.FleschKincaidReadingEasy | number : 1]}</td>
+                    </tr>
+                    <tr>
+                        <td> Average</td>
+                        <td> {[contentQualityDetails.ReadingValues.ReadingAvg | number : 1]}
+                            ({[contentQualityDetails.ReadingLevel]})
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -78,6 +93,7 @@
                 </ul>
             </div>
         </div>
+
         <wtt-suggestion-content-quality ng-repeat="suggestion in contentQualitySuggestions" suggestion="suggestion"
                                         index="{[$index]}" settings="settings"></wtt-suggestion-content-quality>
     </div>
