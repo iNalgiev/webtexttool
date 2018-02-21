@@ -1,14 +1,18 @@
 var app = angular.module("wttApp", ['tc.chartjs', 'ngSanitize', 'wtt.ui.bootstrap', 'ngCookies', 'cgBusy', 'scrollable-table', 'toastr', 'ngTagsInputWtt', 'angular-ladda']);
 
-app.config(['$httpProvider', '$interpolateProvider', 'toastrConfig',
-    function ($httpProvider, $interpolateProvider, toastrConfig) {
+app.config(['$httpProvider', '$interpolateProvider', 'toastrConfig', 'laddaProvider',
+    function ($httpProvider, $interpolateProvider, toastrConfig, laddaProvider) {
         $httpProvider.interceptors.push('authInterceptor');
         $interpolateProvider.startSymbol('{[').endSymbol(']}');
 
         angular.extend(toastrConfig, {
             maxOpened: 3,
             preventDuplicates: true,
-            preventOpenDuplicates: true
+            preventOpenDuplicates: false
+        });
+
+        laddaProvider.setOption({
+            style: "expand-left"
         });
     }]);
 
@@ -205,9 +209,14 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     };
 
                     $scope.useMyKeyword = function () {
+                        $scope.errorMsg = null;
+
                         if ($scope.pageHasKeyword()) {
                             if (!validateKeyword()) {
-                                toastr.warning("Keyword is required!");
+                                toastr.warning($scope.errorMsg, {
+                                    closeButton: true,
+                                    timeOut: 3000
+                                });
                                 return;
                             }
 
@@ -886,11 +895,15 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     };
 
                     $scope.submitSearchKeyword = function () {
+                        $scope.errorMsg = null;
 
                         if (hasCredits()) {
 
                             if (!validateKeyword()) {
-                                toastr.warning("Keyword is required!");
+                                toastr.warning($scope.errorMsg, {
+                                    closeButton: true,
+                                    timeOut: 3000
+                                });
                                 return;
                             }
 
@@ -919,15 +932,44 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     };
 
                     function validateKeyword() {
-                        if (!$j("#container")[0].checkValidity()) return false;
-                        return !(getContent('wtt-keyword') == "" || getContent('wtt-keyword') == null);
+                        if (!$j("#container")[0].checkValidity()) {return false;}
+
+                        if (getContent('wtt-keyword') === "" || getContent('wtt-keyword') == null) {
+                            $scope.errorMsg = "Keyword is required!";
+                            return false;
+                        }
+
+                        if (getContent('wtt-keyword').length > 250) {
+                            $scope.errorMsg = "Keyword is invalid!";
+                            return false;
+                        }
+
+                        if (getContent('wtt-keyword').indexOf(",") > -1 || getContent('wtt-keyword').indexOf(";") > -1) {
+                            $scope.errorMsg = "We accept only one keyword. Please do not use separator special chars , or ; ";
+                            return false;
+                        }
+
+                        return true;
+
+                        // return !(getContent('wtt-keyword') == "" || getContent('wtt-keyword') == null);
                     }
 
                     function cleanKeyword(keyword) {
                         if (isNullOrEmpty(keyword)) {
                             return keyword;
                         }
-                        return keyword.replace(/[`~!@#$%^&*|+\=?;:'",.<>\{\}\[\]\\\/]/gi, " ");
+                        return cleanMeta(keyword, false);
+                    }
+
+                    // replace with space the special chars and escape single quotes
+                    function cleanMeta(text, escape) {
+                        // replace with space the special chars
+                        var cleanText = (text ? text : "").replace(/["=<>\{\}\[\]\\\/]/gi, ' ');
+                        // escape single quotes
+                        if (escape == true) {
+                            cleanText = cleanText.replace(/[']/g, '\\$&').replace(/\u0000/g, '\\0');
+                        }
+                        return cleanText;
                     }
 
                     $scope.dynamicPopover = {
