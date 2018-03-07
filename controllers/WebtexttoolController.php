@@ -52,7 +52,6 @@ class WebtexttoolController extends BaseController
             $token = craft()->tokens->createToken(array('action' => 'entries/viewSharedEntry', 'params' => $params));
             $url = UrlHelper::getUrlWithToken(craft()->request->getPost('url'), $token);
         } else {
-//            $url = "http://localhost:8080/craftcms/public/index.php/news/2018/seo-tool-voor-iedere-tekstschrijver";
             $url = craft()->request->getPost('url');
         }
 

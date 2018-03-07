@@ -1,5 +1,20 @@
 [
   {
+    "version": "1.2.0",
+    "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.0.zip",
+    "date": "2018-03-7T12:35:00.000Z",
+    "notes": [
+      "Added Text Conversion Optimizer module",
+      "Updated record & model",
+      "Added database migration",
+      "Added option to insert or select optional synonyms",
+      "Added toastr warnings and notifications",
+      "Updated the way templates/directives are loaded",
+      "Fixed saving records before recordId exits",
+      "Fixed a few small bugs"
+    ]
+  },
+  {
     "version": "1.1.2",
     "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.1.2.zip",
     "date": "2017-06-28T15:00:00.000Z",
