@@ -68,12 +68,14 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     $scope.htmlPopoverP = $sce.trustAsHtml('<p class="tooltip-content">Here you can set max 3 alternative keywords that support the main keyword.</p>');
 
                     var permaLink = wtt_globals.permaLink;
-                    var permaLinkOptional = $j("#slug").val();
+                    var slugValue = document.getElementById("slug");
 
                     if (permaLink !== "") {
                         $scope.permalink = permaLink.replace(/-/g, ' ');
-                    } else if (permaLinkOptional !== "") {
-                        $scope.permalink = permaLinkOptional.replace(/-/g, ' ');
+                    } else if (slugValue !== "" && slugValue !== null) {
+                        $scope.permalink = slugValue.value.replace(/-/g, ' ');
+                    } else {
+                        $scope.permalink = '';
                     }
 
                     $j("input#slug").keyup(function () {
@@ -478,12 +480,26 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         $scope.$broadcast('runSuggestions', {engine: "error", error: error});
                     }
 
+                    var escapeHtml = function (text) {
+                        var map = {
+                            '&': '&amp;',
+                            '<': '&lt;',
+                            '>': '&gt;',
+                            '"': '&quot;',
+                            "'": '&#039;'
+                        };
+
+                        return text.toString().replace(/[&<>"']/g, function (m) {
+                            return map[m];
+                        });
+                    };
+
                     $scope.runSuggestions = function () {
                         if ($scope.runRules == true && !$scope.rulesRunning) {
 
                             $scope.rulesRunning = true;
 
-                            var content = getHtmlContent($scope.HtmlContent, $scope.Title, $scope.Description, $scope.permalink, $scope.Keyword);
+                            var content = getHtmlContent($scope.HtmlContent, $scope.Title, escapeHtml($scope.Description), $scope.permalink, $scope.Keyword);
 
                             $scope.model = {
                                 content: content,
