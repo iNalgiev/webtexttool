@@ -6,12 +6,12 @@
             <div ng-bind-html="tip"></div>
         </script>
         <div class="suggestions-header">
-            <button class="btn-collapse" type="button" ng-click="suggestion.isCollapsed = !suggestion.isCollapsed">
+            <button class="wtt-btn-collapse" type="button" ng-click="suggestion.isCollapsed = !suggestion.isCollapsed">
                 <i class="fa"
                    ng-class="{'fa-angle-down': !suggestion.isCollapsed, 'fa-angle-right': suggestion.isCollapsed}"></i>
             </button>
             <h3>{[displayName]}</h3>
-            <button class="btn btn-link btn-xs btn-help btn-help-cq" type="button"
+            <button class="wtt-btn wtt-btn-link wtt-btn-xs wtt-btn-help wtt-btn-help-cq" type="button"
                     uib-wtt-popover-template="'suggestion-popover-template.html'" popover-append-to-body="true"
                     popover-trigger="mouseenter" popover-placement="top"><i class="fa fa-question-circle"></i></button>
             <div class="material-switch pull-right">
@@ -34,9 +34,9 @@
         </div>
         <div class="suggestions-content" uib-collapse="suggestion.isCollapsed">
             <div style="text-align: center;padding-bottom: 10px;" ng-if="actionConfig.buttons.length > 0">
-                <div class="btn-group">
-                    <a type="button" class="btn btn-xs"
-                       ng-class="actionConfig.selected(btn) ? 'btn-success' : 'btn-default'"
+                <div class="wtt-btn-group">
+                    <a type="button" class="wtt-btn wtt-btn-xs"
+                       ng-class="actionConfig.selected(btn) ? 'wtt-btn-success' : 'wtt-btn-default'"
                        ng-click="actionConfig.action(btn)" ng-repeat="btn in actionConfig.buttons"><span
                             ng-bind-html="btn.label"></span></a>
                 </div>
@@ -45,7 +45,7 @@
                 <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': (rule.Checked|boolText)}">
                     <i class="fa" ng-class="{'fa-circle-o': !(rule.Checked|boolText), 'fa-check-circle': (rule.Checked|boolText)}"></i><span
                         ng-bind-html="rule.Text"></span>
-                    <button type="button" ng-if="rule.ExtraInfo" class="btn btn-link btn-xs" id="viewExtraInfo"
+                    <button type="button" ng-if="rule.ExtraInfo" class="wtt-btn wtt-btn-link wtt-btn-xs" id="viewExtraInfo"
                             ng-click="viewExtraInfoList(rule)" title="Display List"><i class="fa fa-lg fa-eye"
                                                                                        aria-hidden="true"></i></button>
                 </li>

@@ -17,7 +17,7 @@
                     information about each of them.</div>
             </script>
             <div class="suggestions-header">
-                <button class="btn-collapse" type="button"
+                <button class="wtt-btn-collapse" type="button"
                         ng-click="isSuggestionDetailsCollapsed = !isSuggestionDetailsCollapsed">
                     <i class="fa"
                        ng-class="{'fa-angle-down': !isSuggestionDetailsCollapsed, 'fa-angle-right': isSuggestionDetailsCollapsed}"></i>
@@ -36,13 +36,13 @@
         <div class="suggestions-box" ng-show="contentQualityDetails.ReadingValues">
 
             <div class="suggestions-header">
-                <button class="btn-collapse" type="button"
+                <button class="wtt-btn-collapse" type="button"
                         ng-click="isReadingLevelDetailsCollapsed = !isReadingLevelDetailsCollapsed">
                     <i class="fa"
                        ng-class="{'fa-angle-down': !isReadingLevelDetailsCollapsed, 'fa-angle-right': isReadingLevelDetailsCollapsed}"></i>
                 </button>
                 <h3>Reading Level Details</h3>
-                <button class="btn btn-link btn-xs btn-help btn-help-cq" type="button"
+                <button class="wtt-btn wtt-btn-link wtt-btn-xs wtt-btn-help wtt-btn-help-cq" type="button"
                         uib-wtt-popover-template="'suggestion-popover-template2.html'" popover-append-to-body="true"
                         popover-trigger="mouseenter" popover-placement="top"><i class="fa fa-question-circle"></i></button>
             </div>

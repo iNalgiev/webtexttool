@@ -1,6 +1,6 @@
 <div class="wtt_box" ng-show="auth" ng-cloak>
     <div class="wtt_header">Enter your Keyword
-        <button type="button" class="btn-collapse" ng-click="isCollapsed = !isCollapsed">
+        <button type="button" class="wtt-btn-collapse" ng-click="isCollapsed = !isCollapsed">
             <i class="fa" ng-class="{'fa-minus-square': !isCollapsed, 'fa-plus-square': isCollapsed}"></i>
         </button>
     </div>
@@ -17,15 +17,15 @@
                     </td>
                     <td style="text-align: right;">
                         <button popover-placement="auto top" uib-wtt-popover-html="htmlPopover"
-                                popover-trigger="outsideClick" type="button" class="btn-info"><i
+                                popover-trigger="outsideClick" type="button" class="wtt-btn-info-2"><i
                                 class="fa fa-question-circle"></i>
                         </button>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2" class="wtt-country-list">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        <div class="wtt-btn-group">
+                            <button type="button" class="wtt-btn wtt-btn-default dropdown-toggle" data-toggle="dropdown"
                                     aria-haspopup="true"
                                     aria-expanded="false"><i
                                     class="flag flag-{[searchModel.selectedSource.Value]}"></i>
@@ -48,15 +48,15 @@
         <div class="wtt-keyword" id="keyword-analysis-well">
             <div class="step-no">2. Keyword analysis & selection</div>
             <div class="cl-lg-6">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for..." type="text" id="wtt-keyword"
+                <div class="wtt-input-group">
+                    <input type="text" class="wtt-form-control" placeholder="Search for..." type="text" id="wtt-keyword"
                            name="wtt_keyword" autocomplete="off"
                            uib-wtt-tooltip="Fill in your keyword" tooltip-trigger="focus"
                            tooltip-placement="top" tooltip-enable="!Keyword"
                            value="{{ record ? record.wttKeywords : null }}"
-                            ng-blur="onKeywordBlur()">
-                    <span class="input-group-btn">
-                    <input class="wtt-btn wtt-btn-default" type="button" value="Go!"
+                           ng-blur="onKeywordBlur()">
+                    <span class="wtt-input-group-btn">
+                    <input class="wtt-btn-2 wtt-btn-orange" type="button" value="Go!"
                            id="wtt-keyword-check" ng-click="useMyKeyword()"
                            uib-wtt-tooltip="Start optimizing"
                            tooltip-trigger="mouseenter"
@@ -123,7 +123,7 @@
 
             <div class="well well-custom well-step" id="related-keywords-well"
                  ng-if="searchModel.SearchResults.length > 0">
-                <h2 style="color: #f09000; font-weight: 700; text-align: left !important;">Related keywords that
+                <h2 style="color: #f09000; font-weight: 700; text-align: left !important; padding-left: 10px;">Related keywords that
                     might be relevant for you</h2>
 
                 <div class="clearfix" id="related-keywords-wrapper">
@@ -188,7 +188,7 @@
                     </td>
                     <td style="text-align: right;">
                         <button popover-placement="auto top" uib-wtt-popover-html="htmlPopoverP"
-                                popover-trigger="outsideClick" type="button" class="btn-info"><i
+                                popover-trigger="outsideClick" type="button" class="wtt-btn-info-2"><i
                                 class="fa fa-question-circle"></i>
                         </button>
                     </td>

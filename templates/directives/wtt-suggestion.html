@@ -3,11 +3,11 @@
         <div ng-bind-html="tip" ></div>
     </script>
     <div class="suggestions-header">
-        <button class="btn-collapse" type="button" ng-click="suggestion.isCollapsed = !suggestion.isCollapsed">
+        <button class="wtt-btn-collapse" type="button" ng-click="suggestion.isCollapsed = !suggestion.isCollapsed">
             <i class="fa"
                ng-class="{'fa-angle-down': !suggestion.isCollapsed, 'fa-angle-right': suggestion.isCollapsed}"></i>
         </button>
-        <button type="button" class="btn btn-link btn-xs btn-help" uib-wtt-popover-template="'suggestion-popover-template.html'" popover-append-to-body="true" popover-trigger="mouseenter" popover-placement="left"><i class="fa fa-question-circle"></i> Help</button>
+        <button type="button" class="wtt-btn wtt-btn-link wtt-btn-xs wtt-btn-help" uib-wtt-popover-template="'suggestion-popover-template.html'" popover-append-to-body="true" popover-trigger="mouseenter" popover-placement="left"><i class="fa fa-question-circle"></i> Help</button>
         <h3>{[displayName]}</h3>
         <uib-wtt-progressbar animate="true" max="suggestion.Importance" value="suggestion.displayScore"
                              type="{[suggestion.progressType]}"></uib-wtt-progressbar>

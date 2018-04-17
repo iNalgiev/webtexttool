@@ -188,7 +188,7 @@ table {
     box-shadow: 0 1px 2px -1px #444;
 }
 
-.wtt-header .btn-collapse {
+.wtt-header .wtt-btn-collapse {
     color: #aaa;
     font-size: 15px;
     background: 0 0;
@@ -267,13 +267,13 @@ table {
     padding: 5px;
 }
 
-.input-group {
+.wtt-input-group {
     position: relative;
     display: table;
     border-collapse: separate;
 }
 
-.input-group .form-control {
+.wtt-input-group .wtt-form-control {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     display: table-cell;
@@ -284,7 +284,7 @@ table {
     margin-bottom: 0;
 }
 
-.form-control {
+.wtt-form-control {
     display: block;
     width: 90% !important;
     height: 34px;
@@ -303,23 +303,23 @@ table {
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s !important;
 }
 
-.form-control:focus {
+.wtt-form-control:focus {
     border-color: #66afe9 !important;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6) !important;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6) !important;
 }
 
-.form-control::-webkit-input-placeholder {
+.wtt-form-control::-webkit-input-placeholder {
     font-weight: normal;
 }
 
-.form-control::-moz-placeholder {
+.wtt-form-control::-moz-placeholder {
     font-weight: normal;
     color: #000;
 }
 
-.input-group-btn {
+.wtt-input-group-btn {
     position: relative;
     font-size: 0;
     white-space: nowrap;
@@ -328,7 +328,7 @@ table {
     display: table-cell;
 }
 
-.input-group-btn > .wtt-btn {
+.wtt-input-group-btn > .wtt-btn {
     z-index: 2;
     margin-left: -24px;
     margin-right: 20px;
@@ -338,12 +338,12 @@ table {
 }
 
 @media (max-width: 850px) {
-    .input-group-btn > .wtt-btn {
+    .wtt-input-group-btn > .wtt-btn {
         border-bottom-right-radius: 0;
         border-top-right-radius: 0;
     }
 
-    .input-group .form-control {
+    .wtt-input-group .wtt-form-control {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
     }
@@ -404,14 +404,14 @@ table {
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
     /* IE10 and above fix */
-    .form-control {
+    .wtt-form-control {
         width: 100% !important;
     }
 }
 
 /* ---- WTT Bootstrap Popover CSS ---- */
 
-.btn-link, .popover[class*=tour-] .popover-navigation [data-role=end],
+.wtt-btn-link, .popover[class*=tour-] .popover-navigation [data-role=end],
 .popover[class*=tour-] .popover-navigation [data-role=prev],
 .popover[class*=tour-] .popover-navigation [data-role=next] {
     cursor: pointer
@@ -793,7 +793,7 @@ table {
     padding: 0;
 }
 
-.suggestions-header .btn-collapse {
+.suggestions-header .wtt-btn-collapse {
     color: #aaa;
     font-size: 14px;
     left: 3px;
@@ -1133,7 +1133,7 @@ textarea#wtt-description {
     background-color: #f5f5f5;
 }
 
-.btn-group {
+.wtt-btn-group {
     position: relative;
     display: inline-block;
     vertical-align: middle;
@@ -1143,7 +1143,7 @@ textarea#wtt-description {
     float: right;
 }
 
-.btn-group > .wtt-dropdown-btn .btn-default, select.form-control {
+.wtt-btn-group > .wtt-dropdown-btn .wtt-btn-default, select.wtt-form-control {
     -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, .05);
     -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, .05);
     box-shadow: 1px 1px 1px rgba(0, 0, 0, .05);
@@ -1160,11 +1160,11 @@ textarea#wtt-description {
     border-left: 4px solid transparent;
 }
 
-.wtt-dropdown-btn .caret, .btn-group > .btn:first-child {
+.wtt-dropdown-btn .caret, .wtt-btn-group > .wtt-btn:first-child {
     margin-left: 0;
 }
 
-.btn-group > .wtt-dropdown-btn {
+.wtt-btn-group > .wtt-dropdown-btn {
     position: relative;
     float: left;
 }
@@ -1178,7 +1178,7 @@ textarea#wtt-description {
     background-clip: padding-box;
 }
 
-.btn-default {
+.wtt-btn-default {
     color: #333;
     background-color: #F9F9F9;
     border-color: #ccc;
@@ -1203,7 +1203,7 @@ textarea#wtt-description {
     border: 1px solid #ccc;
 }
 
-.btn-group > .btn.active, .btn-group > .btn:active, .btn-group > .btn:focus, .btn-group > .wtt-dropdown-btn:hover {
+.wtt-btn-group > .wtt-btn.active, .wtt-btn-group > .wtt-btn:active, .wtt-btn-group > .wtt-btn:focus, .wtt-btn-group > .wtt-dropdown-btn:hover {
     z-index: 2;
 }
 
@@ -1211,11 +1211,11 @@ textarea#wtt-description {
     text-decoration: none;
 }
 
-.btn-default.active,
-.btn-default:active,
-.btn-default:focus,
-.btn-default:hover,
-.open > .dropdown-toggle.btn-default {
+.wtt-btn-default.active,
+.wtt-btn-default:active,
+.wtt-btn-default:focus,
+.wtt-btn-default:hover,
+.open > .dropdown-toggle.wtt-btn-default {
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad;
@@ -1229,7 +1229,7 @@ textarea#wtt-description {
     word-wrap: break-word;
 }
 
-.btn-info, .btn-info-s, .btn-info-d {
+.wtt-btn-info, .wtt-btn-info-s, .wtt-btn-info-d {
     color: #aaa;
     font-size: 15px;
     background: 0 0;
@@ -1237,7 +1237,7 @@ textarea#wtt-description {
     cursor: pointer;
 }
 
-.btn-info-s {
+.wtt-btn-info-s {
     float: right;
 }
 
