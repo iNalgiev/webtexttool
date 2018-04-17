@@ -80,6 +80,11 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 
 ## Changelog
 
+### 1.2.1
+- Fixed TypeError: Cannot read property 'replace' of undefined
+- Scoped CSS selectors to webtexttool
+- Added escape function to meta description
+
 ### 1.2.0
 - Added Text Conversion Optimizer module
     - Updated record & model
