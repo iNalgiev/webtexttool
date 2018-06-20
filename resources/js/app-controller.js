@@ -59,20 +59,29 @@ app.controller("appController", ['$scope', '$http', '$q', '$location',
             return deffered.promise;
         };
 
+        var csrfTokenName = window.Craft ? window.Craft.csrfTokenName : '';
+        var csrfTokenValue = window.Craft ? window.Craft.csrfTokenValue : '';
+
         var sendMessageToServer = function (code) {
             var deffered = $q.defer();
             var userId = wtt_dashboard.currentUserId;
             var userRecordId = jQuery("#user-record-id").val();
 
+            var params = {
+                userId: userId,
+                userRecordId: userRecordId,
+                accessToken: code
+            };
+
+            if(csrfTokenName !== 'undefined' || csrfTokenValue !== 'undefined') {
+                params[csrfTokenName] = csrfTokenValue;
+            }
+
             jQuery.ajax({
                 url: Craft.getActionUrl('webtexttool/saveAccessToken'),
                 type: 'POST',
                 dataType: 'json',
-                data: {
-                    userId: userId,
-                    userRecordId: userRecordId,
-                    accessToken: code
-                },
+                data: params,
                 success: function (result) {
                     deffered.resolve(result);
                 },

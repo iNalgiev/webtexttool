@@ -80,6 +80,13 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 
 ## Changelog
 
+### 1.2.2
+- Added new category for Sentiment score + settings
+- Updated Gender rule check: add setting for Neutral
+- Added resources for Sentiment category
+- Changed base API url
+- Fixed CSRF token issue with AJAX Post requests
+
 ### 1.2.1
 - Fixed TypeError: Cannot read property 'replace' of undefined
 - Scoped CSS selectors to webtexttool

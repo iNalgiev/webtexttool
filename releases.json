@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.2.2",
+    "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.2.zip",
+    "date": "2018-06-20T10:30:00.000Z",
+    "notes": [
+      "Added new category for Sentiment score + settings",
+      "Updated Gender rule check: add setting for Neutral",
+      "Added resources for Sentiment category",
+      "Changed base API url",
+      "Fixed CSRF token issue with AJAX Post requests"
+    ]
+  },
+  {
     "version": "1.2.1",
     "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.1.zip",
     "date": "2018-04-17T12:01:00.000Z",

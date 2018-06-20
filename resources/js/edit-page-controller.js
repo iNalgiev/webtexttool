@@ -165,13 +165,19 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                     var entryStatus = wtt_globals.status;
                     var livePreviewUrl = Garnish.isMobileBrowser ? wtt_globals.permaLink : Craft.livePreview.previewUrl;
+                    var csrfTokenName = window.Craft ? window.Craft.csrfTokenName : '';
+                    var csrfTokenValue = window.Craft ? window.Craft.csrfTokenValue : '';
 
                     var params = {
                         url: livePreviewUrl,
                         entryId: wtt_globals.entryId,
                         locale: Craft.locale,
-                        status: entryStatus.replace(/ /g, '')
+                        status: entryStatus.replace(/ /g, ''),
                     };
+
+                    if(csrfTokenName !== 'undefined' || csrfTokenValue !== 'undefined') {
+                        params[csrfTokenName] = csrfTokenValue;
+                    }
 
                     var getUrlWithToken = function () {
                         var deffered = $q.defer();
@@ -346,7 +352,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                             WhitespacesLevel: 1,
                             BulletPointsLevel: 1,
                             ImagesLevel: 1,
-                            GenderLevel: 'm',
+                            GenderLevel: 'n',
+                            SentimentLevel: 'neutral',
 
                             GenderList: 1,
                             JargonList: 1,
@@ -400,15 +407,22 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         var deffered = $q.defer();
                         var recordId = getContent("wtt-record-id");
 
+                        var cq_params = {
+                            data: settings,
+                            entryId: wtt_globals.entryId,
+                            recordId: recordId !== "" ? recordId : wtt_globals.record.id
+                        };
+
+                        if(csrfTokenName !== 'undefined' || csrfTokenValue !== 'undefined') {
+                            cq_params[csrfTokenName] = csrfTokenValue;
+                        }
+
                         $j.ajax({
                             url: Craft.getActionUrl('webtexttool/saveContentQualitySettings'),
                             type: 'POST',
                             dataType: 'json',
-                            data: {
-                                data: settings,
-                                entryId: wtt_globals.entryId,
-                                recordId: recordId !== "" ? recordId : wtt_globals.record.id
-                            }, success: function (result) {
+                            data: cq_params,
+                            success: function (result) {
                                 document.getElementById("wtt-record-id").setAttribute('value', result.id);
                                 deffered.resolve(result);
                             }, error: function (jqXHR, textStatus, errorThrown) {
@@ -434,15 +448,22 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                         var data = $j.extend({}, details, suggestions.Suggestions);
 
+                        var cq_params = {
+                            data: data,
+                            entryId: wtt_globals.entryId,
+                            recordId: recordId !== "" ? recordId : wtt_globals.record.id
+                        };
+
+                        if(csrfTokenName !== 'undefined' || csrfTokenValue !== 'undefined') {
+                            cq_params[csrfTokenName] = csrfTokenValue;
+                        }
+
                         $j.ajax({
                             url: Craft.getActionUrl('webtexttool/saveContentQualitySuggestions'),
                             type: 'POST',
                             dataType: 'json',
-                            data: {
-                                data: data,
-                                entryId: wtt_globals.entryId,
-                                recordId: recordId !== "" ? recordId : wtt_globals.record.id
-                            }, success: function (result) {
+                            data: cq_params,
+                            success: function (result) {
                                 deffered.resolve(result);
                             }, error: function (jqXHR, textStatus, errorThrown) {
                                 console.log(JSON.stringify(jqXHR));
@@ -1026,8 +1047,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                                     "SortIndex": 1
                                 },
                                 {
-                                    "Tag": "Bulletpoints",
-                                    "MetaTag": "Bulletpoints",
+                                    "Tag": "Sentiment",
+                                    "MetaTag": "Sentiment",
                                     "Rules": null,
                                     "Importance": 10.0,
                                     "Score": 0.0,
@@ -1402,6 +1423,7 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                     GenderList: buildOnOffAction('GenderList', 'gradient'),
                     Gender: {
                         buttons: [{label: 'Female', tip: 'Female', value: 'f'},
+                            {label: 'Neutral', tip: 'Neutral', value: 'n'},
                             {label: 'Male', tip: 'Male', value: 'm'}],
                         action: function (button) {
                             if (button.value === 0) {
@@ -1421,6 +1443,29 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                             return scope.settings.GenderLevel === button.value;
                         },
                         active: scope.settings.GenderLevel && true
+                    },
+                    Sentiment: {
+                        buttons: [{label: 'Negative', tip: 'Negative', value: 'negative'},
+                            {label: 'Neutral', tip: 'Neutral', value: 'neutral'},
+                            {label: 'Positive', tip: 'Positive', value: 'positive'}],
+                        action: function(button){
+                            if (button.value === 0){
+                                //on off action
+                                if(scope.settings.SentimentLevel){
+                                    scope.settings.SentimentLevel = '';
+                                }else{
+                                    scope.settings.SentimentLevel = 'neutral'; //default after ON
+                                }
+                            }else{
+                                scope.settings.SentimentLevel = button.value;
+                            }
+
+                            updateOnAction(scope.settings.SentimentLevel);
+                        },
+                        selected: function(button){
+                            return scope.settings.SentimentLevel === button.value;
+                        },
+                        active: scope.settings.SentimentLevel && true
                     },
                     Bulletpoints: buildOnOffAction('BulletPointsLevel'),
                     Whitespaces: buildOnOffAction('WhitespacesLevel'),
@@ -1587,6 +1632,7 @@ app.factory("stateService", [function () {
             {"ResourceKey":"Heading1Suggestion","HtmlContent":"<p>A H1 / Header section at the beginning of your page is important because it&#39;s the readable introduction of your page. In some CMS&#39;s the Page Title is automatically inserted at the top of a page in H1/Header 1.</p>\r\n\t","LanguageCode":"en"},
             {"ResourceKey":"Heading2to6Suggestion","HtmlContent":"<p>Use smaller headings (h2, h3, h4, h5 and/or h6) in your content to highlight / summarize paragraphs. Using headers will make it easier for you reader to &quot;scan&quot; the contents of your page. It allows you to catch the reader&#39;s attention.</p>\r\n\t","LanguageCode":"en"},
             {"ResourceKey":"BodySuggestion","HtmlContent":"<p>These suggestions are related to overall content on your page. Our rules suggest a minimum number of words for your page. Also related to the length of your content, is the number of times you should use your keywords. This way you can avoid to put your keyword too many times in the content (&quot;keyword stuffing&quot;), but also make sure that you use your keyword enough times so it will be clear for the search engine what the content is about.</p>\r\n\t","LanguageCode":"en"},
+            {"ResourceKey":"SentimentLabel", "HtmlContent": "Sentiment", "LanguageCode": "en"},
             {"ResourceKey":"ReadabilityLabel","HtmlContent":"Readability","LanguageCode":"en"},
             {"ResourceKey":"AdjectivesLabel","HtmlContent":"Text credibility","LanguageCode":"en"},
             {"ResourceKey":"GenderLabel","HtmlContent":"Target audience","LanguageCode":"en"},
@@ -1595,6 +1641,7 @@ app.factory("stateService", [function () {
             {"ResourceKey":"ReadabilitySuggestion","HtmlContent":"Readability: multiple checks on complexity level of the content (reading score/long sentences/difficult words).","LanguageCode":"en"},
             {"ResourceKey":"AdjectivesSuggestion","HtmlContent":"Checks the use of adjectives in your text. Over- or underuse of adjectives will decrease effectiveness of your text.","LanguageCode":"en"},
             {"ResourceKey":"GenderSuggestion","HtmlContent":"Gender check on level (confidence) of content target.","LanguageCode":"en"},
+            {"ResourceKey":"SentimentSuggestion","HtmlContent": "Set your desired sentiment and see if your content matches. If it doesn't match, it will show you which words to change.","LanguageCode": "en"},
             {"ResourceKey":"WhitespacesSuggestion","HtmlContent":"Checks the use of white spaces in your content. Use this to make your content easier to scan and read.","LanguageCode":"en"},
             {"ResourceKey":"BulletpointsSuggestion","HtmlContent":"Checks the use of bulletpoints in your content. Use these to make the text easier to scan and read.","LanguageCode":"en"},
             {"ResourceKey":"ReadingLevelHelp","HtmlContent":"<table style=\"width: 100%;\"><tbody><tr><td colspan=\"2\">We have calculated three readability scores for your content and averaged this in the overall readability score. Below you will find the specific scores and a link with more information about each of them.<br/><br/></td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index\" target=\"_blank\">Coleman Liau Index</a></td><td> {[contentQualityDetails.ReadingValues.ColemanLiauIndex | number : 1]}</td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Automated_readability_index\" target=\"_blank\">Automated Readability Index</a></td><td> {[contentQualityDetails.ReadingValues.AutomatedReadabilityIndex | number : 1]}</td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests\" target=\"_blank\">Flesch-Kincaid Reading ease</a></td><td> {[contentQualityDetails.ReadingValues.FleschKincaidReadingEasy | number : 1]}</td></tr><tr><td> Average</td><td> {[contentQualityDetails.ReadingValues.ReadingAvg | number : 1]} ({[contentQualityDetails.ReadingLevel]})</td></tr></tbody></table>","LanguageCode":"en"}
