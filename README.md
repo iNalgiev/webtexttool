@@ -1,6 +1,6 @@
 ![Webtexttool](/resources/images/banner.png)
 
-# Webtexttool for Craft CMS
+# Webtexttool for Craft CMS 2.x
 
 Webtexttool is the easiest way to make your website content SEO proof, resulting in higher search engine rankings and more traffic to your website. With webtexttool everyone can create great content and make sure it's SEO proof at the same time.
 
@@ -17,7 +17,7 @@ Webtexttool will analyze your content and tell you how to optimize it for maximu
 ### Keyword analysis & research
 Webtexttool will help you find the best keywords for your content. Fill in your keyword to have it analyzed on volume and competition in realtime and also get suggestions on other keywords you could use.
 
-### Text Conversion Optimizer
+### Text Conversion Optimizer / Content Quality
 This module analyses your content and gives you tips to increase the readability of your text and improve the chances of conversion. Check our [video](https://youtu.be/5NZ6IjHntIQ) to find out more about this module!
 
 ### Uptodate SEO rules
@@ -80,6 +80,9 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 
 ## Changelog
 
+### 1.2.3
+- Fixed possible issue with single quotes in the meta description field 
+
 ### 1.2.2
 - Added new category for Sentiment score + settings
 - Updated Gender rule check: add setting for Neutral
@@ -122,7 +125,6 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 ### 1.0.0
 - Initial Release
 
-
 ---
 
 Copyright © 2017 Webtexttool <info@webtexttool.com>
@@ -132,3 +134,6 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+*This is the Craft 2.x version, for the Craft 3.x version see [link](https://github.com/iNalgiev/craft-webtexttool)*.

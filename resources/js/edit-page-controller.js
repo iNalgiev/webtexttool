@@ -23,12 +23,17 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
         var authCode = wtt_globals.userData !== null ? wtt_globals.userData.accessToken : "";
         var apiKey = wtt_globals.wttApiKey;
 
-        if (localStorage.getItem('wtt_token') === null || localStorage.getItem('wtt_token') === "") {
-            if (authCode !== '') {
-                localStorage.setItem('wtt_token', authCode);
-            } else if (apiKey !== '') {
+        if (localStorage.getItem('wtt_token') === null || localStorage.getItem('wtt_token') === "" || authCode !== '') {
+            localStorage.setItem('wtt_token', authCode);
+            if (apiKey !== '') {
                 localStorage.setItem('wtt_token', apiKey);
             }
+        }
+
+        var metaDescriptionField = document.getElementById('wtt_description');
+
+        if(metaDescriptionField !== null && wtt_globals.record !== "") {
+            metaDescriptionField.value = wtt_globals.record.wttDescription;
         }
 
         $scope.promiseMessage = "Loading...";
