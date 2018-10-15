@@ -136,10 +136,9 @@ app.controller("appController", ['$scope', '$http', '$q', '$location',
             $scope.authCode = wtt_dashboard.userData !== null ? wtt_dashboard.userData.accessToken : "";
             $scope.apiKey = wtt_dashboard.wttApiKey;
 
-            if (localStorage.getItem('wtt_token') === "" || localStorage.getItem('wtt_token') === null) {
-                if ($scope.authCode !== '') {
-                    localStorage.setItem('wtt_token', $scope.authCode);
-                } else if ($scope.apiKey !== '') {
+            if (localStorage.getItem('wtt_token') === "" || localStorage.getItem('wtt_token') === null || $scope.authCode !== '') {
+                localStorage.setItem('wtt_token', $scope.authCode);
+                if ($scope.apiKey !== '') {
                     localStorage.setItem('wtt_token', $scope.apiKey);
                 }
             }

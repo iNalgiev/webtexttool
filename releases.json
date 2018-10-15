@@ -1,5 +1,13 @@
 [
   {
+    "version": "1.2.3",
+    "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.3.zip",
+    "date": "2018-10-15T16:38:23.000Z",
+    "notes": [
+      "Fixed possible issue with single quotes in the meta description field"
+    ]
+  },
+  {
     "version": "1.2.2",
     "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.2.zip",
     "date": "2018-06-20T10:30:00.000Z",
