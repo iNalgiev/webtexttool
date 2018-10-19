@@ -1019,61 +1019,167 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     };
 
                     var initialCQTemplate = {
-                        "Suggestions": {
-                            "PageScore": 0.0,
-                            "Suggestions": [{
-                                "Tag": "Readability",
-                                "MetaTag": "Readability",
-                                "Rules": null,
-                                "Importance": 40.0,
-                                "Score": 0.0,
-                                "Penalty": 0.0,
-                                "Tooltip": null,
-                                "SortIndex": 1
-                            },
-                                {
-                                    "Tag": "Adjectives",
-                                    "MetaTag": "Adjectives",
-                                    "Rules": null,
-                                    "Importance": 20.0,
-                                    "Score": 0.0,
-                                    "Penalty": 0.0,
-                                    "Tooltip": null,
-                                    "SortIndex": 1
-                                },
-                                {
-                                    "Tag": "Whitespaces",
-                                    "MetaTag": "Whitespaces",
-                                    "Rules": null,
-                                    "Importance": 15.0,
-                                    "Score": 0.0,
-                                    "Penalty": 0.0,
-                                    "Tooltip": null,
-                                    "SortIndex": 1
-                                },
-                                {
-                                    "Tag": "Sentiment",
-                                    "MetaTag": "Sentiment",
-                                    "Rules": null,
-                                    "Importance": 10.0,
-                                    "Score": 0.0,
-                                    "Penalty": 0.0,
-                                    "Tooltip": null,
-                                    "SortIndex": 1
-                                },
-                                {
-                                    "Tag": "Gender",
-                                    "MetaTag": "Gender",
-                                    "Rules": null,
-                                    "Importance": 15.0,
-                                    "Score": 0.0,
-                                    "Penalty": 0.0,
-                                    "Tooltip": null,
-                                    "SortIndex": 1
+                        "PageScore": 0.0,
+                        "Suggestions": [{
+                            "Tag": "Readability",
+                            "MetaTag": "Readability",
+                            "Rules": null,
+                            "Importance": 70.0,
+                            "Score": 0.0,
+                            "Penalty": 0.0,
+                            "Tooltip": null,
+                            "SortIndex": 1,
+                            "Metadata": {
+                                "Category": 20,
+                                "ShortName": "Readability",
+                                "DisplayName": "Readability",
+                                "DisplayType": null,
+                                "Order": 1,
+                                "Settings": [{"DisplayName": "Elementary", "Value": "1"}, {
+                                    "DisplayName": "Highschool",
+                                    "Value": "2"
+                                }, {"DisplayName": "University", "Value": "3"}],
+                                "Rules": [{
+                                    "Name": "ReadingLevel",
+                                    "Value": "1",
+                                    "IsPrimary": true,
+                                    "IsStringValue": false
+                                }, {
+                                    "Name": "DifficultWordsLevel",
+                                    "Value": "1",
+                                    "IsPrimary": false,
+                                    "IsStringValue": false
+                                }, {
+                                    "Name": "LongSentencesLevel",
+                                    "Value": "1",
+                                    "IsPrimary": false,
+                                    "IsStringValue": false
+                                }, {
+                                    "Name": "SentenceLengthLevel",
+                                    "Value": "1",
+                                    "IsPrimary": false,
+                                    "IsStringValue": false
+                                }, {
+                                    "Name": "PassiveVoice",
+                                    "Value": "1",
+                                    "IsPrimary": false,
+                                    "IsStringValue": false
+                                }, {
+                                    "Name": "DifficultWordsLevel",
+                                    "Value": "1",
+                                    "IsPrimary": false,
+                                    "IsStringValue": false
+                                }]
+                            }
+                        }, {
+                            "Tag": "Adjectives",
+                            "MetaTag": "Adjectives",
+                            "Rules": null,
+                            "Importance": 20.0,
+                            "Score": 0.0,
+                            "Penalty": 0.0,
+                            "Tooltip": null,
+                            "SortIndex": 1,
+                            "Metadata": {
+                                "Category": 21,
+                                "ShortName": "Adjectives",
+                                "DisplayName": "Adjectives",
+                                "DisplayType": null,
+                                "Order": 2,
+                                "Settings": null,
+                                "Rules": [{
+                                    "Name": "AdjectivesLevel",
+                                    "Value": "1",
+                                    "IsPrimary": true,
+                                    "IsStringValue": false
+                                }]
+                            }
+                        }, {
+                            "Tag": "Whitespaces",
+                            "MetaTag": "Whitespaces",
+                            "Rules": null,
+                            "Importance": 20.0,
+                            "Score": 0.0,
+                            "Penalty": 0.0,
+                            "Tooltip": null,
+                            "SortIndex": 1,
+                            "Metadata": {
+                                "Category": 23,
+                                "ShortName": "Whitespaces",
+                                "DisplayName": "Whitespaces",
+                                "DisplayType": null,
+                                "Order": 5,
+                                "Settings": null,
+                                "Rules": [{
+                                    "Name": "WhitespacesLevel",
+                                    "Value": "1",
+                                    "IsPrimary": true,
+                                    "IsStringValue": false
+                                }, {
+                                    "Name": "BulletPointsLevel",
+                                    "Value": "1",
+                                    "IsPrimary": false,
+                                    "IsStringValue": false
+                                }]
+                            }
+                        }, {
+                            "Tag": "Gender",
+                            "MetaTag": "Gender",
+                            "Rules": null,
+                            "Importance": 15.0,
+                            "Score": 0.0,
+                            "Penalty": 0.0,
+                            "Tooltip": null,
+                            "SortIndex": 1,
+                            "Metadata": {
+                                "Category": 22,
+                                "ShortName": "Gender",
+                                "DisplayName": "Gender",
+                                "DisplayType": null,
+                                "Order": 3,
+                                "Settings": [{"DisplayName": "Female", "Value": "f"}, {
+                                    "DisplayName": "Neutral",
+                                    "Value": "n"
+                                }, {"DisplayName": "Male", "Value": "m"}],
+                                "Rules": [{
+                                    "Name": "GenderLevel",
+                                    "Value": "n",
+                                    "IsPrimary": true,
+                                    "IsStringValue": true
+                                }]
+                            }
+                        }, {
+                            "Tag": "Sentiment",
+                            "MetaTag": "Sentiment",
+                            "Rules": null,
+                            "Importance": 10.0,
+                            "Score": 0.0,
+                            "Penalty": 0.0,
+                            "Tooltip": null,
+                            "SortIndex": 1,
+                            "Metadata": {
+                                "Category": 30,
+                                "ShortName": "Sentiment",
+                                "DisplayName": "Sentiment",
+                                "DisplayType": null,
+                                "Order": 4,
+                                "Settings": [{
+                                    "DisplayName": "Negative",
+                                    "Value": "negative"
+                                }, {"DisplayName": "Neutral", "Value": "neutral"}, {
+                                    "DisplayName": "Positive",
+                                    "Value": "positive"
                                 }],
-                            "PageScoreTag": "Let’s get started!",
-                            "RuleSet": "ContentQuality"
-                        }
+                                "Rules": [{
+                                    "Name": "SentimentLevel",
+                                    "Value": "positive",
+                                    "IsPrimary": true,
+                                    "IsStringValue": true
+                                }]
+                            }
+                        }],
+                        "PageScoreTag": "Let’s get started!",
+                        "RuleSet": "ContentQuality"
                     };
 
                     function init() {
@@ -1096,15 +1202,26 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                         if (wtt_globals.record !== "" && wtt_globals.record.wttContentQualitySuggestions !== "" && wtt_globals.record.wttContentQualitySuggestions !== null) {
                             // load last run suggestions
-                            var contentQualityDetails = JSON.parse(wtt_globals.record.wttContentQualitySuggestions);
+                            var lastRunSuggestions = JSON.parse(wtt_globals.record.wttContentQualitySuggestions);
 
-                            if(contentQualityDetails !== null) {
-                                $scope.contentQualityDetails = contentQualityDetails.Details;
-                                renderSuggestions(contentQualityDetails, false);
+                            $scope.contentQualityDetails = lastRunSuggestions.Details;
+
+                            //map the new Metadata template to the old Suggestions
+                            if(typeof lastRunSuggestions.Suggestions[0].Metadata === "undefined") {
+
+                                var contentQualitySuggestions = _.map(initialCQTemplate.Suggestions, function(element) {
+                                    var treasure = _.findWhere(lastRunSuggestions.Suggestions, { Tag: element.Tag });
+                                    return _.extend(element, treasure);
+                                });
+
+                                lastRunSuggestions.Suggestions = contentQualitySuggestions;
                             }
+
+                            renderSuggestions(lastRunSuggestions, false);
+
                         } else {
                             // load initial template
-                            $scope.contentQualitySuggestions = initialCQTemplate.Suggestions.Suggestions;
+                            $scope.contentQualitySuggestions = initialCQTemplate.Suggestions;
                             $scope.QualityScoreTag = initialCQTemplate.Suggestions.PageScoreTag;
                         }
 
@@ -1238,7 +1355,8 @@ app.directive('enforceMaxTags', function () {
 app.directive("wttContentQuality", function () {
     return {
         template: wtt_globals.contentQualityTemplate,
-        link: function () {
+        link: function (scope) {
+            scope.data = stateService.data;
         }
     };
 });
@@ -1366,121 +1484,51 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                 var data2 = stateService.data;
                 scope.data2 = data2;
 
-                function buildOnOffAction(prop, display) {
+                scope.setRuleProp = function (rules, value) {
+                    for (var i = 0; i < rules.length; i++) {
+                        var rule = rules[i];
+                        var prop = rule.Name;
+                        if (value === 0) {
+                            if (scope.settings[prop]) {
+                                scope.settings[prop] = rule.IsStringValue ? '' : 0;
+                            } else {
+                                scope.settings[prop] = rule.Value;
+                            }
+                        } else {
+                            scope.settings[prop] = value;
+                        }
+                    }
+                };
+
+                var buildAction = function (metadata) {
+                    // console.log(metadata);
+
+                    var primaryRule = metadata.Rules[0];
+                    var prop = primaryRule.Name;
+                    var buttonList = _.map(metadata.Settings, function (item) {
+                        return {
+                            label: item.DisplayName,
+                            tip: item.DisplayName,
+                            value: item.Value
+                        };
+                    });
+
                     return {
-                        buttons: [],
+                        buttons: buttonList,
                         action: function (button) {
-                            scope.settings[prop] = this.active ? 1 : 0;
+                            scope.setRuleProp(metadata.Rules, button.value);
                             updateOnAction(scope.settings[prop]);
                         },
                         selected: function (button) {
-                            return scope.settings[prop] === button.value;
+                            return scope.settings[prop] == button.value;
                         },
-                        active: scope.settings[prop] > 0,
-                        display: display
+                        active: !!scope.settings[prop],
+                        display: metadata.DisplayType
                     }
-                }
-
-                var actions = {
-                    Readability: {
-                        buttons: [{
-                            label: "Elementary",
-                            tip: "Elementary",
-                            value: "1"
-                        },
-                            {
-                                label: "Highschool",
-                                tip: "Highschool",
-                                value: "2"
-                            },
-                            {
-                                label: "University",
-                                tip: "University",
-                                value: "3"
-                            }],
-                        action: function (button) {
-                            if (scope.settings.DifficultWordsLevel == 0 && button.value == 0) {
-                                button.value = 1;
-                            }
-
-                            scope.settings.ReadingLevel = button.value;
-                            scope.settings.DifficultWordsLevel = button.value;
-                            scope.settings.LongSentencesLevel = button.value;
-                            updateOnAction(button.value);
-                        },
-                        selected: function (button) {
-                            return scope.settings.ReadingLevel === button.value;
-                        },
-                        active: scope.settings.ReadingLevel > 0
-                    },
-                    Adjectives: {
-                        buttons: [],
-                        action: function (button) {
-                            scope.settings.AdjectivesLevel = this.active ? 1 : 0;
-                            scope.settings.AdjectiveList = scope.settings.AdjectivesLevel;
-                            updateOnAction(scope.settings.AdjectivesLevel);
-                        },
-                        selected: function (button) {
-                            return scope.settings.AdjectivesLevel === button.value;
-                        },
-                        active: scope.settings.AdjectivesLevel > 0
-                    },
-                    GenderList: buildOnOffAction('GenderList', 'gradient'),
-                    Gender: {
-                        buttons: [{label: 'Female', tip: 'Female', value: 'f'},
-                            {label: 'Neutral', tip: 'Neutral', value: 'n'},
-                            {label: 'Male', tip: 'Male', value: 'm'}],
-                        action: function (button) {
-                            if (button.value === 0) {
-                                //on off action
-                                if (scope.settings.GenderLevel) {
-                                    scope.settings.GenderLevel = '';
-                                } else {
-                                    scope.settings.GenderLevel = 'm'; //default after ON
-                                }
-                            } else {
-                                scope.settings.GenderLevel = button.value;
-                            }
-
-                            updateOnAction(scope.settings.GenderLevel);
-                        },
-                        selected: function (button) {
-                            return scope.settings.GenderLevel === button.value;
-                        },
-                        active: scope.settings.GenderLevel && true
-                    },
-                    Sentiment: {
-                        buttons: [{label: 'Negative', tip: 'Negative', value: 'negative'},
-                            {label: 'Neutral', tip: 'Neutral', value: 'neutral'},
-                            {label: 'Positive', tip: 'Positive', value: 'positive'}],
-                        action: function(button){
-                            if (button.value === 0){
-                                //on off action
-                                if(scope.settings.SentimentLevel){
-                                    scope.settings.SentimentLevel = '';
-                                }else{
-                                    scope.settings.SentimentLevel = 'neutral'; //default after ON
-                                }
-                            }else{
-                                scope.settings.SentimentLevel = button.value;
-                            }
-
-                            updateOnAction(scope.settings.SentimentLevel);
-                        },
-                        selected: function(button){
-                            return scope.settings.SentimentLevel === button.value;
-                        },
-                        active: scope.settings.SentimentLevel && true
-                    },
-                    Bulletpoints: buildOnOffAction('BulletPointsLevel'),
-                    Whitespaces: buildOnOffAction('WhitespacesLevel'),
-                    Jargon: buildOnOffAction('JargonList'),
-                    Repetition: buildOnOffAction('RepetitionLevel'),
-                    SingularPlural: buildOnOffAction('SingularPluralLevel', 'gradient'),
-                    TextLength: buildOnOffAction('TextLengthRuleLevel', 'gradient')
                 };
 
-                scope.actionConfig = actions[scope.suggestion.MetaTag];
+                var action = buildAction(scope.suggestion.Metadata);
+                scope.actionConfig = action;
 
                 scope.suggestion.selected = scope.suggestion.Importance > 0;
                 scope.suggestion.isCollapsed = false;
@@ -1522,6 +1570,17 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                             return {
                                 Name: key,
                                 Count: items.length}
+                        }).value();
+                    } else if (data2.sliderInfo.Type == "fullList") {
+                        data2.sliderInfo.tags = _.chain(data2.sliderInfo.List).groupBy(function (item) {
+                            return item.Word
+                        }).map(function (items, key) {
+                            return {
+                                Name: key,
+                                Count: items.length,
+                                CssClass: items.length > 0 ? items[0].Type : '',
+                                To: items[0].To ? items[0].To.join(", ") : ''
+                            };
                         }).value();
                     }
 
