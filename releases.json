@@ -1,5 +1,14 @@
 [
   {
+    "version": "1.2.4",
+    "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.4.zip",
+    "date": "2018-10-19T16:06:12.000Z",
+    "notes": [
+      "Added support for AdvancedLanguageLevel (CQ module)",
+      "Page slideout directive has been updated"
+    ]
+  },
+  {
     "version": "1.2.3",
     "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.3.zip",
     "date": "2018-10-15T16:38:23.000Z",

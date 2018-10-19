@@ -80,6 +80,10 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 
 ## Changelog
 
+### 1.2.4
+- Added new language level support for Readabilty in Content Quality module
+- Page slideout directive has been updated
+
 ### 1.2.3
 - Fixed possible issue with single quotes in the meta description field 
 

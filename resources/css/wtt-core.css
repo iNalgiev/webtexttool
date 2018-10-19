@@ -460,7 +460,7 @@ table {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1060;
+    z-index: 10000;
     display: none;
     max-width: 276px;
     padding: 1px !important;
@@ -2353,7 +2353,7 @@ ul.tag-list > li.tag-item {
     -moz-transition-duration: .3s;
     -o-transition-duration: .3s;
     transition-duration: .3s;
-    z-index: 999999999999;
+    z-index: 9999;
     line-height: 22px;
     height: 100%;
     text-align: center;
@@ -2403,13 +2403,41 @@ ul.tag-list > li.tag-item {
     padding: 2px;
     margin: 2px 5px 5px 0;
     line-height: 1;
-    white-space: nowrap;
+    text-decoration: none;
     text-align: center;
-    border-width: 1px;
-    border-style: solid;
+    border: 1px solid transparent;
     border-radius: 4px;
     transition: all .15s ease-in-out;
     font: 14px "Helvetica Neue",Helvetica,Arial,sans-serif;
+    cursor: pointer;
+}
+
+#slideout .post-tag.gender-female {
+    background-color: #FFDFDD;
+}
+
+#slideout .post-tag.gender-neutral {
+    background-color: #d3d3d3
+}
+
+#slideout .post-tag.sentiment-negative {
+    background-color: #FFDFDD
+}
+
+#slideout .post-tag-orange {
+    background-color: #fee4c5
+}
+
+div.scrollable {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+#slideout table {
+    width: 100%;
 }
 
 .badge, .wtt-btn, .wtt-btn-group, .btn-group-vertical, .caret, .checkbox-inline, .radio-inline {

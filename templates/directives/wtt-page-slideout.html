@@ -1,5 +1,5 @@
 <div id="slideout">
-    <div ng-if="info.Type=='list' || info.Type=='listex'">
+    <div ng-if="info.Type=='list' || info.Type=='listex'" class="scrollable">
         <table>
             <tr>
                 <th style="font-weight: bold;"><span>{[info.Title]}</span></th>
@@ -14,8 +14,33 @@
                 </td>
             </tr>
             <td class="tags" colspan="2">
-                <span class="post-tag" ng-repeat="item in info.tags track by $index" ng-click="markText(item)">{[item.Name]} <span class="badge" ng-show="item.Count > 1">{[item.Count]}</span></span>
+                <span class="post-tag" ng-repeat="item in info.tags track by $index" ng-click="markText(item)"
+                uib-wtt-popover="{[item.To]}" popover-title="Suggestions:" popover-trigger="mouseenter" popover-append-to-body="true"
+                popover-placement="right">{[item.Name]} <span class="badge" ng-show="item.Count > 1">{[item.Count]}</span> <i ng-show="item.To" class="fa fa-lg fa-lightbulb-o" style="color:orange"></i></span>
             </td>
+            </tr>
+        </table>
+    </div>
+    <div ng-if="info.Type=='fullList'" class="scrollable">
+        <table>
+            <tr>
+                <th><span>{[info.Title]}</span></th>
+                <th>
+                    <a class="boxclose" onclick="jQuery('#slideout').toggleClass('on')"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></a>
+                </th>
+            </tr>
+
+            <tr>
+                <td colspan="2" class="sub-title">
+                    <span ng-bind-html="info.Description"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tags" colspan="2">
+                    <span class="post-tag" ng-class="item.CssClass"
+                          ng-repeat="item in info.tags track by $index" ng-click="markText(item.Name)" uib-wtt-popover="{[item.To]}" popover-title="Suggestions:" popover-trigger="mouseenter" popover-append-to-body="true"
+                          popover-placement="right">{[item.Name]} <span class="badge" ng-show="item.Count > 1">{[item.Count]}</span> <i ng-show="item.To" class="fa fa-lg fa-lightbulb-o" style="color:orange"></i></span>
+                </td>
             </tr>
         </table>
     </div>
