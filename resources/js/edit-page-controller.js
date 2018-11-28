@@ -321,6 +321,8 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                         $scope.data.Resources[el.ResourceKey] = $sce.trustAsHtml(el.HtmlContent);
                     });
 
+                    $scope.showReadingLevelHelp = $scope.data.Resources['LanguageLevelHelp'].toString();
+
                     $scope.analyze = function () {
                         var minValue = 1;
 
@@ -1355,8 +1357,7 @@ app.directive('enforceMaxTags', function () {
 app.directive("wttContentQuality", function () {
     return {
         template: wtt_globals.contentQualityTemplate,
-        link: function (scope) {
-            scope.data = stateService.data;
+        link: function () {
         }
     };
 });
@@ -1481,8 +1482,10 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                     scope.suggestion.selected = (value != 0);
                 };
 
-                var data2 = stateService.data;
-                scope.data2 = data2;
+                var data = stateService.data;
+                data.viewExtraInfoToggle = {};
+                scope.sliderInfo = {};
+                scope.data = data;
 
                 scope.setRuleProp = function (rules, value) {
                     for (var i = 0; i < rules.length; i++) {
@@ -1542,16 +1545,16 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                     });
                 };
 
-                data2.Resources.forEach(function (el, i) {
-                    data2.Resources[el.ResourceKey] = $sce.trustAsHtml(el.HtmlContent);
+                data.Resources.forEach(function (el, i) {
+                    data.Resources[el.ResourceKey] = $sce.trustAsHtml(el.HtmlContent);
                 });
 
                 var setDisplayTexts = function () {
                     var resourceName = scope.suggestion.Tag.replace(new RegExp(" ", "g"), "") + "Label";
-                    scope.displayName = data2.Resources[resourceName].toString();
+                    scope.displayName = data.Resources[resourceName].toString();
 
                     scope.name = scope.suggestion.Tag.replace(new RegExp(" ", 'g'), "") + 'Suggestion';
-                    scope.tip = data2.Resources[scope.name];
+                    scope.tip = data.Resources[scope.name];
 
                     scope.domId = camelize(scope.suggestion.Tag) + 'SuggestionBox';
                 };
@@ -1560,32 +1563,82 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
 
                 scope.$on("languageChanged", setDisplayTexts);
 
-                scope.viewExtraInfoList = function(rule){
-                    data2.sliderInfo = JSON.parse(rule.ExtraInfo);
-                    data2.sliderInfo.tags = data2.sliderInfo.List;
-                    if (data2.sliderInfo.Type == "list"){
-                        data2.sliderInfo.tags = _.chain(data2.sliderInfo.List).groupBy(function(item){
+                scope.viewExtraInfoList = function (rule) {
+                    if (scope.data.viewExtraInfoToggle[rule.Text] == null || scope.data.viewExtraInfoToggle[rule.Text] === true) {
+                        Object.keys(scope.data.viewExtraInfoToggle).forEach(function (ruleText, index) {
+                            scope.data.viewExtraInfoToggle[ruleText] = true;
+                        });
+
+                        scope.data.viewExtraInfoToggle[rule.Text] = false;
+                    } else {
+                        scope.data.viewExtraInfoToggle[rule.Text] = true;
+                    }
+
+                    if (scope.sliderInfo[rule.Text] != null) {
+                        return;
+                    }
+
+                    scope.processSliderInfo(rule);
+                };
+
+                scope.processTags = function(localSliderInfo){
+                    return  _.map(localSliderInfo.List, function (item)
+                    {
+                        return {
+                            word: item.word,
+                            count: item.count,
+                            type: item.type || 'blue',
+                            dataSource: item.to && item.to.length > 0 ? item.to : null,
+                            tip: item.to ? item.to.map(function (ds) { return ds.word; }).join(", ") : '',
+                            suppressIgnore: localSliderInfo.SuppressIgnore
+                        };
+                    });
+                };
+
+                scope.processSliderInfo = function(rule){
+                    scope.sliderInfo[rule.Text] = JSON.parse(rule.ExtraInfo);
+                    var localSliderInfo = scope.sliderInfo[rule.Text];
+                    localSliderInfo.tags = localSliderInfo.List;
+
+                    if (localSliderInfo.Type == "info") {
+                        localSliderInfo.tags = scope.processTags(localSliderInfo);
+                        return localSliderInfo;
+                    }
+
+                    if (localSliderInfo.Type == "list") {
+                        localSliderInfo.tags = _.chain(localSliderInfo.List).groupBy(function (item) {
                             return item
-                        }).map(function(items, key){
+                        }).map(function (items, key) {
                             return {
-                                Name: key,
-                                Count: items.length}
+                                word: key,
+                                count: items.length
+                            }
                         }).value();
-                    } else if (data2.sliderInfo.Type == "fullList") {
-                        data2.sliderInfo.tags = _.chain(data2.sliderInfo.List).groupBy(function (item) {
+                    } else if (localSliderInfo.Type == "fullList" ) {
+                        localSliderInfo.tags = _.chain(localSliderInfo.List).groupBy(function (item) {
                             return item.Word
                         }).map(function (items, key) {
                             return {
-                                Name: key,
-                                Count: items.length,
-                                CssClass: items.length > 0 ? items[0].Type : '',
-                                To: items[0].To ? items[0].To.join(", ") : ''
+                                word: key,
+                                count: items.length,
+                                type: items.length > 0 ? items[0].Type : '',
+                                dataSource: items[0].To ? items[0].To.map(function (ds) { return ds.word; }).join(", ") : ''
+                            };
+                        }).value();
+                    }
+                    else if (localSliderInfo.Type == "listex") {
+                        localSliderInfo.tags = _.chain(localSliderInfo.List).map(function (item) {
+                            return {
+                                word: item.Name,
+                                count: item.Count,
+                                type: item.Type || '',
+                                dataSource: item.To || ''
                             };
                         }).value();
                     }
 
-                    jQuery('#slideout').addClass('on');
-                }
+                    return localSliderInfo;
+                };
             }
         };
     }]);
@@ -1697,6 +1750,7 @@ app.factory("stateService", [function () {
             {"ResourceKey":"Heading2to6Suggestion","HtmlContent":"<p>Use smaller headings (h2, h3, h4, h5 and/or h6) in your content to highlight / summarize paragraphs. Using headers will make it easier for you reader to &quot;scan&quot; the contents of your page. It allows you to catch the reader&#39;s attention.</p>\r\n\t","LanguageCode":"en"},
             {"ResourceKey":"BodySuggestion","HtmlContent":"<p>These suggestions are related to overall content on your page. Our rules suggest a minimum number of words for your page. Also related to the length of your content, is the number of times you should use your keywords. This way you can avoid to put your keyword too many times in the content (&quot;keyword stuffing&quot;), but also make sure that you use your keyword enough times so it will be clear for the search engine what the content is about.</p>\r\n\t","LanguageCode":"en"},
             {"ResourceKey":"SentimentLabel", "HtmlContent": "Sentiment", "LanguageCode": "en"},
+            {"ResourceKey":"PageLabel", "HtmlContent": "Page", "LanguageCode": "en"},
             {"ResourceKey":"ReadabilityLabel","HtmlContent":"Readability","LanguageCode":"en"},
             {"ResourceKey":"AdjectivesLabel","HtmlContent":"Text credibility","LanguageCode":"en"},
             {"ResourceKey":"GenderLabel","HtmlContent":"Target audience","LanguageCode":"en"},
@@ -1708,7 +1762,9 @@ app.factory("stateService", [function () {
             {"ResourceKey":"SentimentSuggestion","HtmlContent": "Set your desired sentiment and see if your content matches. If it doesn't match, it will show you which words to change.","LanguageCode": "en"},
             {"ResourceKey":"WhitespacesSuggestion","HtmlContent":"Checks the use of white spaces in your content. Use this to make your content easier to scan and read.","LanguageCode":"en"},
             {"ResourceKey":"BulletpointsSuggestion","HtmlContent":"Checks the use of bulletpoints in your content. Use these to make the text easier to scan and read.","LanguageCode":"en"},
-            {"ResourceKey":"ReadingLevelHelp","HtmlContent":"<table style=\"width: 100%;\"><tbody><tr><td colspan=\"2\">We have calculated three readability scores for your content and averaged this in the overall readability score. Below you will find the specific scores and a link with more information about each of them.<br/><br/></td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index\" target=\"_blank\">Coleman Liau Index</a></td><td> {[contentQualityDetails.ReadingValues.ColemanLiauIndex | number : 1]}</td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Automated_readability_index\" target=\"_blank\">Automated Readability Index</a></td><td> {[contentQualityDetails.ReadingValues.AutomatedReadabilityIndex | number : 1]}</td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests\" target=\"_blank\">Flesch-Kincaid Reading ease</a></td><td> {[contentQualityDetails.ReadingValues.FleschKincaidReadingEasy | number : 1]}</td></tr><tr><td> Average</td><td> {[contentQualityDetails.ReadingValues.ReadingAvg | number : 1]} ({[contentQualityDetails.ReadingLevel]})</td></tr></tbody></table>","LanguageCode":"en"}
+            {"ResourceKey":"ReadingLevelHelp","HtmlContent":"<table style=\"width: 100%;\"><tbody><tr><td colspan=\"2\">We have calculated three readability scores for your content and averaged this in the overall readability score. Below you will find the specific scores and a link with more information about each of them.<br/><br/></td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Coleman%E2%80%93Liau_index\" target=\"_blank\">Coleman Liau Index</a></td><td> {[contentQualityDetails.ReadingValues.ColemanLiauIndex | number : 1]}</td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Automated_readability_index\" target=\"_blank\">Automated Readability Index</a></td><td> {[contentQualityDetails.ReadingValues.AutomatedReadabilityIndex | number : 1]}</td></tr><tr><td> <a href=\"https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests\" target=\"_blank\">Flesch-Kincaid Reading ease</a></td><td> {[contentQualityDetails.ReadingValues.FleschKincaidReadingEasy | number : 1]}</td></tr><tr><td> Average</td><td> {[contentQualityDetails.ReadingValues.ReadingAvg | number : 1]} ({[contentQualityDetails.ReadingLevel]})</td></tr></tbody></table>","LanguageCode":"en"},
+            {"ResourceKey":"PageSuggestion", "HtmlContent": "Your content size is too big.", "LanguageCode": "en" },
+            {"ResourceKey":"LanguageLevelHelp", "HtmlContent": "<ul>\r\n\t\t<li>\r\n\t\t\t<span>Basic User (A1, A2)</span>\r\n\t\t\t<ul>\r\n\t\t\t\t<li><span>A1 (Beginner)</span></li>\r\n\t\t\t\t<li><span>A2 (Elementary)</span></li>\r\n\t\t\t</ul>\r\n\t\t</li>\r\n\t\t<li>\r\n\t\t\t<span>Independent User (B1, B2)</span>\r\n\t\t\t<ul>\r\n\t\t\t\t<li><span>B1 (Intermediate)</span></li>\r\n\t\t\t\t<li><span>B2 (Upper-Intermediate)</span></li>\r\n\t\t\t</ul>\r\n\t\t</li>\r\n\t\t<li>\r\n\t\t\t<span>Proficient  User (C1, C2)</span>\r\n\t\t\t<ul>\r\n\t\t\t\t<li><span>C1 (Advanced)</span></li>\r\n\t\t\t\t<li><span>C2 (Proficiency)</span></li>\r\n\t\t\t</ul>\r\n\t\t</li>\r\n\t</ul>", "LanguageCode": "en"}
         ],
         loading: false,
         showSpinner: true,

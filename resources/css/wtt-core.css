@@ -595,6 +595,20 @@ table {
     border-left-color: #fff;
 }
 
+.popover-content div ul {
+    list-style-type: disc;
+    padding-left: 15px;
+}
+
+.popover-content div ul li {
+    display: list-item;
+    margin-bottom: 3px;
+}
+
+.popover-content div ul ul {
+    list-style-type: circle;
+}
+
 .tooltip.top-left .tooltip-arrow, .tooltip.top-right .tooltip-arrow {
     bottom: 0;
     margin-bottom: -5px !important;
@@ -2343,21 +2357,32 @@ ul.tag-list > li.tag-item {
 
 #slideout {
     background: #fff;
-    box-shadow: 0 0 5px rgba(0,0,0,.3);
     color: #333;
-    position: fixed;
-    top: 55px;
-    left: -300px !important;
-    width: 260px !important;
     -webkit-transition-duration: .3s;
     -moz-transition-duration: .3s;
     -o-transition-duration: .3s;
     transition-duration: .3s;
-    z-index: 9999;
+    z-index: 100;
+    padding: 5px;
     line-height: 22px;
-    height: 100%;
-    text-align: center;
-    padding: 5px 6px 15px !important;
+    height: calc(100% - 55px);
+    /*    background: #fff;
+        box-shadow: 0 0 5px rgba(0,0,0,.3);
+        color: #333;
+        position: fixed;
+        top: 55px;
+        left: -300px !important;
+        width: 260px !important;
+        -webkit-transition-duration: .3s;
+        -moz-transition-duration: .3s;
+        -o-transition-duration: .3s;
+        transition-duration: .3s;
+        z-index: 10060;
+        line-height: 22px;
+        height: 100%;
+        text-align: center;
+        padding: 5px 6px 15px !important;
+        padding: 5px 6px 15px !important;*/
 }
 
 #slideout.on {
@@ -2426,6 +2451,40 @@ ul.tag-list > li.tag-item {
 
 #slideout .post-tag-orange {
     background-color: #fee4c5
+}
+
+#slideout .post-tag.rating-A2:after {
+    content: '(A2)';
+    padding-left: 2px;
+}
+
+#slideout .post-tag.rating-B1:after {
+    content: '(B1)';
+    padding-left: 2px;
+}
+
+#slideout .post-tag.rating-B2:after {
+    content: '(B2)';
+    padding-left: 2px;
+}
+
+#slideout .post-tag.rating-C1:after {
+    content: '(C1)';
+    padding-left: 2px;
+}
+
+#slideout .post-tag.rating-C2:after {
+    content: '(C2)';
+    padding-left: 2px;
+}
+
+#slideout .post-tag .tag-lightbulb {
+    color: orange;
+    margin-left: 2px;
+}
+
+#slideout .post-tag .badge {
+    margin-left: 2px;
 }
 
 div.scrollable {

@@ -1,5 +1,15 @@
 [
   {
+  "version": "1.2.5",
+  "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.5.zip",
+  "date": "2018-11-28T11:17:12.000Z",
+  "notes": [
+    "Content Quality module has been updated",
+    "Moved words + sentences in suggestions sidebar instead of left slideout sidebar.",
+    "Updated labels + resources"
+    ]
+  },
+  {
     "version": "1.2.4",
     "downloadUrl": "https://github.com/iNalgiev/webtexttool/archive/1.2.4.zip",
     "date": "2018-10-19T16:06:12.000Z",

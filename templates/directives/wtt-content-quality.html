@@ -1,5 +1,3 @@
-<wtt-page-slideout info="data.sliderInfo"></wtt-page-slideout>
-
 <div class="suggestions-box">
     <div class="suggestions-content">
         <div class="dropup">
@@ -18,6 +16,11 @@
                     the overall readability score. Below you will find the specific scores and a link with more
                     information about each of them.</div>
             </script>
+
+            <script type="text/ng-template" id="suggestion-popover-template1.html">
+                <div ng-bind-html="showReadingLevelHelp"></div>
+            </script>
+
             <div class="suggestions-header">
                 <button class="wtt-btn-collapse" type="button"
                         ng-click="isSuggestionDetailsCollapsed = !isSuggestionDetailsCollapsed">
@@ -30,7 +33,9 @@
             <div class="suggestions-content" uib-collapse="isSuggestionDetailsCollapsed">
                 <ul class="suggestions-list">
                     <li>Reading Time:<span class="pull-right">{[contentQualityDetails.ReadingTime]}</span></li>
-                    <li>Reading Level:<span class="pull-right" ng-bind-html="contentQualityDetails.ReadingLevel"></span></li>
+                    <li>Reading Level: <span class="pull-right">{[contentQualityDetails.ReadingLevel]}<button ng-hide="contentQualityDetails.ReadingValues" class="wtt-btn wtt-btn-link wtt-btn-xs wtt-btn-help wtt-btn-help-cq" type="button" style="position: relative; top: -2px;"
+                                                                                                              uib-wtt-popover-template="'suggestion-popover-template1.html'" popover-append-to-body="true"
+                                                                                                              popover-trigger="mouseenter" popover-placement="auto top"><i class="fa fa-question-circle"></i></button></span>
                 </ul>
             </div>
         </div>
