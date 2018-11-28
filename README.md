@@ -80,6 +80,11 @@ Yes, of course! If you have any questions, please don’t hesitate to [contact u
 
 ## Changelog
 
+### 1.2.5
+- Content Quality module has been updated
+    - Moved words + sentences in suggestions sidebar instead of left slideout sidebar
+- Updated labels + resources
+
 ### 1.2.4
 - Added new language level support for Readabilty in Content Quality module
 - Page slideout directive has been updated

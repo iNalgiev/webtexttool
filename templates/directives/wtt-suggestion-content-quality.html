@@ -41,12 +41,15 @@
             </div>
             <ul class="suggestions-list">
                 <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': (rule.Checked|boolText)}">
-                    <i class="fa" ng-class="{'fa-circle-o': !(rule.Checked|boolText), 'fa-check-circle': (rule.Checked|boolText)}"></i><span
-                        ng-bind-html="rule.Text"></span>
-                    <button type="button" ng-if="rule.ExtraInfo" class="wtt-btn wtt-btn-link wtt-btn-xs" id="viewExtraInfo"
-                            ng-click="viewExtraInfoList(rule)" title="Display List"><i class="fa fa-lg fa-eye"
-                                                                                       aria-hidden="true"></i></button>
+                    <i class="fa" ng-class="{'fa-circle-o': !(rule.Checked|boolText), 'fa-check': (rule.Checked|boolText)}"></i><span ng-bind-html="rule.Text"></span>
+                    <span ng-if="rule.ExtraInfo">
+                        <a href="javascript:;"  class="wtt-btn wtt-btn-link wtt-btn-xs no-padding" ng-click="viewExtraInfoList(rule)" title="Display List">
+                            <i ng-class="{'fa-caret-down' : (data.viewExtraInfoToggle[rule.Text] == null || data.viewExtraInfoToggle[rule.Text] === true), 'fa-caret-up' : data.viewExtraInfoToggle[rule.Text] === false }" class="fa fa-lg" aria-hidden="true"></i>
+                        </a>
+                    </span>
+                    <wtt-page-slideout info="sliderInfo[rule.Text]" ng-if="data.viewExtraInfoToggle[rule.Text] === false"></wtt-page-slideout>
                 </li>
+
                 <li ng-if="!suggestion.Rules">
                     </i><span ng-bind-html="tip"></span>
                 </li>

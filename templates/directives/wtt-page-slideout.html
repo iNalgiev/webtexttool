@@ -1,35 +1,6 @@
 <div id="slideout">
-    <div ng-if="info.Type=='list' || info.Type=='listex'" class="scrollable">
+    <div ng-if="info.Type=='info'" class="scrollable">
         <table>
-            <tr>
-                <th style="font-weight: bold;"><span>{[info.Title]}</span></th>
-                <th>
-                    <a class="boxclose" onclick="jQuery('#slideout').toggleClass('on')"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></a>
-                </th>
-            </tr>
-            <tr>
-            <tr>
-                <td colspan="2" class="sub-title">
-                    <span ng-bind-html="info.Description"></span>
-                </td>
-            </tr>
-            <td class="tags" colspan="2">
-                <span class="post-tag" ng-repeat="item in info.tags track by $index" ng-click="markText(item)"
-                uib-wtt-popover="{[item.To]}" popover-title="Suggestions:" popover-trigger="mouseenter" popover-append-to-body="true"
-                popover-placement="right">{[item.Name]} <span class="badge" ng-show="item.Count > 1">{[item.Count]}</span> <i ng-show="item.To" class="fa fa-lg fa-lightbulb-o" style="color:orange"></i></span>
-            </td>
-            </tr>
-        </table>
-    </div>
-    <div ng-if="info.Type=='fullList'" class="scrollable">
-        <table>
-            <tr>
-                <th><span>{[info.Title]}</span></th>
-                <th>
-                    <a class="boxclose" onclick="jQuery('#slideout').toggleClass('on')"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></a>
-                </th>
-            </tr>
-
             <tr>
                 <td colspan="2" class="sub-title">
                     <span ng-bind-html="info.Description"></span>
@@ -37,9 +8,42 @@
             </tr>
             <tr>
                 <td class="tags" colspan="2">
-                    <span class="post-tag" ng-class="item.CssClass"
-                          ng-repeat="item in info.tags track by $index" ng-click="markText(item.Name)" uib-wtt-popover="{[item.To]}" popover-title="Suggestions:" popover-trigger="mouseenter" popover-append-to-body="true"
-                          popover-placement="right">{[item.Name]} <span class="badge" ng-show="item.Count > 1">{[item.Count]}</span> <i ng-show="item.To" class="fa fa-lg fa-lightbulb-o" style="color:orange"></i></span>
+                            <span class="post-tag cursor-default"
+                                  uib-wtt-popover="{[item.tip]}" popover-title="Suggestions:" popover-trigger="mouseenter" ng-class="item.type"
+                                  popover-append-to-body="true" popover-placement="bottom" ng-repeat="item in info.tags track by $index">
+                            {[item.word]}<span class="badge" ng-show="item.count > 1"> {[item.count]}</span><i ng-show="item.dataSource"
+                                                                                                               class="fa fa-lg fa-lightbulb-o tag-lightbulb"></i></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div ng-if="info.Type=='list' || info.Type=='listex'" class="scrollable">
+        <table>
+            <tr>
+                <td colspan="2" class="sub-title">
+                    <span ng-bind-html="info.Description"></span>
+                </td>
+            </tr>
+            <td class="tags" colspan="2">
+                <span class="post-tag" ng-repeat="item in info.tags track by $index"
+                      uib-wtt-popover="{[item.dataSource]}" popover-title="Suggestions:" popover-trigger="mouseenter"
+                      popover-append-to-body="true" popover-placement="right">{[item.word]} <span class="badge" ng-show="item.Count > 1">{[item.count]}</span>
+                    <i ng-show="item.dataSource" class="fa fa-lg fa-lightbulb-o" style="color:orange"></i></span>
+            </td>
+        </table>
+    </div>
+    <div ng-if="info.Type=='fullList'" class="scrollable">
+        <table>
+            <tr>
+                <td colspan="2" class="sub-title">
+                    <span ng-bind-html="info.Description"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="tags" colspan="2">
+                    <span class="post-tag" ng-class="item.type"
+                          ng-repeat="item in info.tags track by $index" uib-wtt-popover="{[item.dataSource]}" popover-title="Suggestions:" popover-trigger="mouseenter" popover-append-to-body="true"
+                          popover-placement="right">{[item.word]} <span class="badge" ng-show="item.Count > 1">{[item.count]}</span><i ng-show="item.dataSource" class="fa fa-lg fa-lightbulb-o" style="color:orange"></i></span>
                 </td>
             </tr>
         </table>
@@ -47,17 +51,13 @@
     <div ng-if="info.Type=='suggestions'">
         <table>
             <tr>
-                <th style="font-weight: bold;" colspan="2"><span>{[info.Title]}</span></th>
-                <th><a class="boxclose" onclick="jQuery('#slideout').toggleClass('on')"><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></a></th>
-            </tr>
-            <tr>
                 <td colspan="3" class="sub-title">
                     <span ng-bind-html="info.Description"></span>
                 </td>
             </tr>
             <tr ng-repeat="item in info.tags track by $index">
                 <td class="td-left tags">
-                    <span class="post-tag post-tag-orange" ng-repeat="from in item.From track by $index" ng-click="markText(item)">{[from]}</span>
+                    <span class="post-tag post-tag-orange" ng-repeat="from in item.From track by $index" ng-click="markText(from)">{[from]}</span>
                 </td>
                 <td ng-if="item.To.length > 0" class="td-center">
                     <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
