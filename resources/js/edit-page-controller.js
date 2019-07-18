@@ -16,14 +16,14 @@ app.config(['$httpProvider', '$interpolateProvider', 'toastrConfig', 'laddaProvi
         });
     }]);
 
-app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '$timeout', '$interval', '$cookies', 'suggestionsService', 'keywordService', 'httpService', 'languageService', '$sce', 'toastr', 'synonymService',
-    function ($scope, $http, $q, stateService, $timeout, $interval, $cookies, suggestionsService, keywordService, httpService, languageService, $sce, toastr, synonymService) {
+app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '$timeout', '$interval', '$cookies', 'suggestionsService', 'keywordService', 'httpService', 'languageService', '$sce', 'toastr', 'synonymService', '$filter',
+    function ($scope, $http, $q, stateService, $timeout, $interval, $cookies, suggestionsService, keywordService, httpService, languageService, $sce, toastr, synonymService, $filter) {
         var WttApiBaseUrl = wtt_globals.wttApiBaseUrl;
         var $j = jQuery;
         var authCode = wtt_globals.userData !== null ? wtt_globals.userData.accessToken : "";
         var apiKey = wtt_globals.wttApiKey;
 
-        if (localStorage.getItem('wtt_token') === null || localStorage.getItem('wtt_token') === "" || authCode !== '') {
+        if ((localStorage.getItem('wtt_token') === null && localStorage.getItem('wtt_token') === "") || authCode !== '') {
             localStorage.setItem('wtt_token', authCode);
             if (apiKey !== '') {
                 localStorage.setItem('wtt_token', apiKey);
@@ -62,7 +62,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                     if(synonymValues !== "") {
                         $j.map(synonymValues, function (element) {
-                            if ($j('#wttSynonymTags li').length <= 2) {
+                            if ($j('#wttSynonymTags li').length <= 19) {
                                 $j("#wttSynonymTags").append('<li><input type="hidden" id="wtt-synonym-tags" name="wtt_synonym_tags[]" value=\"' + element + '\"/></li>');
                             }
                         })
@@ -70,12 +70,12 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                     $scope.htmlPopover = $sce.trustAsHtml('<p class="tooltip-content">First select for which language / country you want to optimize your content.<br><br>Then enter your keyword.</p>');
                     $scope.htmlPopoverS = $sce.trustAsHtml('<p class="tooltip-content">While writing, multiple suggestions appear here. These suggestions tell you how you can improve your text for the search engines, according to the latest SEO rules, but also how to structure your text for your readers. Following these suggestions, will raise your optimization score!</p>');
-                    $scope.htmlPopoverP = $sce.trustAsHtml('<p class="tooltip-content">Here you can set max 3 alternative keywords that support the main keyword.</p>');
+                    $scope.htmlPopoverP = $sce.trustAsHtml('<p class="tooltip-content">Here you can set max 20 alternative keywords that support the main keyword.</p>');
 
                     var permaLink = wtt_globals.permaLink;
                     var slugValue = document.getElementById("slug");
 
-                    if (permaLink !== "") {
+                    if (permaLink !== "" && permaLink !== null) {
                         $scope.permalink = permaLink.replace(/-/g, ' ');
                     } else if (slugValue !== "" && slugValue !== null) {
                         $scope.permalink = slugValue.value.replace(/-/g, ' ');
@@ -114,7 +114,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     };
 
                     $scope.onSynonymsAdded = function (synonym) {
-                        if ($j('#wttSynonymTags li').length <= 2) {
+                        if ($j('#wttSynonymTags li').length <= 19) {
                             $j("#wttSynonymTags").append('<li><input type="hidden" id="wtt-synonym-tags" name="wtt_synonym_tags[]" value=\"' + synonym.text + '\"/></li>');
                         }
                     };
@@ -342,7 +342,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
 
                             analyzeContentQuality(20);
                         } else {
-                            toastr.warning("Text Conversion Optimizer is not included in your subscription. Please upgrade or contact our support team for more info.", "Oops.. You can't do this now. This might not be included in your current webtexttool plan or you have run out of credits for this month.", {
+                            toastr.warning("Text Conversion Optimizer is not included in your subscription. Please upgrade or contact our support team for more info.", "Oops.. You can't do this now. This might not be included in your current textmetrics plan or you have run out of credits for this month.", {
                                 closeButton: true,
                                 timeOut: 0,
                                 extendedTimeOut: 3000
@@ -783,7 +783,7 @@ app.controller("editPageController", ['$scope', '$http', '$q', 'stateService', '
                     function loadKeywordSources() {
                         keywordService.getKeywordSources().then(
                             function loaded(keywordSources) {
-                                $scope.KeywordSources = keywordSources;
+                                $scope.KeywordSources = $filter('orderBy')(keywordSources, "Country", false);
 
                                 var appLanguageCode = languageService.getActiveLanguageCode();
                                 var mappedLanguageCode = keywordSourceCodeMap[appLanguageCode] || appLanguageCode;
@@ -1388,6 +1388,18 @@ app.directive('wttSuggestion', ["suggestionsService", "$sce", "stateService", fu
 
             var data = stateService.data;
             scope.data = data;
+            data.viewExtraInfoToggle = {};
+            scope.sliderInfo = {};
+
+            scope.$watch('suggestion.Rules', function (suggestion) {
+                // console.log('update suggestions');
+                _.each(suggestion.Rules, function (rule) {
+                    if (scope.data.viewExtraInfoToggle[rule.Text]){
+                        // console.log('update rule: ' + rule);
+                        scope.processSliderInfo(rule);
+                    }
+                });
+            }, true);
 
             var tagMap = {
                 'Page Title': ['TITLE'],
@@ -1398,6 +1410,25 @@ app.directive('wttSuggestion', ["suggestionsService", "$sce", "stateService", fu
             };
 
             var suggestionTags = tagMap[scope.suggestion.Tag];
+
+            scope.viewExtraInfoList = function (rule) {
+                if (scope.data.viewExtraInfoToggle[rule.Text] == null || scope.data.viewExtraInfoToggle[rule.Text] === true) {
+                    Object.keys(scope.data.viewExtraInfoToggle).forEach(function (ruleText, index) {
+                        scope.data.viewExtraInfoToggle[ruleText] = true;
+                    });
+
+                    scope.data.viewExtraInfoToggle[rule.Text] = false;
+                } else {
+                    scope.data.viewExtraInfoToggle[rule.Text] = true;
+                    return;
+                }
+
+                if (scope.sliderInfo[rule.Text] != null) {
+                    return;
+                }
+
+                scope.processSliderInfo(rule);
+            };
 
             scope.$on('editPageController:selectNodes', function (event, selectedNodeNames) {
                 if (selectedNodeNames.length === 0) {
@@ -1461,6 +1492,33 @@ app.directive('wttSuggestion', ["suggestionsService", "$sce", "stateService", fu
             };
 
             setDisplayTexts();
+
+            scope.processTags = function(localSliderInfo){
+                return  _.map(localSliderInfo.List, function (item)
+                {
+                    return {
+                        word: item.word,
+                        count: item.count,
+                        type: item.type || 'blue',
+                        dataSource: item.to && item.to.length > 0 ? item.to : null,
+                        tip: item.to ? item.to.map(function (ds) { return ds.word; }).join(", ") : '',
+                        suppressIgnore: localSliderInfo.SuppressIgnore
+                    };
+                });
+            };
+
+            scope.processSliderInfo = function(rule){
+                scope.sliderInfo[rule.Text] = JSON.parse(rule.ExtraInfo);
+                var localSliderInfo = scope.sliderInfo[rule.Text];
+                localSliderInfo.tags = localSliderInfo.List;
+
+                if (localSliderInfo.Type == "info") {
+                    localSliderInfo.tags = scope.processTags(localSliderInfo);
+                    return localSliderInfo;
+                }
+
+                return localSliderInfo;
+            };
 
         }
     };
@@ -1605,44 +1663,53 @@ app.directive("wttSuggestionContentQuality", ["suggestionsService", "$sce", "sta
                         return localSliderInfo;
                     }
 
-                    if (localSliderInfo.Type == "list") {
-                        localSliderInfo.tags = _.chain(localSliderInfo.List).groupBy(function (item) {
-                            return item
-                        }).map(function (items, key) {
-                            return {
-                                word: key,
-                                count: items.length
-                            }
-                        }).value();
-                    } else if (localSliderInfo.Type == "fullList" ) {
-                        localSliderInfo.tags = _.chain(localSliderInfo.List).groupBy(function (item) {
-                            return item.Word
-                        }).map(function (items, key) {
-                            return {
-                                word: key,
-                                count: items.length,
-                                type: items.length > 0 ? items[0].Type : '',
-                                dataSource: items[0].To ? items[0].To.map(function (ds) { return ds.word; }).join(", ") : ''
-                            };
-                        }).value();
-                    }
-                    else if (localSliderInfo.Type == "listex") {
-                        localSliderInfo.tags = _.chain(localSliderInfo.List).map(function (item) {
-                            return {
-                                word: item.Name,
-                                count: item.Count,
-                                type: item.Type || '',
-                                dataSource: item.To || ''
-                            };
-                        }).value();
-                    }
-
                     return localSliderInfo;
                 };
             }
         };
     }]);
 
+app.directive("wttSuggestionInfo", function () {
+    return {
+        template: wtt_globals.suggestionInfo,
+        scope: {
+            rule: "=",
+        },
+        replace: true,
+        link: function (scope, elem, attr) {
+            scope.$watch('rule', function (rule) {
+                scope.processRule(rule);
+            }, true);
+
+            scope.processTags = function(localSliderInfo){
+                return  _.map(localSliderInfo.List, function (item)
+                {
+                    return {
+                        word: item.word,
+                        count: item.count,
+                        type: item.type || 'blue',
+                        dataSource: item.to && item.to.length > 0 ? item.to : null,
+                        tip: item.to ? item.to.map(function (ds) { return ds.word; }).join(", ") : '',
+                        suppressIgnore: localSliderInfo.SuppressIgnore
+                    };
+                });
+            };
+
+            scope.processRule = function(rule){
+                scope.info = JSON.parse(rule.ExtraInfo);
+                var localSliderInfo = scope.info;
+                localSliderInfo.tags = localSliderInfo.List;
+
+                if (localSliderInfo.Type == "info") {
+                    localSliderInfo.tags = scope.processTags(localSliderInfo);
+                    return localSliderInfo;
+                }
+
+                return localSliderInfo;
+            };
+        }
+    };
+});
 
 app.factory("keywordService", ['$http', '$q', '$rootScope', 'httpService',
     function ($http, $q, $rootScope, httpService) {
@@ -1731,7 +1798,7 @@ app.factory("httpService", ['$http', '$q',
 app.factory("stateService", [function () {
     var data = {
         Resources: [
-            {"ResourceKey":"CQGenericError", "HtmlContent": "We’re sorry, we could not analyze your content. Please try again or contact support@webtexttool.com in case the issues persist.", "LanguageCode": "en"},
+            {"ResourceKey":"CQGenericError", "HtmlContent": "We’re sorry, we could not analyze your content. Please try again or contact support@textmetrics.com in case the issues persist.", "LanguageCode": "en"},
             {"ResourceKey":"ContentRequiredError","HtmlContent":"Your page needs some content.","LanguageCode":"en"},
             {"ResourceKey":"ContentMinLengthError","HtmlContent":"Your page content must have at least 150 words.","LanguageCode":"en"},
             {"ResourceKey":"GenericError","HtmlContent":"Something went wrong!","LanguageCode":"en"},

@@ -8,10 +8,10 @@
             </tr>
             <tr>
                 <td class="tags" colspan="2">
-                    <span class="post-tag cursor-default" uib-wtt-popover="{[item.tip]}" popover-title="Suggestions:" popover-trigger="mouseenter" ng-class="item.type"
+                    <span class="post-tag" ng-click="markText(item)" uib-wtt-popover="{[item.tip]}" popover-title="Suggestions:" popover-trigger="mouseenter" ng-class="item.type"
                           popover-append-to-body="true" popover-placement="bottom" ng-repeat="item in info.tags track by $index">
                             {[item.word]}
-                        <span class="badge" ng-show="item.count > 1"> {[item.count}}</span><i ng-show="item.dataSource" class="fa fa-lg fa-lightbulb-o tag-lightbulb"></i>
+                        <span class="badge" ng-show="item.count > 1"> {[item.count]}</span><i ng-show="item.dataSource" class="fa fa-lg fa-lightbulb-o tag-lightbulb"></i>
                     </span>
                 </td>
             </tr>

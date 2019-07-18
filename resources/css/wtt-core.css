@@ -16,15 +16,13 @@ Version:	1.6.0
 .wtt_box {
     background-color: #fcfcfc;
     margin-bottom: 10px;
-    box-shadow: 0 1px 2px -1px #444;
-    -moz-box-shadow: 0 1px 2px -1px #444;
-    -webkit-box-shadow: 0 1px 2px -1px #444;
+    border: 1px solid rgba(199, 199, 199, 0.5);
 }
 
 .wtt_box:before {
     display: block;
     content: "";
-    background: #F6A01A;
+    background: #1d75b7;
     width: 100%;
     height: 5px;
     border-radius: 2px 2px 0 0;
@@ -76,7 +74,7 @@ Version:	1.6.0
 }
 
 .bs-callout-warning {
-    border-left-color: #F6A01A;
+    border-left-color: #1d75b7;
 }
 
 .bs-callout h4 {
@@ -182,27 +180,8 @@ table {
     text-align: center;
     background-color: #fcfcfc;
     margin-bottom: 10px;
-    padding: 7px;
-    -moz-box-shadow: 0 1px 2px -1px #444;
-    -webkit-box-shadow: 0 1px 2px -1px #444;
-    box-shadow: 0 1px 2px -1px #444;
-}
-
-.wtt_box {
-    background-color: #fcfcfc;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 2px -1px #444;
-    -moz-box-shadow: 0 1px 2px -1px #444;
-    -webkit-box-shadow: 0 1px 2px -1px #444;
-}
-
-.wtt_box:before {
-    display: block;
-    content: "";
-    background: #F6A01A;
-    width: 100%;
-    height: 5px;
-    border-radius: 2px 2px 0 0;
+    padding: 5px;
+    border: 1px solid rgba(199, 199, 199, 0.5);
 }
 
 .wtt_header {
@@ -211,7 +190,7 @@ table {
     font-weight: normal;
     padding: 4px 10px;
     margin: 0;
-    border-bottom: 1px dashed #d1d1d1;
+    border-bottom: 1px solid rgba(190,196,208,.5);
     box-shadow: 0 1px 2px -1px #ccc;
     -moz-box-shadow: 0 1px 2px -1px #ccc;
     -webkit-box-shadow: 0 1px 2px -1px #ccc;
@@ -325,12 +304,11 @@ table {
 
 .wtt-form-control {
     display: block;
-    width: 95% !important;
+    width: 85% !important;
     height: 34px;
     padding: 6px 12px;
     font-size: 15px;
-    font-weight: bold;
-    color: #f6a101 !important;
+    color: #555 !important;
     line-height: 1.42857143;
     background-color: #f9f9f9 !important;
     border: 1px solid #ccc !important;
@@ -369,8 +347,8 @@ table {
 
 .wtt-input-group-btn > .wtt-btn-2 {
     z-index: 2;
-    margin-left: -24px;
-    margin-right: 20px;
+    margin-left: -52px;
+    margin-right: 49px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     position: relative;
@@ -428,17 +406,16 @@ table {
     border-radius: 4px;
 }
 
-.wtt-btn-orange {
+.wtt-btn-blue {
     color: #fff;
-    background-color: #F6A01A;
-    border-color: #e6961a;
+    background-color: #1F7DC4;
+    border-color: #1F7DC4;
 }
 
-.wtt-btn-orange:focus,
-.wtt-btn-orange:hover {
+.wtt-btn-blue:focus,
+.wtt-btn-blue:hover {
     color: #fff;
-    background-color: #e6961a;
-    border-color: #e6961a;
+    opacity: .84;
 }
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
@@ -1055,7 +1032,7 @@ fieldset[disabled] .wtt-btn-link {
 
 .suggestions-box {
     padding: 7px 15px !important;
-    background: #eee;
+    background: #F7F7F7;
     position: relative;
     border: 1px solid #eee;
     -webkit-border-radius: 0;
@@ -1267,7 +1244,7 @@ textarea#wtt_description {
     width: 100%;
     min-height: 50px;
     white-space: pre-wrap;
-    border: 1px solid #F6A01A;
+    border: 1px solid #1F7DC4;
     border-radius: 3px;
     padding: 5px;
     -webkit-box-shadow: 0 0 5px rgba(51, 170, 255, 0);
@@ -1519,7 +1496,7 @@ select.wtt-form-control {
     float: right;
 }
 
-.wtt-btn:not(.wtt-btn-default):not(.wtt-btn-info):not(.wtt-btn-info-s):not(.wtt-btn-collapse):not(.wtt-btn-info-d):not(.wtt-btn-info):not(.wtt-btn-xs):not(.wtt-btn-success):not(.wtt-btn-orange) {
+.wtt-btn:not(.wtt-btn-default):not(.wtt-btn-info):not(.wtt-btn-info-s):not(.wtt-btn-collapse):not(.wtt-btn-info-d):not(.wtt-btn-info):not(.wtt-btn-xs):not(.wtt-btn-success):not(.wtt-btn-blue) {
     color: #58666c;
     font-weight: 500;
     border: none;
@@ -1597,8 +1574,8 @@ select.wtt-form-control {
 
 .wtt-btn-success {
     color: #fff;
-    background-color: #5cb85c;
-    border-color: #4cae4c;
+    background: #1F7DC4;
+    border-color: #2e6da4;
 }
 
 .wtt-btn.focus,
@@ -1613,8 +1590,8 @@ select.wtt-form-control {
 .wtt-btn-success:hover,
 .open>.dropdown-toggle.wtt-btn-success {
     color: #fff;
-    background-color: #449d44;
-    border-color: #398439;
+    background: #1F7DC4;
+    border-color: #2e6da4;
 }
 
 .wtt-btn-default.active,
@@ -1637,7 +1614,7 @@ select.wtt-form-control {
 }
 
 .step-no {
-    color: #f09000;
+    color: #1d75b7;
     font-weight: 700;
     text-align: left !important;
     font-size: 14px;
@@ -1697,8 +1674,8 @@ select.wtt-form-control {
 
 .wtt-btn-info {
     color: #fff;
-    background-color: #5bc0de;
-    border-color: #46b8da;
+    background: #1F7DC4;
+    border-color: #2e6da4;
 }
 
 .wtt-btn-block {
@@ -1709,12 +1686,12 @@ select.wtt-form-control {
 .wtt-btn2.focus, .wtt-btn2:focus, .wtt-btn2:hover {
     color: #333;
     text-decoration: none;
+    border-color: #204d74;
 }
 
 .wtt-btn-info.active, .wtt-btn-info:active, .wtt-btn-info:hover, .open > .dropdown-toggle.wtt-btn-info {
     color: #fff;
-    background-color: #31b0d5;
-    border-color: #269abc;
+    opacity: .84;
 }
 
 /* ---- Score Box CSS ---- */
@@ -2237,7 +2214,7 @@ ul.tag-list > li.tag-item {
 .wtt-tabs-container .wtt-nav-tabs > li.active > a:hover {
     opacity: 1;
     border: none;
-    border-bottom: 3px solid #1EB99F;
+    border-bottom: 3px solid #1F7DC4;
     background: 0 0;
 }
 
@@ -2356,7 +2333,7 @@ ul.tag-list > li.tag-item {
 }
 
 #slideout {
-    background: #fff;
+    /*background: #fff;*/
     color: #333;
     -webkit-transition-duration: .3s;
     -moz-transition-duration: .3s;
@@ -2442,15 +2419,31 @@ ul.tag-list > li.tag-item {
 }
 
 #slideout .post-tag.gender-neutral {
-    background-color: #d3d3d3
+    background-color: #d3d3d3;
+}
+
+#slideout .post-tag.sentiment-positive:before {
+    font-family: FontAwesome;
+    content: '\f0fe';
+    padding-right: 4px;
+}
+
+#slideout .post-tag.sentiment-negative:before {
+    font-family: FontAwesome;
+    content: '\f146';
+    padding-right: 4px;
+}
+
+#slideout .post-tag.sentiment-positive {
+    background-color: #daf9d8;
 }
 
 #slideout .post-tag.sentiment-negative {
-    background-color: #FFDFDD
+    background-color: #ffe6e6;
 }
 
 #slideout .post-tag-orange {
-    background-color: #fee4c5
+    background-color: #fee4c5;
 }
 
 #slideout .post-tag.rating-A2:after {
