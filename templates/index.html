@@ -1,6 +1,6 @@
 {% extends "_layouts/cp" %}
 
-{% set title = "Webtexttool v" ~ craft.plugins.getPlugin('webtexttool').getVersion | t %}
+{% set title = craft.plugins.getPlugin('webtexttool').getName | t ~ " v" ~ craft.plugins.getPlugin('webtexttool').getVersion | t %}
 
 {% set content %}
 

@@ -14,9 +14,17 @@
     </div>
     <div class="suggestions-content" uib-collapse="suggestion.isCollapsed">
         <ul class="suggestions-list">
-            <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': rule.Checked}">
+            <!--<li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': rule.Checked}">
                 <i class="fa" ng-class="{'fa-circle-o': !rule.Checked, 'fa-check-circle': rule.Checked}"></i>
                 <span ng-bind-html="rule.Text"></span>
+            </li>-->
+            <li ng-repeat="rule in suggestion.Rules" ng-class="{'checked': rule.Checked}"><i class="fa" ng-class="{'fa-circle-o': !rule.Checked, 'fa-check-circle': rule.Checked}"></i><span ng-bind-html="rule.Text"></span>
+                <span ng-if="rule.ExtraInfo">
+                    <a href="javascript:;" class="wtt-btn wtt-btn-link wtt-btn-xs no-padding" ng-click="viewExtraInfoList(rule)" title="Display List">
+                        <i ng-class="{'fa-caret-down' : (data.viewExtraInfoToggle[rule.Text] == null || data.viewExtraInfoToggle[rule.Text] === true), 'fa-caret-up' : data.viewExtraInfoToggle[rule.Text] === false }" class="fa fa-lg" aria-hidden="true"></i>
+                    </a>
+                </span>
+                <wtt-suggestion-info rule="rule" ng-if="data.viewExtraInfoToggle[rule.Text] === false"></wtt-suggestion-info>
             </li>
         </ul>
     </div>

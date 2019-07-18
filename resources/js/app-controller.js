@@ -17,7 +17,6 @@ app.config(['$routeProvider', '$httpProvider', '$interpolateProvider',
 
 app.controller("appController", ['$scope', '$http', '$q', '$location',
     function ($scope, $http, $q, $location) {
-
         $scope.error = null;
         $scope.message = "Invalid Email or Password";
         $scope.loading = false;

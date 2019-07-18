@@ -1,5 +1,5 @@
 <div class="wtt_box" ng-show="auth" ng-cloak>
-    <div class="wtt_header">Enter your Keyword
+    <div class="wtt_header">Main Keyword
         <button type="button" class="wtt-btn-collapse" ng-click="isCollapsed = !isCollapsed">
             <i class="fa" ng-class="{'fa-minus-square': !isCollapsed, 'fa-plus-square': isCollapsed}"></i>
         </button>
@@ -13,7 +13,7 @@
                 <tbody>
                 <tr>
                     <td>
-                        <div class="step-no">1. Select language/country</div>
+                        <div class="step-no">1. Select language / country</div>
                     </td>
                     <td style="text-align: right;">
                         <button popover-placement="auto top" uib-wtt-popover-html="htmlPopover"
@@ -28,14 +28,14 @@
                             <button type="button" class="wtt-btn wtt-btn-default dropdown-toggle" data-toggle="dropdown"
                                     aria-haspopup="true"
                                     aria-expanded="false"><i
-                                    class="flag flag-{[searchModel.selectedSource.Value]}"></i>
+                                    class="flag flag-{[searchModel.selectedSource.Country]}"></i>
                                 {[searchModel.selectedSource.Name]} <span class="caret"></span></button>
                             <ul class="dropdown-menu keyword-country-list">
                                 <li ng-repeat="keywordSource in KeywordSources"
                                     ng-class="{active: searchModel.selectedSource == keywordSource}"><a
                                         href="javascript:;"
                                         ng-click="selectKeywordSource(keywordSource)"><i
-                                        class="flag flag-{[keywordSource.Value]}"></i>
+                                        class="flag flag-{[keywordSource.Country]}"></i>
                                     {[keywordSource.Name]}</a></li>
                             </ul>
                         </div>
@@ -56,7 +56,7 @@
                            value="{{ record ? record.wttKeywords : null }}"
                            ng-blur="onKeywordBlur()">
                     <span class="wtt-input-group-btn">
-                    <input class="wtt-btn-2 wtt-btn-orange" type="button" value="Go!"
+                    <input class="wtt-btn-2 wtt-btn-blue" type="button" value="Go!"
                            id="wtt-keyword-check" ng-click="useMyKeyword()"
                            uib-wtt-tooltip="Start optimizing"
                            tooltip-trigger="mouseenter"
@@ -123,7 +123,7 @@
 
             <div class="well well-custom well-step" id="related-keywords-well"
                  ng-if="searchModel.SearchResults.length > 0">
-                <h2 style="color: #f09000; font-weight: 700; text-align: left !important; padding-left: 10px;">Related keywords that
+                <h2 style="color: #1d75b7; font-weight: 700; text-align: left !important; padding-left: 10px;">Related keywords that
                     might be relevant for you</h2>
 
                 <div class="clearfix" id="related-keywords-wrapper">
@@ -196,7 +196,7 @@
                 <tr>
                     <td colspan="2">
                         <div>
-                            <tags-input max-tags=3 enforce-max-tags ng-model="pageKeywordSynonyms" placeholder="Add"
+                            <tags-input max-tags=20 enforce-max-tags ng-model="pageKeywordSynonyms" placeholder="Add"
                                         replace-spaces-with-dashes="false" class="ti-bootstrap wtt-edit"
                                         on-tag-added=onSynonymsAdded($tag) on-tag-removed=onSynonymsRemoved($tag)>
                                 <auto-complete source="getKeywordSynonyms($query)" debounce-delay="0"

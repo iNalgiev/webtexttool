@@ -1,23 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500pt" height="500pt" viewBox="0 0 500 500" version="1.1">
-<defs>
-<g>
-<symbol overflow="visible" id="glyph0-0">
-<path style="stroke:none;" d="M 0 0 L 0 -126.875 L 101.5 -126.875 L 101.5 0 Z M 3.171875 -3.171875 L 98.328125 -3.171875 L 98.328125 -123.703125 L 3.171875 -123.703125 Z M 3.171875 -3.171875 "/>
-</symbol>
-<symbol overflow="visible" id="glyph0-1">
-<path style="stroke:none;" d="M -0.09375 -145.3125 L 42.515625 -145.3125 L 57.890625 -64.125 L 80.28125 -145.3125 L 122.8125 -145.3125 L 145.3125 -64.125 L 160.671875 -145.3125 L 203.09375 -145.3125 L 171.078125 0 L 127.078125 0 L 101.59375 -91.484375 L 76.21875 0 L 32.21875 0 Z M -0.09375 -145.3125 "/>
-</symbol>
-<symbol overflow="visible" id="glyph0-2">
-<path style="stroke:none;" d="M 4.65625 -145.3125 L 141.15625 -145.3125 L 141.15625 -109.4375 L 95.359375 -109.4375 L 95.359375 0 L 50.453125 0 L 50.453125 -109.4375 L 4.65625 -109.4375 Z M 4.65625 -145.3125 "/>
-</symbol>
-</g>
-</defs>
-<g id="surface1">
-<g style="fill:rgb(96.899414%,57.598877%,11.799622%);fill-opacity:1;">
-  <use xlink:href="#glyph0-1" x="1.5063" y="306.043"/>
-  <use xlink:href="#glyph0-2" x="204.8283" y="306.043"/>
-  <use xlink:href="#glyph0-2" x="351.626784" y="306.043"/>
-</g>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="335" height="335" viewBox="0 0 335 335">
+  <defs>
+    <clipPath id="clip-tm_logo_icon_blue_2">
+      <rect width="335" height="335"/>
+    </clipPath>
+  </defs>
+  <g id="tm_logo_icon_blue_2" data-name="tm_logo_icon_blue – 2" clip-path="url(#clip-tm_logo_icon_blue_2)">
+    <g id="Full_logo" data-name="Full logo" transform="translate(-67.498 -320)">
+      <g id="Icon" transform="translate(62.498 320)">
+        <g id="BG">
+          <rect id="Rectangle_411" data-name="Rectangle 411" width="345.05" height="335" fill="#1f7dc4"/>
+        </g>
+        <g id="Forwards" transform="translate(87.663 87.663)" opacity="0.803">
+          <g id="Group_1306" data-name="Group 1306" transform="translate(0)">
+            <path id="Path_829" data-name="Path 829" d="M2741.038,12769.832h-32.969l55.661-80.359-54.437-78.977h35.272l49.469,77.664Z" transform="translate(-2708.069 -12610.496)" fill="#fff"/>
+            <path id="Path_830" data-name="Path 830" d="M2741.038,12769.832h-32.969l55.661-80.359-54.437-78.977h35.272l49.469,77.664Z" transform="translate(-2623.534 -12610.496)" fill="#fff"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
 </svg>

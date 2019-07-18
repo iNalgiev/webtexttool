@@ -1,12 +1,12 @@
 <div ng-hide="auth">
-    <img class="webtexttool-logo" src="{{ resourceUrl('webtexttool/images/wtt_logo.png') }}"
-         alt="Webtexttool"/>
+    <img class="webtexttool-logo" src="{{ resourceUrl('webtexttool/images/tm_logo.png') }}" width="150"
+         alt="textmetrics-logo"/>
 
-    <p class="wtt-description">Use your webtexttool account credentials to log in the form below. <br/>
+    <p class="wtt-description">Use your {{craft.plugins.getPlugin('webtexttool').getName | t}} account credentials to log in the form below. <br/>
         Please note
-        that these are not your CraftCMS username and password. <br/><br/>
+        that these are not your Craft CMS username and password. <br/><br/>
         If you don't have an account yet, you can easily create one for free <a
-                href="https://app.webtexttool.com/#/register-free" target="_blank"><strong>here</strong></a>.</p>
+                href="https://app.textmetrics.com/#/register-free" target="_blank"><strong>here</strong></a>.</p>
 
     <div ng-if="error != null" class="alert alert-danger" role="alert">
         <strong>{[error]}</strong>
@@ -35,7 +35,7 @@
                 <td>
                     <div class="buttons">
 
-                        <button type="submit" class="wtt-btn submit btn-signin" ng-click="login()"
+                        <button type="submit" class="btn submit btn-signin" ng-click="login()"
                                 data-style="expand-left" ladda="loading">
                             <span class="ladda-label">Login</span>
                             <span class="ladda-spinner"></span>

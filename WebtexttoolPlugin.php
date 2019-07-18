@@ -4,9 +4,9 @@ namespace Craft;
 
 /**
  *
- * @author    Webtexttool <support@webtexttool.com>
- * @copyright Copyright (c) 2017, Webtexttool
- * @see       https://webtexttool.com
+ * @author    Textmetrics <support@textmetrics.com>
+ * @copyright Copyright (c) 2017, Textmetrics
+ * @see       https://www.textmetrics.com
  * @package   webtexttool
  * @since     1.0
  */
@@ -16,27 +16,27 @@ class WebtexttoolPlugin extends BasePlugin
 {
     public function getName()
     {
-        return 'Webtexttool';
+        return 'Textmetrics';
     }
 
     public function getDescription()
     {
-        return 'Webtexttool is the easiest way to create SEO proof content to rank higher and get more traffic. Realtime optimization, keyword research and more.';
+        return 'Textmetrics is the easiest way to make your website content SEO proof, resulting in higher search engine rankings and more traffic to your website. With Textmetrics everyone can create great content and make sure it\'s SEO proof at the same time.';
     }
 
     public function getVersion()
     {
-        return '1.2.5';
+        return '1.3.0';
     }
 
     public function getDeveloper()
     {
-        return 'Webtexttool';
+        return 'Textmetrics';
     }
 
     public function getDeveloperUrl()
     {
-        return 'https://webtexttool.com';
+        return 'https://www.textmetrics.com';
     }
 
     public function getReleaseFeedUrl()
@@ -93,6 +93,7 @@ class WebtexttoolPlugin extends BasePlugin
                 'synonyms' => JsonHelper::decode($record ? $record->wttSynonyms : ""),
                 'siteUrl' => craft()->getSiteUrl(),
                 'suggestionTemplate' => craft()->templates->render('webtexttool/directives/wtt-suggestion'),
+                'suggestionInfo' => craft()->templates->render('webtexttool/directives/wtt-suggestion-info'),
                 'contentQualityTemplate' => craft()->templates->render('webtexttool/directives/wtt-content-quality'),
                 'suggestionContentQualityTemplate' => craft()->templates->render('webtexttool/directives/wtt-suggestion-content-quality'),
                 'pageSlideOut' => craft()->templates->render('webtexttool/directives/wtt-page-slideout'),
