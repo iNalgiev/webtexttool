@@ -94,7 +94,7 @@ input {
 }
 
 .view_title {
-    color: #F6A01A;
+    color: #1d75b7;
     font-size: 20px;
     line-height: initial;
     margin: .5em 0;
@@ -176,7 +176,7 @@ h2.wtt-plan-title {
 
 .subscription-button a:hover {
     color: #fff;
-    background-color: #ec991a;
+    opacity: .84;
 }
 
 .subscription-label {
@@ -194,7 +194,7 @@ h2.wtt-plan-title {
 }
 
 .subscription-label-orange {
-    background-color: #F6A01A;
+    background-color: #1d75b7;
 }
 
 .wtt-prices a {
